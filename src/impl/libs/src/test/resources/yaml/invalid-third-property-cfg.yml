@@ -1,0 +1,18 @@
+sportradar:
+  sdk:
+    mts-broken:
+      username: test-uname
+      password: test-pass
+      hostname: test-hostname
+      vhost: test-vhost
+      ssl: false
+      port: 777
+      node: 46
+      bookmakerId: 5555
+      limitId: 1000
+      currency: btc
+      channel: CALLCENTRE
+      accessToken: test-tkn
+      provideAdditionalMarketSpecifiers: false
+      ticketResponseTimeout: 99
+      messagesPerSecond: 300

@@ -1,0 +1,47 @@
+<!--
+  ~ Copyright (C) Sportradar AG. See LICENSE for full license governing this code
+  -->
+
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+    <id>website</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+
+    <files>
+        <!-- copy the sdk bundle -->
+        <file>
+            <source>${project.build.directory}/mts-sdk-bundle.zip</source>
+            <destName>versions/MtsSdk-Bundle-${project.version}.zip</destName>
+        </file>
+
+        <!-- copy the sdk example -->
+        <file>
+            <source>${project.build.directory}/mts-sdk-example.zip</source>
+            <destName>MtsSdk-Example.zip</destName>
+        </file>
+
+        <!-- copy the sdk javadoc jar -->
+        <file>
+            <source>${project.build.directory}/build-prepare/mts-sdk-${project.version}-javadoc.jar</source>
+            <destName>mts-sdk-javadoc.jar</destName>
+        </file>
+
+        <!-- copy the sdk changelog -->
+        <file>
+            <source>${project.build.directory}/build-prepare/ChangeLog.txt</source>
+            <destName>ChangeLog.txt</destName>
+        </file>
+    </files>
+
+    <fileSets>
+        <!-- copy the javadoc source directory -->
+        <fileSet>
+            <directory>${project.build.directory}/build-prepare/javadoc</directory>
+            <outputDirectory>help</outputDirectory>
+        </fileSet>
+    </fileSets>
+</assembly>

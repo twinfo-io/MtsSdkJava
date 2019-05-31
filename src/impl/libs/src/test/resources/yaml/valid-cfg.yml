@@ -1,0 +1,28 @@
+sportradar:
+  sdk:
+    mts:
+      username: test-uname
+      password: test-pass
+      hostname: test-hostname
+      vhost: test-vhost
+      ssl: false
+      port: 7777
+      node: 46
+      bookmakerId: 5555
+      limitId: 1000
+      currency: btc
+      channel: CALLCENTRE
+      accessToken: test-tkn
+      provideAdditionalMarketSpecifiers: false
+      messagesPerSecond: 300
+      exclusiveConsumer: false
+      keycloakHost: keycloak-host
+      keycloakUsername: keycloak-username
+      keycloakPassword: keycloak-password
+      keycloakSecret: keycloak-secret
+      mtsClientApiHost: client-api
+      ticketResponseTimeout: 99
+      ticketCancellationResponseTimeout: 100
+      ticketCashoutResponseTimeout: 101
+      ticketNonSrSettleResponseTimeout: 102
+      ticketTimeoutCallbackEnabled: false

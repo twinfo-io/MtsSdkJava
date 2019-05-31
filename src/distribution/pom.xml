@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) Sportradar AG. See LICENSE for full license governing this code
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>mts-sdk</artifactId>
+        <groupId>com.sportradar.mts.sdk</groupId>
+        <version>2.3.1.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.sportradar.mts.sdk.distribution</groupId>
+    <artifactId>distribution</artifactId>
+    <name>MTS SDK Distribution</name>
+
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <!-- Main SDK jars -->
+        <dependency>
+            <groupId>com.sportradar.mts.sdk.app</groupId>
+            <artifactId>mts-sdk-app</artifactId>
+            <version>${project.version}</version>
+            <classifier>tinyjar</classifier>
+        </dependency>
+        <dependency>
+            <groupId>com.sportradar.mts.sdk.app</groupId>
+            <artifactId>mts-sdk-app</artifactId>
+            <version>${project.version}</version>
+            <classifier>fatjar</classifier>
+        </dependency>
+        <dependency>
+            <groupId>com.sportradar.mts.sdk.app</groupId>
+            <artifactId>mts-sdk-app</artifactId>
+            <version>${project.version}</version>
+            <classifier>fatjar-shaded</classifier>
+        </dependency>
+
+        <!-- Only for javadoc generation -->
+        <dependency>
+            <groupId>com.sportradar.mts.sdk.api</groupId>
+            <artifactId>mts-sdk-api</artifactId>
+        </dependency>
+
+        <!-- Example sources include -->
+        <dependency>
+            <groupId>com.sportradar.demo</groupId>
+            <artifactId>mts-sdk-external-example</artifactId>
+            <version>${project.version}</version>
+            <classifier>sources</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+
+    <build>
+        <!-- Enable the replacement of the maven variables in the resources -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
+        <plugins>
+            <!-- Skip install of distribution, it does not have any artifacts to install -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-install</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Deletes -->
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>deploy</directory>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.0-M1</version>
+                <executions>
+                    <execution>
+                        <id>javadoc-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/build-prepare/javadoc</outputDirectory>
+                            <windowtitle>MTS SDK ${project.version} API</windowtitle>
+                            <doctitle>MTS SDK ${project.version} API</doctitle>
+                            <!-- TODO javadoc overview page -->
+                            <!--<overview>${basedir}/../mts-sdk-javadoc-overview.html</overview>-->
+                            <includeDependencySources>true</includeDependencySources>
+                            <dependencySourceIncludes>
+                                <!--Specify the package that we want the javadoc included. The parent artifact
+                                of the package must be listed as a dependency of the distribution module.-->
+                                <dependencySourceInclude>com.sportradar.mts.*</dependencySourceInclude>
+                            </dependencySourceIncludes>
+                            <failOnError>false</failOnError>
+                            <excludePackageNames>
+                                *com.sportradar.mts.sdk.api.caching*
+                                *com.sportradar.mts.sdk.api.impl*
+                                *com.sportradar.mts.sdk.api.rest*
+                                *com.sportradar.mts.sdk.api.settings*
+                                *com.sportradar.mts.sdk.api.utils*
+                                *datamodel*
+                            </excludePackageNames>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>aggregate-jar</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>javadoc</classifier>
+                            <show>public</show>
+                            <includeDependencySources>true</includeDependencySources>
+                            <dependencySourceIncludes>
+                                <!--Specify the package that we want the javadoc included. The parent artifact
+                                of the package must be listed as a dependency of the distribution module.-->
+                                <dependencySourceInclude>com.sportradar.mts.*</dependencySourceInclude>
+                            </dependencySourceIncludes>
+                            <failOnError>false</failOnError>
+                            <excludePackageNames>
+                                *com.sportradar.mts.sdk.api.caching*
+                                *com.sportradar.mts.sdk.api.impl*
+                                *com.sportradar.mts.sdk.api.rest*
+                                *com.sportradar.mts.sdk.api.settings*
+                                *com.sportradar.mts.sdk.api.utils*
+                                *datamodel*
+                            </excludePackageNames>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Set a compiler level -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.3</version>
+                <configuration>
+                    <compilerVersion>1.7</compilerVersion>
+                    <compilerArguments>
+                        <endorseddirs>${endorsed.dir}</endorseddirs>
+                    </compilerArguments>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.10</version>
+                <executions>
+                    <!-- Copy project dependency -->
+                    <execution>
+                        <id>endorsed-copy</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeScope>runtime</includeScope>
+                            <outputDirectory>${endorsed.dir}</outputDirectory>
+                            <silent>false</silent>
+                        </configuration>
+                    </execution>
+
+                    <!-- Copy the SDK jars to the distribution folder-->
+                    <execution>
+                        <id>deploy-copy</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <!--<includeScope>runtime</includeScope>-->
+                            <outputDirectory>${project.build.directory}/build-prepare</outputDirectory>
+                            <silent>false</silent>
+                            <includeClassifiers>fatjar, fatjar-shaded, tinyjar, javadoc</includeClassifiers>
+                        </configuration>
+                    </execution>
+
+                    <!-- Copy the example in the deployment folder -->
+                    <execution>
+                        <id>copy-example</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeArtifactIds>mts-sdk-external-example</includeArtifactIds>
+                            <classifier>sources</classifier>
+                            <failOnMissingClassifierArtifact>true</failOnMissingClassifierArtifact>
+                            <outputDirectory>${project.build.directory}/build-prepare/example/src/main/java</outputDirectory>
+                            <excludes>**/META-INF/**</excludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.coderplus.maven.plugins</groupId>
+                <artifactId>copy-rename-maven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                    <!-- Copy the SDK jars in the deploy folder to a more user-friendly name -->
+                    <execution>
+                        <id>rename-sdk-jars</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>rename</goal>
+                        </goals>
+                        <configuration>
+                            <fileSets>
+                                <fileSet>
+                                    <sourceFile>${project.build.directory}/build-prepare/mts-sdk-app-${project.version}-tinyjar.jar</sourceFile>
+                                    <destinationFile>${project.build.directory}/build-prepare/mts-sdk-${project.version}-tinyjar.jar</destinationFile>
+                                </fileSet>
+                                <fileSet>
+                                    <sourceFile>${project.build.directory}/build-prepare/mts-sdk-app-${project.version}-fatjar.jar</sourceFile>
+                                    <destinationFile>${project.build.directory}/build-prepare/mts-sdk-${project.version}-fatjar.jar</destinationFile>
+                                </fileSet>
+                                <fileSet>
+                                    <sourceFile>${project.build.directory}/build-prepare/mts-sdk-app-${project.version}-fatjar-shaded.jar</sourceFile>
+                                    <destinationFile>${project.build.directory}/build-prepare/mts-sdk-${project.version}-fatjar-shaded.jar</destinationFile>
+                                </fileSet>
+                                <fileSet>
+                                    <sourceFile>${project.build.directory}/distribution-${project.version}-javadoc.jar</sourceFile>
+                                    <destinationFile>${project.build.directory}/build-prepare/mts-sdk-${project.version}-javadoc.jar</destinationFile>
+                                </fileSet>
+                            </fileSets>
+                        </configuration>
+                    </execution>
+
+                    <!-- Copy the POM for the SDK tinyjar -->
+                    <execution>
+                        <id>copy-tinyjar-pom</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <sourceFile>target/classes/mts-sdk-install-pom.xml</sourceFile>
+                            <destinationFile>${project.build.directory}/build-prepare/pom.xml</destinationFile>
+                        </configuration>
+                    </execution>
+
+                    <!-- Setup the example so its ready for use -->
+                    <execution>
+                        <id>copy-example-files</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <fileSets>
+                                <fileSet>
+                                    <sourceFile>target/classes/example/example-install-pom.xml</sourceFile>
+                                    <destinationFile>${project.build.directory}/build-prepare/example/pom.xml</destinationFile>
+                                </fileSet>
+                                <!-- copy a special properties file in the deploy example as a failsafe -->
+                                <!-- (just in case someone pushed credentials in the original properties) -->
+                                <fileSet>
+                                    <sourceFile>${project.build.directory}/classes/example/mts-sdk-public.properties</sourceFile>
+                                    <destinationFile>${project.build.directory}/build-prepare/example/src/main/resources/mts-sdk.properties</destinationFile>
+                                </fileSet>
+                                <fileSet>
+                                    <sourceFile>${project.build.directory}/classes/example/application.yml.all</sourceFile>
+                                    <destinationFile>${project.build.directory}/build-prepare/example/src/main/resources/application.yml.all</destinationFile>
+                                </fileSet>
+                                <fileSet>
+                                    <sourceFile>${project.build.directory}/classes/example/logback.xml</sourceFile>
+                                    <destinationFile>${project.build.directory}/build-prepare/example/src/main/resources/logback.xml</destinationFile>
+                                </fileSet>
+                                <fileSet>
+                                    <sourceFile>${project.build.directory}/build-prepare/mts-sdk-${project.version}-fatjar.jar</sourceFile>
+                                    <destinationFile>${project.build.directory}/build-prepare/example/src/main/resources/mts-sdk-${project.version}-fatjar.jar</destinationFile>
+                                </fileSet>
+                                <fileSet>
+                                    <sourceFile>${project.build.directory}/build-prepare/mts-sdk-${project.version}-javadoc.jar</sourceFile>
+                                    <destinationFile>${project.build.directory}/build-prepare/example/src/main/resources/mts-sdk-${project.version}-javadoc.jar</destinationFile>
+                                </fileSet>
+                            </fileSets>
+                        </configuration>
+                    </execution>
+
+                    <!-- finalize the build process with the addition of the changelog and the developer guide -->
+                    <execution>
+                        <id>copy-deploy-info</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <fileSets>
+                                <fileSet>
+                                    <sourceFile>src/main/resources/deploy/MTS SDK Java developer guide.pdf</sourceFile>
+                                    <destinationFile>${project.build.directory}/build-prepare/MTS SDK Java developer guide.pdf</destinationFile>
+                                </fileSet>
+                                <fileSet>
+                                    <sourceFile>src/main/resources/deploy/MTS SDK Java integration guide.pdf</sourceFile>
+                                    <destinationFile>${project.build.directory}/build-prepare/MTS SDK Java integration guide.pdf</destinationFile>
+                                </fileSet>
+                                <fileSet>
+                                    <sourceFile>../ChangeLog.txt</sourceFile>
+                                    <destinationFile>${project.build.directory}/build-prepare/ChangeLog.txt</destinationFile>
+                                </fileSet>
+                            </fileSets>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <appendAssemblyId>false</appendAssemblyId>
+                </configuration>
+                <executions>
+                    <!-- prepare the example project zip -->
+                    <execution>
+                        <id>prepare-example-zip</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/example-project.xml</descriptor>
+                            </descriptors>
+                            <finalName>mts-sdk-example</finalName>
+                        </configuration>
+                    </execution>
+
+                    <!-- prepare the bundle zip -->
+                    <execution>
+                        <id>prepare-bundle-zip</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/sdk-bundle.xml</descriptor>
+                            </descriptors>
+                            <finalName>mts-sdk-bundle</finalName>
+                        </configuration>
+                    </execution>
+
+                    <!-- prepare the zip that is used to deploy a new version of the SDK -->
+                    <execution>
+                        <id>prepare-website-zip</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/website.xml</descriptor>
+                            </descriptors>
+                            <outputDirectory>${project.basedir}/deploy</outputDirectory>
+                            <finalName>mts-sdk-deploy-website</finalName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

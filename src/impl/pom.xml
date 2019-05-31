@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) Sportradar AG. See LICENSE for full license governing this code
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/com.sportradar.mts.sdk.api.xsd/maven-4.0.0.com.sportradar.mts.sdk.api.xsd">
+    <parent>
+        <artifactId>mts-sdk</artifactId>
+        <groupId>com.sportradar.mts.sdk</groupId>
+        <version>2.3.1.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.sportradar.mts.sdk.impl</groupId>
+    <artifactId>mts-sdk-impl</artifactId>
+    <packaging>pom</packaging>
+    <name>MTS SDK Impl</name>
+
+    <modules>
+        <module>di</module>
+        <module>libs</module>
+    </modules>
+</project>

@@ -1,0 +1,15 @@
+﻿{
+  "result": {
+    "ticketId": "ticket-4144",
+    "status": "accepted",
+    "reason": {
+      "code": 1024,
+      "message": "ticket accepted",
+      "internalMessage": "ticket accepted"
+    },
+    "betDetails": []
+  },
+  "version": "2.3",
+  "signature": "qWh5cEAJJlr4QLNBTY+rk13OI8jPkhJNA/wW2gbEI4I=",
+  "exchangeRate": 10000
+}
