@@ -4,6 +4,8 @@
 
 package com.sportradar.mts.sdk.api.impl;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Preconditions;
 import com.sportradar.mts.sdk.api.EndCustomer;
 import com.sportradar.mts.sdk.api.utils.MtsTicketHelper;
@@ -20,7 +22,12 @@ public class EndCustomerImpl implements EndCustomer {
     private final String deviceId;
     private final Long confidence;
 
-    public EndCustomerImpl(String id, String ip, String languageId, String deviceId, Long confidence)
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public EndCustomerImpl(@JsonProperty("id") String id,
+                           @JsonProperty("endCustomerIp") String ip,
+                           @JsonProperty("languageId") String languageId,
+                           @JsonProperty("deviceId") String deviceId,
+                           @JsonProperty("confidence") Long confidence)
     {
         Preconditions.checkArgument(id == null || MtsTicketHelper.validateUserId(id), "id is not valid");
         Preconditions.checkArgument(id == null || id.length() <= 36, "id is too long");

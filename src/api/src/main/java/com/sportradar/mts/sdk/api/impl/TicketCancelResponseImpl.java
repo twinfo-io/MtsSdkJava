@@ -4,6 +4,8 @@
 
 package com.sportradar.mts.sdk.api.impl;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Preconditions;
 import com.sportradar.mts.sdk.api.ResponseReason;
 import com.sportradar.mts.sdk.api.TicketCancelResponse;
@@ -28,15 +30,16 @@ public class TicketCancelResponseImpl implements TicketCancelResponse {
     private final Map<String, String> additionalInfo;
     private final String msgBody;
 
-    public TicketCancelResponseImpl(String ticketId,
-                                    ResponseReason reason,
-                                    TicketCancelAcceptance status,
-                                    String signature,
-                                    Date timestampUtc,
-                                    String version,
-                                    String correlationId,
-                                    Map<String, String> additionalInfo,
-                                    String msgBody)
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public TicketCancelResponseImpl(@JsonProperty("ticketId") String ticketId,
+                                    @JsonProperty("reason") ResponseReason reason,
+                                    @JsonProperty("status") TicketCancelAcceptance status,
+                                    @JsonProperty("signature") String signature,
+                                    @JsonProperty("timestampUtc") Date timestampUtc,
+                                    @JsonProperty("version") String version,
+                                    @JsonProperty("correlationId") String correlationId,
+                                    @JsonProperty("additionalInfo") Map<String, String> additionalInfo,
+                                    @JsonProperty("msgBody") String msgBody)
     {
         Preconditions.checkNotNull(ticketId, "ticketId cannot be null");
         Preconditions.checkArgument(MtsTicketHelper.validateTicketId(ticketId), "ticketId is not valid");

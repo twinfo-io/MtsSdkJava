@@ -4,6 +4,9 @@
 
 package com.sportradar.mts.sdk.api.impl;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.base.Preconditions;
 import com.sportradar.mts.sdk.api.TicketNonSrSettle;
@@ -16,7 +19,7 @@ import java.util.Date;
 /**
  * Implementation of the user exposed entity {@link TicketNonSrSettle}
  */
-public class TicketNonSrSettleImp implements TicketNonSrSettle {
+public class TicketNonSrSettleImpl implements TicketNonSrSettle {
 
     /**
      * The assigned ticket id
@@ -54,12 +57,12 @@ public class TicketNonSrSettleImp implements TicketNonSrSettle {
      * @param nonSrSettleStake - the non-Sportradar ticket settle stake of the assigned ticket
      * @param version - the version of the format in which the ticket is built
      */
-    public TicketNonSrSettleImp(String ticketId,
-                                int bookmakerId,
-                                Date timestampUtc,
-                                Long nonSrSettleStake,
-                                String version) {
-
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public TicketNonSrSettleImpl(@JsonProperty("ticketId") String ticketId,
+                                 @JsonProperty("bookmakerId") int bookmakerId,
+                                 @JsonProperty("timestampUtc") Date timestampUtc,
+                                 @JsonProperty("nonSrSettleStake") Long nonSrSettleStake,
+                                 @JsonProperty("version") String version) {
         Preconditions.checkNotNull(ticketId, "ticketId cannot be null");
         Preconditions.checkArgument(MtsTicketHelper.validateTicketId(ticketId), "ticketId is not valid");
         Preconditions.checkArgument(bookmakerId > 0, "bookmakerId is missing");
@@ -123,6 +126,7 @@ public class TicketNonSrSettleImp implements TicketNonSrSettle {
      *
      * @return the associated ticket in the required MTS JSON format
      */
+    @JsonIgnore
     @Override
     public String getJsonValue() {
         com.sportradar.mts.sdk.api.impl.mtsdto.ticketnonsrsettle.TicketNonSrSettleSchema dto = MtsDtoMapper.map(this);
@@ -149,7 +153,7 @@ public class TicketNonSrSettleImp implements TicketNonSrSettle {
     @Override
     public String toString() {
 
-        return "TicketNonSrSettleImp{" +
+        return "TicketNonSrSettleImpl{" +
                 "bookmakerId=" + bookmakerId + ", " +
                 "ticketId='" + ticketId + "', " +
                 "settleStake=" + nonSrSettleStake + ", " +

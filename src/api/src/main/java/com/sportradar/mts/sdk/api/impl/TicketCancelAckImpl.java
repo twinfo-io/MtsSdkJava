@@ -4,6 +4,8 @@
 
 package com.sportradar.mts.sdk.api.impl;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.base.Preconditions;
 import com.sportradar.mts.sdk.api.TicketCancelAck;
@@ -27,13 +29,14 @@ public class TicketCancelAckImpl implements TicketCancelAck {
     private final TicketCancelAckStatus status;
     private final String correlationId;
 
-    public TicketCancelAckImpl(String ticketId,
-                         int bookmakerId,
-                         Integer code,
-                         String message,
-                         TicketCancelAckStatus ackStatus,
-                         Date timestampUtc,
-                         String version) {
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public TicketCancelAckImpl(@JsonProperty("ticketId") String ticketId,
+                               @JsonProperty("bookmakerId") int bookmakerId,
+                               @JsonProperty("code") Integer code,
+                               @JsonProperty("message") String message,
+                               @JsonProperty("ackStatus") TicketCancelAckStatus ackStatus,
+                               @JsonProperty("timestampUtc") Date timestampUtc,
+                               @JsonProperty("version") String version) {
         Preconditions.checkNotNull(ticketId, "ticketId cannot be null");
         Preconditions.checkArgument(MtsTicketHelper.validateTicketId(ticketId), "ticketId is not valid");
         Preconditions.checkArgument(bookmakerId > 0, "bookmakerId is missing");

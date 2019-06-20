@@ -7,7 +7,7 @@ package com.sportradar.mts.sdk.api.impl.builders;
 import com.google.common.base.Preconditions;
 import com.sportradar.mts.sdk.api.TicketNonSrSettle;
 import com.sportradar.mts.sdk.api.builders.TicketNonSrSettleBuilder;
-import com.sportradar.mts.sdk.api.impl.TicketNonSrSettleImp;
+import com.sportradar.mts.sdk.api.impl.TicketNonSrSettleImpl;
 import com.sportradar.mts.sdk.api.interfaces.SdkConfiguration;
 import com.sportradar.mts.sdk.api.utils.MtsTicketHelper;
 import com.sportradar.mts.sdk.api.utils.SdkInfo;
@@ -91,6 +91,6 @@ public class TicketNonSrSettleBuilderImpl implements TicketNonSrSettleBuilder {
      */
     @Override
     public TicketNonSrSettle build() {
-        return new TicketNonSrSettleImp(ticketId, bookmakerId, new Date(), nonSrSettleStake, SdkInfo.mtsTicketVersion());
+        return new TicketNonSrSettleImpl(ticketId, bookmakerId, new Date(), nonSrSettleStake, SdkInfo.mtsTicketVersion());
     }
 }

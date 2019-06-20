@@ -5,6 +5,8 @@
 package com.sportradar.mts.sdk.api.impl;
 
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Preconditions;
 import com.sportradar.mts.sdk.api.BetCashout;
 import com.sportradar.mts.sdk.api.utils.MtsTicketHelper;
@@ -14,7 +16,10 @@ public class BetCashoutImpl implements BetCashout {
     private final long cashoutStake;
     private final Integer cashoutPercent;
 
-    public BetCashoutImpl(String betId, long cashoutStake, Integer cashoutPercent) {
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public BetCashoutImpl(@JsonProperty("betId") String betId,
+                          @JsonProperty("cashoutStake") long cashoutStake,
+                          @JsonProperty("cashoutPercent") Integer cashoutPercent) {
 
         Preconditions.checkArgument(MtsTicketHelper.validateTicketId(betId), "betId is not valid");
         Preconditions.checkArgument(cashoutStake > 0, "stake not valid");

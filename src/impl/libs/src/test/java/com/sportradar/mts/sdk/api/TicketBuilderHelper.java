@@ -8,9 +8,9 @@ import com.sportradar.mts.sdk.api.builders.BetBuilder;
 import com.sportradar.mts.sdk.api.builders.BuilderFactory;
 import com.sportradar.mts.sdk.api.builders.TicketBuilder;
 import com.sportradar.mts.sdk.api.enums.*;
-import com.sportradar.mts.sdk.api.impl.mtsdto.ticketresponse.*;
 import com.sportradar.mts.sdk.api.impl.mtsdto.ticketresponse.BetDetail;
 import com.sportradar.mts.sdk.api.impl.mtsdto.ticketresponse.SelectionDetail;
+import com.sportradar.mts.sdk.api.impl.mtsdto.ticketresponse.*;
 import com.sportradar.mts.sdk.api.utils.StaticRandom;
 import com.sportradar.mts.sdk.api.utils.StringUtils;
 import com.sportradar.mts.sdk.impl.libs.SdkHelper;
@@ -102,6 +102,14 @@ public class TicketBuilderHelper {
             ticketId = "ticket-" + StaticRandom.I1000P;
         }
         return builderFactory.createTicketCashoutBuilder().setTicketId(ticketId).setBookmakerId(StaticRandom.I1000).setCashoutStake(StaticRandom.I1000P).build();
+    }
+
+    public TicketNonSrSettle getTicketNonSrSettle(String ticketId) {
+        if (StringUtils.isNullOrEmpty(ticketId))
+        {
+            ticketId = "ticket-" + StaticRandom.I1000P;
+        }
+        return builderFactory.createTicketNonSrSettleBuilder().setTicketId(ticketId).setBookmakerId(StaticRandom.I1000).setNonSRSettleStake(StaticRandom.I1000P).build();
     }
 
     private static BetDetail getResponseBetDetail(String betId, boolean reoffer, boolean alt)

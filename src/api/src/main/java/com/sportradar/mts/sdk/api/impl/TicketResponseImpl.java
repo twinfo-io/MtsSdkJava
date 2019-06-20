@@ -4,6 +4,8 @@
 
 package com.sportradar.mts.sdk.api.impl;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.sportradar.mts.sdk.api.AutoAcceptedOdds;
@@ -38,18 +40,19 @@ public class TicketResponseImpl implements TicketResponse {
     private final List<AutoAcceptedOdds> autoAcceptedOddsList;
     private final String msgBody;
 
-    public TicketResponseImpl(String ticketId,
-                              ResponseReason reason,
-                              TicketAcceptance status,
-                              List<BetDetail> betDetails,
-                              String signature,
-                              long exchangeRate,
-                              Date timestampUtc,
-                              String version,
-                              String correlationId,
-                              Map<String, String> additionalInfo,
-                              List<AutoAcceptedOdd> autoAcceptedOdds,
-                              String msgBody)
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public TicketResponseImpl(@JsonProperty("ticketId") String ticketId,
+                              @JsonProperty("reason") ResponseReason reason,
+                              @JsonProperty("status") TicketAcceptance status,
+                              @JsonProperty("betDetails") List<BetDetail> betDetails,
+                              @JsonProperty("signature") String signature,
+                              @JsonProperty("exchangeRate") long exchangeRate,
+                              @JsonProperty("timestampUtc") Date timestampUtc,
+                              @JsonProperty("version") String version,
+                              @JsonProperty("correlationId") String correlationId,
+                              @JsonProperty("additionalInfo") Map<String, String> additionalInfo,
+                              @JsonProperty("autoAcceptedOddsList") List<AutoAcceptedOdd> autoAcceptedOdds,
+                              @JsonProperty("msgBody") String msgBody)
     {
         Preconditions.checkNotNull(ticketId, "ticketId cannot be null");
         Preconditions.checkArgument(MtsTicketHelper.validateTicketId(ticketId), "ticketId is not valid");

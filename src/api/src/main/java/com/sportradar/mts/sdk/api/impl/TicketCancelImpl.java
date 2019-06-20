@@ -4,6 +4,9 @@
 
 package com.sportradar.mts.sdk.api.impl;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.base.Preconditions;
 import com.sportradar.mts.sdk.api.BetCancel;
@@ -29,13 +32,14 @@ public class TicketCancelImpl implements TicketCancel {
     private final Integer cancelPercent;
     private final List<BetCancel> betCancels;
 
-    public TicketCancelImpl(String ticketId,
-                            int bookmakerId,
-                            TicketCancellationReason code,
-                            Date timestampUtc,
-                            Integer cancelPercent,
-                            List<BetCancel> betCancels,
-                            String version) {
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public TicketCancelImpl(@JsonProperty("ticketId") String ticketId,
+                            @JsonProperty("bookmakerId") int bookmakerId,
+                            @JsonProperty("code") TicketCancellationReason code,
+                            @JsonProperty("timestampUtc") Date timestampUtc,
+                            @JsonProperty("cancelPercent") Integer cancelPercent,
+                            @JsonProperty("betCancels") List<BetCancel> betCancels,
+                            @JsonProperty("version") String version) {
         Preconditions.checkNotNull(ticketId, "ticketId cannot be null");
         Preconditions.checkArgument(MtsTicketHelper.validateTicketId(ticketId), "ticketId is not valid");
         Preconditions.checkArgument(bookmakerId > 0, "bookmakerId is missing");
@@ -113,6 +117,7 @@ public class TicketCancelImpl implements TicketCancel {
      *
      * @return the associated ticket in the required MTS JSON format
      */
+    @JsonIgnore
     @Override
     public String getJsonValue() {
         com.sportradar.mts.sdk.api.impl.mtsdto.ticketcancel.TicketCancelSchema dto = MtsDtoMapper.map(this);

@@ -4,6 +4,8 @@
 
 package com.sportradar.mts.sdk.api.impl;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sportradar.mts.sdk.api.EndCustomer;
 import com.sportradar.mts.sdk.api.Sender;
 import com.sportradar.mts.sdk.api.enums.SenderChannel;
@@ -25,13 +27,14 @@ public class SenderImpl implements Sender {
     private final String shopId;
     private final EndCustomer endCustomer;
 
-    public SenderImpl(int bookmakerId,
-                      String currency,
-                      int limitId,
-                      String terminalId,
-                      SenderChannel channel,
-                      String shopId,
-                      EndCustomer endCustomer)
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public SenderImpl(@JsonProperty("bookmakerId") int bookmakerId,
+                      @JsonProperty("currency") String currency,
+                      @JsonProperty("limitId") int limitId,
+                      @JsonProperty("terminalId") String terminalId,
+                      @JsonProperty("channel") SenderChannel channel,
+                      @JsonProperty("shopId") String shopId,
+                      @JsonProperty("endCustomer") EndCustomer endCustomer)
     {
         checkArgument(bookmakerId > 0, "bookmakerId is missing");
         checkArgument(!StringUtils.isNullOrEmpty(currency), "currency is missing");

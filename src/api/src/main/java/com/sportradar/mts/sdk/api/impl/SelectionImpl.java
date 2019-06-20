@@ -4,6 +4,8 @@
 
 package com.sportradar.mts.sdk.api.impl;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Preconditions;
 import com.sportradar.mts.sdk.api.Selection;
 import com.sportradar.mts.sdk.api.utils.StringUtils;
@@ -18,7 +20,11 @@ public class SelectionImpl implements Selection {
     private final long odds;
     private final boolean isBanker;
 
-    public SelectionImpl(String eventId, String id, long odds, boolean isBanker)
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public SelectionImpl(@JsonProperty("eventId") String eventId,
+                         @JsonProperty("id") String id,
+                         @JsonProperty("odds") long odds,
+                         @JsonProperty("isBanker") boolean isBanker)
     {
         Preconditions.checkArgument( !StringUtils.isNullOrEmpty(eventId), "eventId is missing");
         Preconditions.checkArgument(eventId.length() > 0, "eventId is missing");

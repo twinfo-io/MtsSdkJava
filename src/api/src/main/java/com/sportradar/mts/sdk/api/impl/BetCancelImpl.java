@@ -5,16 +5,19 @@
 package com.sportradar.mts.sdk.api.impl;
 
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Preconditions;
 import com.sportradar.mts.sdk.api.BetCancel;
-import com.sportradar.mts.sdk.api.BetCashout;
 import com.sportradar.mts.sdk.api.utils.MtsTicketHelper;
 
 public class BetCancelImpl implements BetCancel {
     private final String betId;
     private final Integer cancelPercent;
 
-    public BetCancelImpl(String betId, Integer cancelPercent) {
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public BetCancelImpl(@JsonProperty("betId") String betId,
+                         @JsonProperty("cancelPercent") Integer cancelPercent) {
 
         Preconditions.checkArgument(MtsTicketHelper.validateTicketId(betId), "betId is not valid");
         Preconditions.checkArgument(MtsTicketHelper.validatePercent(cancelPercent), "percent not valid");

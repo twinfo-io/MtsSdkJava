@@ -4,6 +4,9 @@
 
 package com.sportradar.mts.sdk.api.impl;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -40,17 +43,18 @@ public class TicketImpl implements Ticket {
     private final Integer totalCombinations;
     private final Date lastMatchEndTime;
 
-    public TicketImpl(String ticketId,
-                      List<Bet> bets,
-                      Sender sender,
-                      String reofferId,
-                      String altStakeRefId,
-                      boolean isTestSource,
-                      OddsChangeType oddsChangeType,
-                      Integer totalCombinations,
-                      Date lastMatchEndTime,
-                      Date timestampUtc,
-                      String version) {
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public TicketImpl(@JsonProperty("ticketId") String ticketId,
+                      @JsonProperty("bets") List<Bet> bets,
+                      @JsonProperty("sender") Sender sender,
+                      @JsonProperty("reofferId") String reofferId,
+                      @JsonProperty("altStakeRefId") String altStakeRefId,
+                      @JsonProperty("testSource") boolean isTestSource,
+                      @JsonProperty("oddsChange") OddsChangeType oddsChangeType,
+                      @JsonProperty("totalCombinations") Integer totalCombinations,
+                      @JsonProperty("lastMatchEndTime") Date lastMatchEndTime,
+                      @JsonProperty("timestampUtc") Date timestampUtc,
+                      @JsonProperty("version") String version) {
         Preconditions.checkNotNull(ticketId, "ticketId cannot be null");
         Preconditions.checkArgument(MtsTicketHelper.validateTicketId(ticketId), "ticketId is not valid");
         Preconditions.checkNotNull(bets, "bet cannot be null");
@@ -163,6 +167,7 @@ public class TicketImpl implements Ticket {
      * @return the associated ticket in the required MTS JSON format
      */
     @Override
+    @JsonIgnore
     public String getJsonValue() {
         com.sportradar.mts.sdk.api.impl.mtsdto.ticket.TicketSchema dto = MtsDtoMapper.map(this);
         try {

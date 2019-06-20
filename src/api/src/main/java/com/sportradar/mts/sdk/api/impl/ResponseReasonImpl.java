@@ -4,6 +4,8 @@
 
 package com.sportradar.mts.sdk.api.impl;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sportradar.mts.sdk.api.ResponseReason;
 
 /**
@@ -14,7 +16,9 @@ public class ResponseReasonImpl implements ResponseReason {
     private final int code;
     private final String message;
 
-    public ResponseReasonImpl(int code, String message)
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public ResponseReasonImpl(@JsonProperty("code") int code,
+                              @JsonProperty("message") String message)
     {
         this.code = code;
         this.message = message;

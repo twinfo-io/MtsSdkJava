@@ -4,6 +4,9 @@
 
 package com.sportradar.mts.sdk.api.impl;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.base.Preconditions;
 import com.sportradar.mts.sdk.api.BetCashout;
@@ -65,7 +68,14 @@ public class TicketCashoutImpl implements TicketCashout {
      * @param cashoutStake - the cashout stake of the assigned ticket
      * @param version - the version of the format in which the ticket is built
      */
-    public TicketCashoutImpl(String ticketId, int bookmakerId, Date timestampUtc, Long cashoutStake, Integer cashoutPercent, List<BetCashout> betCashouts, String version) {
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public TicketCashoutImpl(@JsonProperty("ticketId") String ticketId,
+                             @JsonProperty("bookmakerId") int bookmakerId,
+                             @JsonProperty("timestampUtc") Date timestampUtc,
+                             @JsonProperty("cashoutStake") Long cashoutStake,
+                             @JsonProperty("cashoutPercent") Integer cashoutPercent,
+                             @JsonProperty("betCashouts") List<BetCashout> betCashouts,
+                             @JsonProperty("version") String version) {
 
         Preconditions.checkNotNull(ticketId, "ticketId cannot be null");
         Preconditions.checkArgument(MtsTicketHelper.validateTicketId(ticketId), "ticketId is not valid");
@@ -174,6 +184,7 @@ public class TicketCashoutImpl implements TicketCashout {
      *
      * @return the associated ticket in the required MTS JSON format
      */
+    @JsonIgnore
     @Override
     public String getJsonValue() {
         try {

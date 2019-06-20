@@ -4,6 +4,8 @@
 
 package com.sportradar.mts.sdk.api.impl;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Preconditions;
 import com.sportradar.mts.sdk.api.Bet;
 import com.sportradar.mts.sdk.api.BetBonus;
@@ -26,16 +28,17 @@ public class BetImpl implements Bet {
     private final Boolean customBet;
     private final Integer calculationOdds;
 
-    public BetImpl(String id,
-            BetBonus betBonus,
-            Stake stake,
-            Stake entireStake,
-            List<Integer> selectedSystems,
-            List<Selection> selections,
-            String reofferRefId,
-            Long sumOfWins,
-            Boolean customBet,
-            Integer calculationOdds) {
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public BetImpl(@JsonProperty("id") String id,
+                   @JsonProperty("betBonus") BetBonus betBonus,
+                   @JsonProperty("stake") Stake stake,
+                   @JsonProperty("entireStake") Stake entireStake,
+                   @JsonProperty("selectedSystems") List<Integer> selectedSystems,
+                   @JsonProperty("selections") List<Selection> selections,
+                   @JsonProperty("reofferRefId") String reofferRefId,
+                   @JsonProperty("sumOfWins") Long sumOfWins,
+                   @JsonProperty("customBet") Boolean customBet,
+                   @JsonProperty("calculationOdds") Integer calculationOdds) {
         Preconditions.checkArgument(MtsTicketHelper.validateTicketId(id), "betId is not valid");
         Preconditions.checkNotNull(selections, "selections cannot be null");
         Preconditions.checkArgument(selections.size() > 0, "missing selections, at least one selection must be specified");

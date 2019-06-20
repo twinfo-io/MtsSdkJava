@@ -4,6 +4,8 @@
 
 package com.sportradar.mts.sdk.api.impl;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Preconditions;
 import com.sportradar.mts.sdk.api.ResponseReason;
 import com.sportradar.mts.sdk.api.TicketCashoutResponse;
@@ -69,15 +71,16 @@ public class TicketCashoutResponseImpl implements TicketCashoutResponse {
      * @param version the version of the format in which the ticket is built
      * @param msgBody the raw JSON payload received from MTS
      */
-    public TicketCashoutResponseImpl(String ticketId,
-                                     Date timestampUtc,
-                                     ResponseReason reason,
-                                     TicketAcceptance status,
-                                     String signature,
-                                     String version,
-                                     String correlationId,
-                                     Map<String, String> additionalInfo,
-                                     String msgBody) {
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public TicketCashoutResponseImpl(@JsonProperty("ticketId") String ticketId,
+                                     @JsonProperty("timestampUtc") Date timestampUtc,
+                                     @JsonProperty("reason") ResponseReason reason,
+                                     @JsonProperty("status") TicketAcceptance status,
+                                     @JsonProperty("signature") String signature,
+                                     @JsonProperty("version") String version,
+                                     @JsonProperty("correlationId") String correlationId,
+                                     @JsonProperty("additionalInfo") Map<String, String> additionalInfo,
+                                     @JsonProperty("msgBody") String msgBody) {
         Preconditions.checkNotNull(ticketId, "ticketId cannot be null");
         Preconditions.checkArgument(MtsTicketHelper.validateTicketId(ticketId), "ticketId is not valid");
         Preconditions.checkNotNull(timestampUtc, "timestamp cannot be null");

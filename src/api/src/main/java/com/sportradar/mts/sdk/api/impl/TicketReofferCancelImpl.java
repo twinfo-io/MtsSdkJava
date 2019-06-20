@@ -4,6 +4,9 @@
 
 package com.sportradar.mts.sdk.api.impl;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.base.Preconditions;
 import com.sportradar.mts.sdk.api.TicketReofferCancel;
@@ -23,10 +26,11 @@ public class TicketReofferCancelImpl implements TicketReofferCancel {
     private final int bookmakerId;
     private final String correlationId;
 
-    public TicketReofferCancelImpl(String ticketId,
-                                   int bookmakerId,
-                                   Date timestampUtc,
-                                   String version) {
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public TicketReofferCancelImpl(@JsonProperty("ticketId") String ticketId,
+                                   @JsonProperty("bookmakerId") int bookmakerId,
+                                   @JsonProperty("timestampUtc") Date timestampUtc,
+                                   @JsonProperty("version") String version) {
         Preconditions.checkNotNull(ticketId, "ticketId cannot be null");
         Preconditions.checkArgument(MtsTicketHelper.validateTicketId(ticketId), "ticketId is not valid");
         Preconditions.checkArgument(bookmakerId > 0, "bookmakerId is missing");
@@ -70,6 +74,7 @@ public class TicketReofferCancelImpl implements TicketReofferCancel {
      *
      * @return the associated ticket in the required MTS JSON format
      */
+    @JsonIgnore
     @Override
     public String getJsonValue() {
         com.sportradar.mts.sdk.api.impl.mtsdto.reoffercancel.TicketReofferCancelSchema dto = MtsDtoMapper.map(this);

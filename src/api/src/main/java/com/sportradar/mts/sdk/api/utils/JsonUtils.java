@@ -13,6 +13,10 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.DeserializationProblemHandler;
+import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.sportradar.mts.sdk.api.*;
+import com.sportradar.mts.sdk.api.impl.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +40,31 @@ public class JsonUtils {
         OBJECT_MAPPER.addHandler(new JacksonProblemHandler());
         //objectMapper.registerModule(new TicketDeserializerModule());
         OBJECT_MAPPER.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+        SimpleModule module = new SimpleModule("MtsSdk");
+        SimpleAbstractTypeResolver resolver = new SimpleAbstractTypeResolver();
+        resolver.addMapping(BetBonus.class, BetBonusImpl.class);
+        resolver.addMapping(BetCancel.class, BetCancelImpl.class);
+        resolver.addMapping(BetCashout.class, BetCashoutImpl.class);
+        resolver.addMapping(Bet.class, BetImpl.class);
+        resolver.addMapping(EndCustomer.class, EndCustomerImpl.class);
+        resolver.addMapping(ResponseReason.class, ResponseReasonImpl.class);
+        resolver.addMapping(Selection.class, SelectionImpl.class);
+        resolver.addMapping(Sender.class, SenderImpl.class);
+        resolver.addMapping(Stake.class, StakeImpl.class);
+        resolver.addMapping(TicketAck.class, TicketAckImpl.class);
+        resolver.addMapping(TicketCancelAck.class, TicketCancelAckImpl.class);
+        resolver.addMapping(TicketCancel.class, TicketCancelImpl.class);
+        resolver.addMapping(TicketCancelResponse.class, TicketCancelResponseImpl.class);
+        resolver.addMapping(TicketCashout.class, TicketCashoutImpl.class);
+        resolver.addMapping(TicketCashoutResponse.class, TicketCashoutResponseImpl.class);
+        resolver.addMapping(Ticket.class, TicketImpl.class);
+        resolver.addMapping(TicketNonSrSettle.class, TicketNonSrSettleImpl.class);
+        resolver.addMapping(TicketNonSrSettleResponse.class, TicketNonSrSettleResponseImpl.class);
+        resolver.addMapping(TicketReofferCancel.class, TicketReofferCancelImpl.class);
+        resolver.addMapping(TicketResponse.class, TicketResponseImpl.class);
+        module.setAbstractTypes(resolver);
+        OBJECT_MAPPER.registerModule(module);
     }
 
     public static <T> byte[] serialize(T item) {
