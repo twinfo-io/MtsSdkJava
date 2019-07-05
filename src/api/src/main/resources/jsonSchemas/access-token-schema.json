@@ -1,19 +1,31 @@
 {
-  "$schema": "http://json-schema.org/draft-04/schema#",
-  "type": "object",
-  "additionalProperties": false,
-  "properties": {
-    "scope": {
-      "type": "string"
+  "$schema":"http://json-schema.org/draft-04/schema#",
+  "type":"object",
+  "additionalProperties":false,
+  "properties":{
+    "access_token":{
+      "type":"string"
     },
-    "access_token": {
-      "type": "string"
+    "expires_in":{
+      "type":"integer"
     },
-    "token_type": {
-      "type": "string"
+    "not-before-policy":{
+      "type":"integer"
     },
-    "expires_in": {
-      "type": "number"
+    "refresh_expires_in":{
+      "type":"integer"
+    },
+    "refresh_token":{
+      "type":"string"
+    },
+    "session_state":{
+      "type":"string"
+    },
+    "token_type":{
+      "type":"string"
+    },
+    "scope":{
+      "type":"string"
     }
   }
 }

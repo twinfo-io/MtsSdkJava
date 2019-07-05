@@ -766,7 +766,7 @@ public class SdkInjectionModule extends AbstractModule {
                                 new BasicNameValuePair("grant_type", "password"),
                                 new BasicNameValuePair("client_auth_method", "client-secret")
                         ));
-                        AccessTokenSchema token = accessTokenDataProvider.getData(content);
+                        AccessTokenSchema token = accessTokenDataProvider.postData(content);
                         if (token == null) {
                             logger.warn("Failed to authenticate.");
                             throw new Exception("Failed to authenticate.");

@@ -53,8 +53,8 @@ public class DataProvider <TOut>{
      *
      * @param content - a content to be sent
      */
-    public TOut getData(HttpEntity content) {
-        return getData(content, defaultLocale);
+    public TOut postData(HttpEntity content) {
+        return postData(content, defaultLocale);
     }
 
     /**
@@ -72,8 +72,8 @@ public class DataProvider <TOut>{
      * @param token - a {@link AccessToken} used to access protected resources
      * @param content - a content to be sent
      */
-    public TOut getData(AccessToken token, HttpEntity content) {
-        return getData(token, content, defaultLocale);
+    public TOut postData(AccessToken token, HttpEntity content) {
+        return sendData(token, content, defaultLocale);
     }
 
     /**
@@ -93,8 +93,8 @@ public class DataProvider <TOut>{
      * @param args - that are used with the supplied URI format
      * @return - the requested API endpoint object or null
      */
-    public TOut getData(HttpEntity content, String... args) {
-        return getData(content, defaultLocale, args);
+    public TOut postData(HttpEntity content, String... args) {
+        return postData(content, defaultLocale, args);
     }
 
     /**
@@ -116,8 +116,8 @@ public class DataProvider <TOut>{
      * @param args - that are used with the supplied URI format
      * @return - the requested API endpoint object or null
      */
-    public TOut getData(AccessToken token, HttpEntity content, String... args) {
-        return getData(token, content, defaultLocale, args);
+    public TOut postData(AccessToken token, HttpEntity content, String... args) {
+        return sendData(token, content, defaultLocale, args);
     }
 
     /**
@@ -128,7 +128,7 @@ public class DataProvider <TOut>{
      * @return - the requested API endpoint object or null
      */
     public TOut getData(Locale locale, String... args) {
-        return getData(null, null, locale, args);
+        return sendData(null, null, locale, args);
     }
 
     /**
@@ -139,8 +139,8 @@ public class DataProvider <TOut>{
      * @param args - that are used with the supplied URI format
      * @return - the requested API endpoint object or null
      */
-    public TOut getData(HttpEntity content, Locale locale, String... args) {
-        return getData(null, content, locale, args);
+    public TOut postData(HttpEntity content, Locale locale, String... args) {
+        return sendData(null, content, locale, args);
     }
 
     /**
@@ -152,7 +152,7 @@ public class DataProvider <TOut>{
      * @return - the requested API endpoint object or null
      */
     public TOut getData(AccessToken token, Locale locale, String... args) {
-        return getData(token, null, locale, args);
+        return sendData(token, null, locale, args);
     }
 
     /**
@@ -164,7 +164,7 @@ public class DataProvider <TOut>{
      * @param args - that are used with the supplied URI format
      * @return - the requested API endpoint object or null
      */
-    public TOut getData(AccessToken token, HttpEntity content, Locale locale, String... args) {
+    public TOut sendData(AccessToken token, HttpEntity content, Locale locale, String... args) {
         int fwArgSize = (args != null) ? (args.length + 1) : 1;
 
         String[] forwardArgs = new String[fwArgSize];

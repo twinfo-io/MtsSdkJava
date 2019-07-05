@@ -78,7 +78,7 @@ public class CustomBetManagerImpl implements CustomBetManager {
             CAPISelections content = MtsDtoMapper.map(selections);
             String c = deserializer.serialize(content);
             StringEntity entity = new StringEntity(c, ContentType.APPLICATION_XML);
-            CAPICalculationResponse calculationResponse = calculationResponseDataProvider.getData(entity);
+            CAPICalculationResponse calculationResponse = calculationResponseDataProvider.postData(entity);
             if (calculationResponse == null)
                 throw new Exception("Failed to fetch calculation response.");
             return new CalculationImpl(calculationResponse);

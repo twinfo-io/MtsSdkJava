@@ -54,7 +54,7 @@ public class MtsClientApiImpl implements MtsClientApi {
             logger.info("Called getMaxStake with ticketId={}.", ticket.getTicketId());
             AccessToken token = accessTokenCache.get(getCacheKey(username, password));
             HttpEntity content = new StringEntity(ticket.getJsonValue(), ContentType.APPLICATION_JSON);
-            Long result = MtsDtoMapper.map(maxStakeDataProvider.getData(token, content));
+            Long result = MtsDtoMapper.map(maxStakeDataProvider.postData(token, content));
             if (result == null)
                 throw new Exception("Failed to get max stake result.");
             return result;
