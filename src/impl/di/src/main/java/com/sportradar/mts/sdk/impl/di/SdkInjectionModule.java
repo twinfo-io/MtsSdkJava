@@ -32,14 +32,12 @@ import com.sportradar.mts.sdk.api.interfaces.SdkConfiguration;
 import com.sportradar.mts.sdk.api.interfaces.TicketCancelSender;
 import com.sportradar.mts.sdk.api.interfaces.TicketSender;
 import com.sportradar.mts.sdk.api.interfaces.customBet.CustomBetManager;
-import com.sportradar.mts.sdk.api.interfaces.customBet.CustomBetSelectionBuilder;
 import com.sportradar.mts.sdk.api.rest.*;
 import com.sportradar.mts.sdk.api.utils.MtsDtoMapper;
 import com.sportradar.mts.sdk.api.utils.StringUtils;
 import com.sportradar.mts.sdk.impl.libs.adapters.amqp.*;
 import com.sportradar.mts.sdk.impl.libs.clientapi.MtsClientApiImpl;
 import com.sportradar.mts.sdk.impl.libs.customBet.CustomBetManagerImpl;
-import com.sportradar.mts.sdk.impl.libs.customBet.CustomBetSelectionBuilderImpl;
 import com.sportradar.mts.sdk.impl.libs.handlers.*;
 import com.sportradar.mts.sdk.impl.libs.logging.FileSdkLoggerImpl;
 import com.sportradar.mts.sdk.impl.libs.logging.SdkLogger;
@@ -652,7 +650,6 @@ public class SdkInjectionModule extends AbstractModule {
         bind(TicketCashoutResponseReceiver.class).to(TicketCashoutHandler.class);
         bind(TicketNonSrSettleResponseReceiver.class).to(TicketNonSrSettleHandler.class);
         bind(CustomBetManager.class).to(CustomBetManagerImpl.class).in(com.google.inject.Singleton.class);
-        bind(CustomBetSelectionBuilder.class).to(CustomBetSelectionBuilderImpl.class);
 
         bind(SdkConfiguration.class).toInstance(sdkConfiguration);
 //        bind(BuilderFactory.class).to();

@@ -30,24 +30,20 @@ import java.util.List;
 public class CustomBetManagerImpl implements CustomBetManager {
     private static final Logger logger = LoggerFactory.getLogger(CustomBetManagerImpl.class);
 
-    private final CustomBetSelectionBuilder customBetSelectionBuilder;
     private final DataProvider<CAPIAvailableSelections> availableSelectionsDataProvider;
     private final DataProvider<CAPICalculationResponse> calculationResponseDataProvider;
     private final Deserializer deserializer;
 
     @Inject
     CustomBetManagerImpl(SdkConfiguration configuration,
-                         CustomBetSelectionBuilder customBetSelectionBuilder,
                          DataProvider<CAPIAvailableSelections> availableSelectionsDataProvider,
                          DataProvider<CAPICalculationResponse> calculationResponseDataProvider,
                          @Named("CustomBetApiJaxbDeserializer") Deserializer deserializer) {
         Preconditions.checkNotNull(configuration);
-        Preconditions.checkNotNull(customBetSelectionBuilder);
         Preconditions.checkNotNull(availableSelectionsDataProvider);
         Preconditions.checkNotNull(calculationResponseDataProvider);
         Preconditions.checkNotNull(deserializer);
 
-        this.customBetSelectionBuilder = customBetSelectionBuilder;
         this.availableSelectionsDataProvider = availableSelectionsDataProvider;
         this.calculationResponseDataProvider = calculationResponseDataProvider;
         this.deserializer = deserializer;
@@ -90,6 +86,6 @@ public class CustomBetManagerImpl implements CustomBetManager {
 
     @Override
     public CustomBetSelectionBuilder getCustomBetSelectionBuilder() {
-        return customBetSelectionBuilder;
+        return new CustomBetSelectionBuilderImpl();
     }
 }
