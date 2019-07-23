@@ -45,6 +45,7 @@ public class MtsDtoMapper {
             .add("validatedUtcTimestamp")
             .add("receivedUtcTimestamp")
             .add("respondedUtcTimestamp")
+            .add("Content-Type")
             .build();
 
     public static TicketSchema map(com.sportradar.mts.sdk.api.Ticket ticket)
@@ -441,10 +442,6 @@ public class MtsDtoMapper {
                                 Map.Entry::getKey,
                                 e-> e.getValue().toString()
                         ));
-        if(additionalInfo.size() == 0)
-        {
-            int x = 0;
-        }
         return additionalInfo;
     }
 }

@@ -116,7 +116,7 @@ public class TicketCancelAckImpl implements TicketCancelAck {
                 "bookmakerId=" + bookmakerId +
                 ", ticketId='" + ticketId + '\'' +
                 ", code=" + code +
-                ", ackStatus=" + status +
+                ", cancelAckStatus=" + status +
                 ", message='" + message + '\'' +
                 ", timestamp=" + timestampUtc +
                 ", version='" + version + '\'' +

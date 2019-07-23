@@ -35,7 +35,6 @@ public class SelectionBuilderImpl implements SelectionBuilder {
     private String selectionId;
     private int odds;
     private boolean isBanker;
-    private final Locale defaultLocale = Locale.ENGLISH;
 
     public SelectionBuilderImpl(MarketDescriptionProvider marketDescriptionProvider, SdkConfiguration config) {
         Preconditions.checkNotNull(marketDescriptionProvider);
@@ -231,6 +230,10 @@ public class SelectionBuilderImpl implements SelectionBuilder {
             if(specifiers != null && specifiers.size() > 0)
             {
                 newSpecifiers = specifiers;
+            }
+            if(sportEventStatus == null)
+            {
+                throw new IllegalArgumentException("SportEventStatus is missing");
             }
             newSpecifiers.put("$server", sportEventStatus.get("CurrentServer").toString());
             return newSpecifiers;

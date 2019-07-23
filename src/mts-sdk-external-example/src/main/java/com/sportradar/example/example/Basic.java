@@ -43,9 +43,12 @@ public class Basic {
         ticketSender.send(ticket);
 
         try {
+            long maxStake = mtsSdk.getClientApi().getMaxStake(ticket);
             Thread.sleep(5000);
         } catch (InterruptedException e) {
             logger.info("interrupted while sleeping");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         mtsSdk.close();
     }

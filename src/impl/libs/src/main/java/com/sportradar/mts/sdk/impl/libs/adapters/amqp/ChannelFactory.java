@@ -6,14 +6,8 @@ package com.sportradar.mts.sdk.impl.libs.adapters.amqp;
 
 import com.google.common.collect.ImmutableSet;
 import com.rabbitmq.client.ConnectionFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.net.ssl.SSLParameters;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509TrustManager;
+import javax.net.ssl.*;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
@@ -30,8 +24,6 @@ public final class ChannelFactory {
             "91.201.212.86", // Production environment
             "mtsgate-t1.betradar.com"
     );
-
-    private static final Logger logger = LoggerFactory.getLogger(ChannelFactory.class);
 
     private final ConnectionWrapper connectionWrapper;
 
