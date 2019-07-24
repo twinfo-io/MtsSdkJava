@@ -31,8 +31,10 @@ public class SelectionImpl implements Selection {
         Preconditions.checkArgument(eventId.length() <= 100, "eventId is too long");
         Preconditions.checkArgument(id.length() > 0, "selection id is missing");
         Preconditions.checkArgument(id.length() <= 1000, "selection id is too long");
-        Preconditions.checkArgument(odds >= 10000, "selection odds too low");
-        Preconditions.checkArgument(odds <= 1000000000, "odds too high");
+        if(odds != 0) {
+            Preconditions.checkArgument(odds >= 10000, "selection odds too low");
+            Preconditions.checkArgument(odds <= 1000000000, "odds too high");
+        }
 
         this.eventId = eventId;
         this.id = id;

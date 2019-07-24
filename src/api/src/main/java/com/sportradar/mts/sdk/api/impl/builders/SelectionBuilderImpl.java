@@ -35,26 +35,28 @@ public class SelectionBuilderImpl implements SelectionBuilder {
     private String selectionId;
     private int odds;
     private boolean isBanker;
+    private boolean isCustomBet;
 
-    public SelectionBuilderImpl(MarketDescriptionProvider marketDescriptionProvider, SdkConfiguration config) {
+    public SelectionBuilderImpl(MarketDescriptionProvider marketDescriptionProvider, SdkConfiguration config, boolean isCustomBet) {
         Preconditions.checkNotNull(marketDescriptionProvider);
         Preconditions.checkNotNull(config);
 
         this.marketDescriptionProvider = marketDescriptionProvider;
         this.config = config;
+        this.isCustomBet = isCustomBet;
     }
 
     @Override
     public SelectionBuilder setEventId(String eventId) {
         this.eventId = eventId;
-        ValidateData(false, false, true, false);
+        ValidateData(false, true, false);
         return this;
     }
 
     @Override
     public SelectionBuilder setId(String selectionId) {
         this.selectionId = selectionId;
-        ValidateData(false, true, false, false);
+        ValidateData(true, false, false);
         return this;
     }
 
@@ -74,7 +76,7 @@ public class SelectionBuilderImpl implements SelectionBuilder {
         {
             selectionId += "/" + selectionIds;
         }
-        ValidateData(false, true, false, false);
+        ValidateData( true, false, false);
         return this;
     }
 
@@ -92,7 +94,7 @@ public class SelectionBuilderImpl implements SelectionBuilder {
         {
             selectionId += "/" + selectionIds;
         }
-        ValidateData(false, true, false, false);
+        ValidateData(true, false, false);
         return this;
     }
 
@@ -142,14 +144,14 @@ public class SelectionBuilderImpl implements SelectionBuilder {
                     .append(value));
             selectionId += "?" + sb.toString().substring(1);
         }
-        ValidateData(false, true, false, false);
+        ValidateData(true, false, false);
         return this;
     }
 
     @Override
     public SelectionBuilder setOdds(int odds) {
         this.odds = odds;
-        ValidateData(false, false, false, true);
+        ValidateData(false, false, true && !isCustomBet);
         return this;
     }
 
@@ -160,38 +162,38 @@ public class SelectionBuilderImpl implements SelectionBuilder {
     }
 
     @Override
-    public SelectionBuilder set(String eventId, String id, int odds, boolean isBanker) {
+    public SelectionBuilder set(String eventId, String selectionId, int odds, boolean isBanker) {
         this.eventId = eventId;
-        this.selectionId = id;
+        this.selectionId = selectionId;
         this.odds = odds;
         this.isBanker = isBanker;
-        ValidateData(true, false, false, false);
+        ValidateData(true, true, true && !isCustomBet);
         return this;
     }
 
     @Override
     public Selection build() {
-        ValidateData(true, false, false, false);
+        ValidateData(true, true, true && !isCustomBet);
         return new SelectionImpl(eventId, selectionId, odds, isBanker);
     }
 
-    private void ValidateData(boolean all, boolean id, boolean eventId, boolean odds)
+    private void ValidateData(boolean id, boolean eventId, boolean odds)
     {
-        if (all || id)
+        if (id)
         {
             if (StringUtils.isNullOrEmpty(this.selectionId) || !MtsTicketHelper.validateId(this.selectionId, false, false, 1, 1000))
             {
                 throw new IllegalArgumentException("Id not valid.");
             }
         }
-        if (all || eventId)
+        if (eventId)
         {
             if (StringUtils.isNullOrEmpty(this.eventId) || !MtsTicketHelper.validateId(this.eventId, false, false,1, 100))
             {
                 throw new IllegalArgumentException("EventId not valid.");
             }
         }
-        if (all || odds)
+        if (odds)
         {
             if (!(this.odds >= 10000 && this.odds <= 1000000000))
             {

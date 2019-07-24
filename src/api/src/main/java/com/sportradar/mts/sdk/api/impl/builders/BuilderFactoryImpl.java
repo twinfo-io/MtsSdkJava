@@ -43,7 +43,10 @@ public class BuilderFactoryImpl extends SimpleBuilderFactoryImpl implements Buil
     }
 
     @Override
-    public SelectionBuilder createSelectionBuilder() { return new SelectionBuilderImpl(marketDescriptionProvider, config); }
+    public SelectionBuilder createSelectionBuilder() { return new SelectionBuilderImpl(marketDescriptionProvider, config, false); }
+
+    @Override
+    public SelectionBuilder createSelectionBuilder(boolean isCustomBet) { return new SelectionBuilderImpl(marketDescriptionProvider, config, isCustomBet); }
 
     @Override
     public TicketAckBuilder createTicketAckBuilder() { return new TicketAckBuilderImpl(config); }

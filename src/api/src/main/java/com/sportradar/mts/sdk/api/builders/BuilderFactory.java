@@ -37,6 +37,13 @@ public interface BuilderFactory extends SimpleBuilderFactory {
     SelectionBuilder createSelectionBuilder();
 
     /**
+     * Constructs and returns a new instance of the {@link SelectionBuilder} class
+     * @param isCustomBet value indicating if the selection is for custom bet or not
+     * @return SelectionBuilder
+     */
+    SelectionBuilder createSelectionBuilder(boolean isCustomBet);
+
+    /**
      * Constructs and returns a new instance of the {@link TicketAckBuilder} class
      * @return TicketAckBuilder
      */
