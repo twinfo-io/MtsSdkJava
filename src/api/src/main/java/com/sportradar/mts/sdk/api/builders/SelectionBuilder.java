@@ -109,7 +109,7 @@ public interface SelectionBuilder {
      * @param isBanker is banker value
      * @return current builder reference
      */
-    SelectionBuilder set(String eventId, String id, int odds, boolean isBanker);
+    SelectionBuilder set(String eventId, String id, Integer odds, boolean isBanker);
 
     /**
      * Builds new {@link Selection} instance

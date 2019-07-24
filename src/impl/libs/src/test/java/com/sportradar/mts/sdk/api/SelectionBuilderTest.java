@@ -31,7 +31,7 @@ public class SelectionBuilderTest extends TimeLimitedTestBase {
         Assert.assertNotNull(selection);
         Assert.assertEquals(selection.getEventId(), "sr:match:12345");
         Assert.assertEquals(selection.getId(), "live:2/0/*/1");
-        Assert.assertEquals(selection.getOdds(), 10400);
+        Assert.assertEquals(selection.getOdds(), (Integer) 10400);
         Assert.assertEquals(selection.getIsBanker(), false);
     }
 
@@ -63,7 +63,7 @@ public class SelectionBuilderTest extends TimeLimitedTestBase {
         Assert.assertNotNull(selection);
         Assert.assertEquals(selection.getEventId(), "sr:match:12345");
         Assert.assertEquals(selection.getId(), "live:2/0/*/1");
-        Assert.assertEquals(selection.getOdds(), 10400);
+        Assert.assertEquals(selection.getOdds(), (Integer) 10400);
         Assert.assertEquals(selection.getIsBanker(), true);
     }
 
@@ -79,7 +79,7 @@ public class SelectionBuilderTest extends TimeLimitedTestBase {
         Assert.assertNotNull(selection);
         Assert.assertEquals(selection.getEventId(), "TR:0192_234_934");
         Assert.assertEquals(selection.getId(), "live:2/0/*/1");
-        Assert.assertEquals(selection.getOdds(), 10400);
+        Assert.assertEquals(selection.getOdds(), (Integer) 10400);
         Assert.assertEquals(selection.getIsBanker(), true);
     }
 
@@ -95,7 +95,7 @@ public class SelectionBuilderTest extends TimeLimitedTestBase {
         Assert.assertNotNull(selection);
         Assert.assertEquals(selection.getEventId(), "TR:0192_234_934");
         Assert.assertEquals(selection.getId(), "cust:2/0/*/1");
-        Assert.assertEquals(selection.getOdds(), 10400);
+        Assert.assertEquals(selection.getOdds(), (Integer) 10400);
         Assert.assertEquals(selection.getIsBanker(), true);
     }
 
@@ -110,8 +110,31 @@ public class SelectionBuilderTest extends TimeLimitedTestBase {
         Assert.assertNotNull(selection);
         Assert.assertEquals(selection.getEventId(), "TR:0192_234_934");
         Assert.assertEquals(selection.getId(), "tree:2/0/*/1");
-        Assert.assertEquals(selection.getOdds(), 0);
+        Assert.assertNull(selection.getOdds());
         Assert.assertEquals(selection.getIsBanker(), true);
+    }
+
+    @Test
+    public void BuildSelectionSetWithNoOddsTest()
+    {
+        Selection selection = ticketBuilderHelper.builderFactory.createSelectionBuilder(true)
+                .set("TR:0192_234_934", "tree:2/0/*/1", null, true)
+                .build();
+        Assert.assertNotNull(selection);
+        Assert.assertEquals(selection.getEventId(), "TR:0192_234_934");
+        Assert.assertEquals(selection.getId(), "tree:2/0/*/1");
+        Assert.assertNull(selection.getOdds());
+        Assert.assertEquals(selection.getIsBanker(), true);
+    }
+
+    @Test
+    public void BuildSelectionSetWithNegativeOddsTest()
+    {
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("selection odds too low");
+        Selection selection = ticketBuilderHelper.builderFactory.createSelectionBuilder(true)
+                .set("TR:0192_234_934", "tree:2/0/*/1", -1, true)
+                .build();
     }
 
     @Test

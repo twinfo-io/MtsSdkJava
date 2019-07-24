@@ -98,7 +98,7 @@ public class BetBuilderImpl implements BetBuilder {
         Optional<Selection> similarSel = selections.stream().filter(f -> f.getEventId().equals(selection.getEventId()) && f.getId().equals(selection.getId())).findFirst();
         if (similarSel != null && similarSel.isPresent())
         {
-            if (similarSel.get().getOdds() == selection.getOdds() && similarSel.get().getIsBanker() == selection.getIsBanker())
+            if (similarSel.get().getOdds().equals(selection.getOdds()) && similarSel.get().getIsBanker() == selection.getIsBanker())
             {
                 return this;
             }

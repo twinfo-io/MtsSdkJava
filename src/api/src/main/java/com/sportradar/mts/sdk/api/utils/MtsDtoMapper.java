@@ -67,13 +67,14 @@ public class MtsDtoMapper {
         List<Selection> selections = Lists.newArrayList();
         for(com.sportradar.mts.sdk.api.Selection selection : ticket.getSelections())
         {
+            hasBanker = false;
             if(!hasBanker && selection.getIsBanker())
             {
                 hasBanker = true;
             }
             if(selections.stream().noneMatch(s -> s.getEventId().equals(selection.getEventId())
                                          && s.getId().equals(selection.getId())
-                                         && s.getOdds().longValue() == selection.getOdds()))
+                                         && s.getOdds().equals(selection.getOdds())))
             {
                 selections.add(map(selection));
             }
@@ -157,7 +158,7 @@ public class MtsDtoMapper {
         for (int i = 0; i < allSelections.size(); i++)
         {
             Selection sel = allSelections.get(i);
-            if (sel.getEventId().equals(specific.getEventId()) && sel.getId().equals(specific.getId()) && sel.getOdds() == specific.getOdds())
+            if (sel.getEventId().equals(specific.getEventId()) && sel.getId().equals(specific.getId()) && sel.getOdds().equals(specific.getOdds()))
             {
                 return i;
             }
@@ -169,7 +170,7 @@ public class MtsDtoMapper {
         Selection dtoSelection = new Selection();
         dtoSelection.setId(betSelection.getId());
         dtoSelection.setEventId(betSelection.getEventId());
-        dtoSelection.setOdds((int)betSelection.getOdds());
+        dtoSelection.setOdds(betSelection.getOdds());
         return dtoSelection;
     }
 

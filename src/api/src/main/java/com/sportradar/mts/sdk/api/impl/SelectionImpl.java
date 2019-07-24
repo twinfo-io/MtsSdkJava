@@ -17,13 +17,13 @@ public class SelectionImpl implements Selection {
 
     private final String eventId;
     private final String id;
-    private final long odds;
+    private final Integer odds;
     private final boolean isBanker;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public SelectionImpl(@JsonProperty("eventId") String eventId,
                          @JsonProperty("id") String id,
-                         @JsonProperty("odds") long odds,
+                         @JsonProperty("odds") Integer odds,
                          @JsonProperty("isBanker") boolean isBanker)
     {
         Preconditions.checkArgument( !StringUtils.isNullOrEmpty(eventId), "eventId is missing");
@@ -31,7 +31,7 @@ public class SelectionImpl implements Selection {
         Preconditions.checkArgument(eventId.length() <= 100, "eventId is too long");
         Preconditions.checkArgument(id.length() > 0, "selection id is missing");
         Preconditions.checkArgument(id.length() <= 1000, "selection id is too long");
-        if(odds != 0) {
+        if(odds != null) {
             Preconditions.checkArgument(odds >= 10000, "selection odds too low");
             Preconditions.checkArgument(odds <= 1000000000, "odds too high");
         }
@@ -53,7 +53,7 @@ public class SelectionImpl implements Selection {
     }
 
     @Override
-    public long getOdds() {
+    public Integer getOdds() {
         return odds;
     }
 
@@ -88,6 +88,8 @@ public class SelectionImpl implements Selection {
     @Override
     public int hashCode()
     {
-        return (getEventId() + "+" + getId() + "+" + getOdds() + "+" + getIsBanker()).hashCode();
+        Integer myOdds = odds == null ? 0 : odds;
+
+        return (eventId + "+" + id + "+" + myOdds + "+" + isBanker).hashCode();
     }
 }

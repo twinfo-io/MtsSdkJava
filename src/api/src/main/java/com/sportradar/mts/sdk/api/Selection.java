@@ -25,10 +25,10 @@ public interface Selection {
 
     /**
      * Gets odds multiplied by 10000 and rounded to long value
-     * Mandatory
+     * Odds are mandatory unless custom bet
      * @return odds
      */
-    long getOdds();
+    Integer getOdds();
 
     /**
      * Gets a value indicating whether this instance is banker

@@ -33,7 +33,7 @@ public class SelectionBuilderImpl implements SelectionBuilder {
     private final SdkConfiguration config;
     private String eventId;
     private String selectionId;
-    private int odds;
+    private Integer odds;
     private boolean isBanker;
     private boolean isCustomBet;
 
@@ -162,7 +162,7 @@ public class SelectionBuilderImpl implements SelectionBuilder {
     }
 
     @Override
-    public SelectionBuilder set(String eventId, String selectionId, int odds, boolean isBanker) {
+    public SelectionBuilder set(String eventId, String selectionId, Integer odds, boolean isBanker) {
         this.eventId = eventId;
         this.selectionId = selectionId;
         this.odds = odds;
@@ -195,7 +195,7 @@ public class SelectionBuilderImpl implements SelectionBuilder {
         }
         if (odds)
         {
-            if (!(this.odds >= 10000 && this.odds <= 1000000000))
+            if (this.odds == null || !(this.odds >= 10000 && this.odds <= 1000000000))
             {
                 throw new IllegalArgumentException("Odds not valid.");
             }
