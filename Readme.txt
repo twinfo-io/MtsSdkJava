@@ -1,6 +1,13 @@
 A MTS SDK Java library
 
 CHANGE LOG:
+2019-07-25 2.3.2.0
+Made Ticket objects serializable
+Removed use of singleton for CustomBetSelectionBuilder
+Added Content-Type to AdditionalInfo property of response tickets
+Fix: CustomBet can be set without odds
+Fix: Selection Odds changed from int to Integer
+
 2019-05-30 2.3.1.0
 Support for custom bet
 Added getCustomBetManager to MtsSdkApi
