@@ -55,7 +55,5 @@ public class BuilderFactoryImpl extends SimpleBuilderFactoryImpl implements Buil
     public TicketCancelAckBuilder createTicketCancelAckBuilder() { return new TicketCancelAckBuilderImpl(config); }
 
     @Override
-    public TicketNonSrSettleBuilder createTicketNonSrSettleBuilder() {
-        return new TicketNonSrSettleBuilderImpl(config);
-    }
+    public TicketNonSrSettleBuilder createTicketNonSrSettleBuilder() { return new TicketNonSrSettleBuilderImpl(config); }
 }

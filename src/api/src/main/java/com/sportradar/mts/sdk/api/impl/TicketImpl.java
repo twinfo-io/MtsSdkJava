@@ -140,9 +140,7 @@ public class TicketImpl implements Ticket {
     }
 
     @Override
-    public List<Selection> getSelections() {
-        return selections;
-    }
+    public List<Selection> getSelections() { return selections; }
 
     @Override
     public Integer getTotalCombinations() {

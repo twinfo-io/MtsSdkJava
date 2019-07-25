@@ -13,8 +13,6 @@ import java.util.Locale;
 
 public class MarketDescriptionProvider {
     private final static Logger logger = LoggerFactory.getLogger(MarketDescriptionProvider.class);
-    private final static String VARIANT_PREFIX = "variant=";
-    private final static String OUTCOME_TEXT_VARIANT_VALUE = "pre:outcometext"; // "playerprops" tag
 
     private final MarketDescriptionCache marketCache;
     private final List<Locale> locales;
