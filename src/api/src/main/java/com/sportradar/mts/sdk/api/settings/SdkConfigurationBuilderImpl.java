@@ -254,7 +254,32 @@ public class SdkConfigurationBuilderImpl implements SdkConfigurationBuilder {
      */
     @Override
     public SdkConfigurationBuilder setTicketResponseTimeout(int responseTimeout) {
-        properties.setProperty(SettingsKeys.TICKET_RESPONSE_TIMEOUT, String.valueOf(responseTimeout));
+        properties.setProperty(SettingsKeys.TICKET_RESPONSE_TIMEOUT_LIVE, String.valueOf(responseTimeout));
+        properties.setProperty(SettingsKeys.TICKET_RESPONSE_TIMEOUT_PREMATCH, String.valueOf(responseTimeout));
+        return this;
+    }
+
+    /**
+     * Sets the ticket response timeout(ms). This value is being used only if the ticket is sent blocking or {@link #setTicketTimeOutCallbackEnabled(boolean)} is set to <code>true</code>
+     *
+     * @param responseTimeout the ticket response timeout to set(ms)
+     * @return {@link SdkConfigurationBuilder}
+     */
+    @Override
+    public SdkConfigurationBuilder setTicketResponseTimeoutLive(int responseTimeout) {
+        properties.setProperty(SettingsKeys.TICKET_RESPONSE_TIMEOUT_LIVE, String.valueOf(responseTimeout));
+        return this;
+    }
+
+    /**
+     * Sets the ticket response timeout(ms). This value is being used only if the ticket is sent blocking or {@link #setTicketTimeOutCallbackEnabled(boolean)} is set to <code>true</code>
+     *
+     * @param responseTimeout the ticket response timeout to set(ms)
+     * @return {@link SdkConfigurationBuilder}
+     */
+    @Override
+    public SdkConfigurationBuilder setTicketResponseTimeoutPrematch(int responseTimeout) {
+        properties.setProperty(SettingsKeys.TICKET_RESPONSE_TIMEOUT_PREMATCH, String.valueOf(responseTimeout));
         return this;
     }
 

@@ -22,6 +22,7 @@ sportradar:
       keycloakPassword: keycloak-password
       keycloakSecret: keycloak-secret
       ticketResponseTimeout: 10001
+      ticketResponseTimeoutPrematch: 10010
       ticketCancellationResponseTimeout: 10002
       ticketCashoutResponseTimeout: 10003
       ticketNonSrSettleResponseTimeout: 10004

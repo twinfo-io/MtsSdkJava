@@ -98,7 +98,7 @@ public interface SdkConfiguration {
 
     /**
      * An indication if the {@link com.sportradar.mts.sdk.api.Ticket}s sent async have the time-out callback enabled.
-     * The time-out value is taken from {@link #getTicketResponseTimeout()}, {@link #getTicketCancellationResponseTimeout()}, {@link #getTicketCashoutResponseTimeout()} and {@link #getTicketNonSrSettleResponseTimeout()}.
+     * The time-out value is taken from {@link #getTicketResponseTimeoutLive()}, {@link #getTicketCancellationResponseTimeout()}, {@link #getTicketCashoutResponseTimeout()} and {@link #getTicketNonSrSettleResponseTimeout()}.
      *
      * @return <code>true</code> if the time-out callback should be invoked, otherwise <code>false</code>
      */
@@ -108,7 +108,13 @@ public interface SdkConfiguration {
      * Gets the ticket response timeout(ms) (used when sending in blocking-mode and when the {@link #isTicketTimeOutCallbackEnabled()} is set to <code>true</code>)
      * @return the ticket response timeout
      */
-    int getTicketResponseTimeout();
+    int getTicketResponseTimeoutLive();
+
+    /**
+     * Gets the ticket response timeout(ms) (used when sending in blocking-mode and when the {@link #isTicketTimeOutCallbackEnabled()} is set to <code>true</code>)
+     * @return the ticket response timeout
+     */
+    int getTicketResponseTimeoutPrematch();
 
     /**
      * Gets the ticket cancellation response timeout(ms) (used when sending in blocking-mode and when the {@link #isTicketTimeOutCallbackEnabled()} is set to <code>true</code>)

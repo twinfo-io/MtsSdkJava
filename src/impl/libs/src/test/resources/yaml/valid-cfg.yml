@@ -22,6 +22,7 @@ sportradar:
       keycloakSecret: keycloak-secret
       mtsClientApiHost: client-api
       ticketResponseTimeout: 99
+      ticketResponseTimeoutPrematch: 105
       ticketCancellationResponseTimeout: 100
       ticketCashoutResponseTimeout: 101
       ticketNonSrSettleResponseTimeout: 102

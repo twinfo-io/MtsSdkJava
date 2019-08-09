@@ -73,7 +73,6 @@ public class TicketCashoutHandlerImpl extends SenderBase<TicketCashout> implemen
      */
     private final Cache<String, TicketCashoutResponse> ticketCashoutResponseCache;
 
-
     /**
      * Initializes a new instance of the {@link TicketCashoutHandlerImpl}
      *

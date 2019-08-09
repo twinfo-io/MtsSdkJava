@@ -47,7 +47,8 @@ public class SdkYamlConfigurationTest {
         assertEquals("keycloak-password", propertiesFromYaml.getProperty(SettingsKeys.KEYCLOAK_PASSWORD));
         assertEquals("keycloak-secret", propertiesFromYaml.getProperty(SettingsKeys.KEYCLOAK_SECRET));
         assertEquals("client-api", propertiesFromYaml.getProperty(SettingsKeys.MTS_CLIENT_API_HOST));
-        assertEquals("99", propertiesFromYaml.getProperty(SettingsKeys.TICKET_RESPONSE_TIMEOUT));
+        assertEquals("99", propertiesFromYaml.getProperty(SettingsKeys.TICKET_RESPONSE_TIMEOUT_LIVE));
+        assertEquals("105", propertiesFromYaml.getProperty(SettingsKeys.TICKET_RESPONSE_TIMEOUT_PREMATCH));
         assertEquals("100", propertiesFromYaml.getProperty(SettingsKeys.TICKET_CANCELLATION_RESPONSE_TIMEOUT));
         assertEquals("101", propertiesFromYaml.getProperty(SettingsKeys.TICKET_CASHOUT_RESPONSE_TIMEOUT));
         assertEquals("false", propertiesFromYaml.getProperty(SettingsKeys.TICKET_TIMEOUT_CALLBACK_ENABLED));

@@ -8,6 +8,7 @@ import com.google.common.base.Preconditions;
 import com.sportradar.mts.sdk.api.enums.SenderChannel;
 import com.sportradar.mts.sdk.api.enums.UfEnvironment;
 import com.sportradar.mts.sdk.api.interfaces.SdkConfiguration;
+import com.sportradar.mts.sdk.api.utils.SdkInfo;
 import com.sportradar.mts.sdk.api.utils.StringUtils;
 
 import java.util.Properties;
@@ -31,7 +32,8 @@ public class PropertiesToSettingsMapper {
         String ufEnvironmentString = properties.getProperty(SettingsKeys.UF_ENVIRONMENT);
         String provideAdditionalMarketSpecifiersString = properties.getProperty(SettingsKeys.PROVIDE_ADDITIONAL_MARKET_SPECIFIERS);
 
-        String ticketResponseTimeoutString = properties.getProperty(SettingsKeys.TICKET_RESPONSE_TIMEOUT);
+        String ticketResponseTimeoutLiveString = properties.getProperty(SettingsKeys.TICKET_RESPONSE_TIMEOUT_LIVE);
+        String ticketResponseTimeoutPrematchString = properties.getProperty(SettingsKeys.TICKET_RESPONSE_TIMEOUT_PREMATCH);
         String ticketCancellationResponseTimeoutString = properties.getProperty(SettingsKeys.TICKET_CANCELLATION_RESPONSE_TIMEOUT);
         String ticketCashoutResponseTimeoutString = properties.getProperty(SettingsKeys.TICKET_CASHOUT_RESPONSE_TIMEOUT);
         String ticketNonSrSettleResponseTimeoutString = properties.getProperty(SettingsKeys.TICKET_NON_SR_SETTLE_RESPONSE_TIMEOUT);
@@ -85,13 +87,22 @@ public class PropertiesToSettingsMapper {
             nodeId = Integer.valueOf(nodeString);
         }
 
-        int ticketResponseTimeout = 15000;
-        if (ticketResponseTimeoutString != null) {
-            Preconditions.checkArgument(isDecimal(ticketResponseTimeoutString), "ticketResponseTimeout should be a number");
-            ticketResponseTimeout = Integer.valueOf(ticketResponseTimeoutString);
+        int ticketResponseTimeoutLive = SdkInfo.TicketResponseTimeoutLiveDefault;
+        if (ticketResponseTimeoutLiveString != null) {
+            Preconditions.checkArgument(isDecimal(ticketResponseTimeoutLiveString), "ticketResponseTimeoutLive should be a number");
+            ticketResponseTimeoutLive = Integer.valueOf(ticketResponseTimeoutLiveString);
 
-            Preconditions.checkArgument(ticketResponseTimeout >= 10000, "ticketResponseTimeout must be more than 10000ms");
-            Preconditions.checkArgument(ticketResponseTimeout <= 30000, "ticketResponseTimeout must be less than 30000ms");
+            Preconditions.checkArgument(ticketResponseTimeoutLive >= SdkInfo.TicketResponseTimeoutLiveMin, "ticketResponseTimeoutLive must be more than " + SdkInfo.TicketResponseTimeoutLiveMin + "ms");
+            Preconditions.checkArgument(ticketResponseTimeoutLive <= SdkInfo.TicketResponseTimeoutLiveMax, "ticketResponseTimeoutLive must be less than " + SdkInfo.TicketResponseTimeoutLiveMax + "ms");
+        }
+
+        int ticketResponseTimeoutPrematch = SdkInfo.TicketResponseTimeoutPrematchDefault;
+        if (ticketResponseTimeoutPrematchString != null) {
+            Preconditions.checkArgument(isDecimal(ticketResponseTimeoutPrematchString), "ticketResponseTimeoutPrematch should be a number");
+            ticketResponseTimeoutPrematch = Integer.valueOf(ticketResponseTimeoutPrematchString);
+
+            Preconditions.checkArgument(ticketResponseTimeoutPrematch >= SdkInfo.TicketResponseTimeoutPrematchMin, "ticketResponseTimeoutPrematch must be more than " + SdkInfo.TicketResponseTimeoutPrematchMin + "ms");
+            Preconditions.checkArgument(ticketResponseTimeoutPrematch <= SdkInfo.TicketResponseTimeoutPrematchMax, "ticketResponseTimeoutPrematch must be less than " + SdkInfo.TicketResponseTimeoutPrematchMax + "ms");
         }
 
         int ticketCancellationResponseTimeout = 600000;
@@ -200,7 +211,8 @@ public class PropertiesToSettingsMapper {
                 nodeId,
                 ssl,
                 port,
-                ticketResponseTimeout,
+                ticketResponseTimeoutLive,
+                ticketResponseTimeoutPrematch,
                 ticketCancellationResponseTimeout,
                 ticketCashoutResponseTimeout,
                 ticketNonSrSettleResponseTimeout,

@@ -91,8 +91,10 @@ public class SdkConfigurationTest extends TimeLimitedTestBase {
                 "keycloakSecret",
                 "clientApiHost",
                 10000,
+                10000,
                 10001,
-                10002);
+                10002,
+                10003);
     }
 
     @Test
@@ -117,9 +119,11 @@ public class SdkConfigurationTest extends TimeLimitedTestBase {
         properties.setProperty(SettingsKeys.KEYCLOAK_PASSWORD, "keycloakPassword");
         properties.setProperty(SettingsKeys.KEYCLOAK_SECRET, "keycloakSecret");
         properties.setProperty(SettingsKeys.MTS_CLIENT_API_HOST, "clientApiHost");
-        properties.setProperty(SettingsKeys.TICKET_RESPONSE_TIMEOUT, "10000");
+        properties.setProperty(SettingsKeys.TICKET_RESPONSE_TIMEOUT_LIVE, "10000");
+        properties.setProperty(SettingsKeys.TICKET_RESPONSE_TIMEOUT_PREMATCH, "5000");
         properties.setProperty(SettingsKeys.TICKET_CANCELLATION_RESPONSE_TIMEOUT, "10001");
         properties.setProperty(SettingsKeys.TICKET_CASHOUT_RESPONSE_TIMEOUT, "10002");
+        properties.setProperty(SettingsKeys.TICKET_NON_SR_SETTLE_RESPONSE_TIMEOUT, "10003");
 
         SdkConfiguration config = SdkConfigurationImpl.getConfiguration(properties);
 
@@ -145,8 +149,10 @@ public class SdkConfigurationTest extends TimeLimitedTestBase {
                 "keycloakSecret",
                 "clientApiHost",
                 10000,
+                5000,
                 10001,
-                10002);
+                10002,
+                10003);
     }
 
     @Test
@@ -175,8 +181,10 @@ public class SdkConfigurationTest extends TimeLimitedTestBase {
                 "keycloak-secret",
                 "client-api",
                 10001,
+                10010,
                 10002,
-                10003);
+                10003,
+                10004);
     }
 
     @Test
@@ -701,7 +709,7 @@ public class SdkConfigurationTest extends TimeLimitedTestBase {
                 .setUsername("username")
                 .setPassword("password")
                 .setHost("host")
-                .setTicketResponseTimeout(10000 - 1)
+                .setTicketResponseTimeout(SdkInfo.TicketResponseTimeoutLiveMin - 1)
                 .build();
     }
 
@@ -713,7 +721,7 @@ public class SdkConfigurationTest extends TimeLimitedTestBase {
         properties.setProperty(SettingsKeys.USERNAME, "username");
         properties.setProperty(SettingsKeys.PASSWORD, "password");
         properties.setProperty(SettingsKeys.HOST, "host");
-        properties.setProperty(SettingsKeys.TICKET_RESPONSE_TIMEOUT, String.valueOf(10000 - 1));
+        properties.setProperty(SettingsKeys.TICKET_RESPONSE_TIMEOUT_LIVE, String.valueOf(SdkInfo.TicketResponseTimeoutLiveMin - 1));
 
         SdkConfiguration config = SdkConfigurationImpl.getConfiguration(properties);
     }
@@ -726,19 +734,32 @@ public class SdkConfigurationTest extends TimeLimitedTestBase {
                 .setUsername("username")
                 .setPassword("password")
                 .setHost("host")
-                .setTicketResponseTimeout(30000 + 1)
+                .setTicketResponseTimeout(SdkInfo.TicketResponseTimeoutLiveMax + 1)
                 .build();
     }
 
     @Test
-    public void propertiesTicketResponseTimeoutToHigh() {
+    public void propertiesTicketResponseTimeoutLiveToHigh() {
         thrown.expect(IllegalArgumentException.class);
 
         Properties properties = new Properties();
         properties.setProperty(SettingsKeys.USERNAME, "username");
         properties.setProperty(SettingsKeys.PASSWORD, "password");
         properties.setProperty(SettingsKeys.HOST, "host");
-        properties.setProperty(SettingsKeys.TICKET_RESPONSE_TIMEOUT, String.valueOf(30000 + 1));
+        properties.setProperty(SettingsKeys.TICKET_RESPONSE_TIMEOUT_LIVE, String.valueOf(SdkInfo.TicketResponseTimeoutLiveMax + 1));
+
+        SdkConfiguration config = SdkConfigurationImpl.getConfiguration(properties);
+    }
+
+    @Test
+    public void propertiesTicketResponseTimeoutPrematchToHigh() {
+        thrown.expect(IllegalArgumentException.class);
+
+        Properties properties = new Properties();
+        properties.setProperty(SettingsKeys.USERNAME, "username");
+        properties.setProperty(SettingsKeys.PASSWORD, "password");
+        properties.setProperty(SettingsKeys.HOST, "host");
+        properties.setProperty(SettingsKeys.TICKET_RESPONSE_TIMEOUT_PREMATCH, String.valueOf(SdkInfo.TicketResponseTimeoutPrematchMax + 1));
 
         SdkConfiguration config = SdkConfigurationImpl.getConfiguration(properties);
     }
@@ -994,9 +1015,11 @@ public class SdkConfigurationTest extends TimeLimitedTestBase {
                 null,
                 null,
                 null,
-                15000,
-                600000,
-                600000);
+                SdkInfo.TicketResponseTimeoutLiveDefault,
+                SdkInfo.TicketResponseTimeoutPrematchDefault,
+                SdkInfo.TicketCancellationResponseTimeoutDefault,
+                SdkInfo.TicketCashoutResponseTimeoutDefault,
+                SdkInfo.TicketNonSrResponseTimeoutDefault);
     }
 
     private static void checkAllSettings(
@@ -1020,9 +1043,11 @@ public class SdkConfigurationTest extends TimeLimitedTestBase {
             String keycloakPassword,
             String keycloakSecret,
             String mtsClientApiHost,
-            int ticketResponseTimeout,
+            int ticketResponseTimeoutLive,
+            int ticketResponseTimeoutPrematch,
             int ticketCancellationResponseTimeout,
-            int ticketCashoutResponseTimeout) {
+            int ticketCashoutResponseTimeout,
+            int ticketNonSrSettleResponseTimeout) {
         assertEquals(username, config.getUsername());
         assertEquals(password, config.getPassword());
         assertEquals(host, config.getHost());
@@ -1042,8 +1067,10 @@ public class SdkConfigurationTest extends TimeLimitedTestBase {
         assertEquals(keycloakPassword, config.getKeycloakPassword());
         assertEquals(keycloakSecret, config.getKeycloakSecret());
         assertEquals(mtsClientApiHost, config.getMtsClientApiHost());
-        assertEquals(ticketResponseTimeout, config.getTicketResponseTimeout());
+        assertEquals(ticketResponseTimeoutLive, config.getTicketResponseTimeoutLive());
+        assertEquals(ticketResponseTimeoutPrematch, config.getTicketResponseTimeoutPrematch());
         assertEquals(ticketCancellationResponseTimeout, config.getTicketCancellationResponseTimeout());
         assertEquals(ticketCashoutResponseTimeout, config.getTicketCashoutResponseTimeout());
+        assertEquals(ticketNonSrSettleResponseTimeout, config.getTicketNonSrSettleResponseTimeout());
     }
 }

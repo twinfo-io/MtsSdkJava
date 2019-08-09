@@ -11,6 +11,7 @@ import com.google.common.cache.RemovalCause;
 import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
 import com.sportradar.mts.sdk.api.SdkTicket;
+import com.sportradar.mts.sdk.api.Ticket;
 import com.sportradar.mts.sdk.api.interfaces.TicketResponseTimeoutListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,13 +26,15 @@ public class ResponseTimeoutHandlerImpl<T extends SdkTicket> implements RemovalL
     private static final Logger logger = LoggerFactory.getLogger(ResponseTimeoutHandlerImpl.class);
 
     private final ScheduledExecutorService executorService;
-    private final Cache<String, T> responseTimeoutMonitoringCache;
+    private final Cache<String, T> responseTimeoutMonitoringCache1;
+    private final Cache<String, T> responseTimeoutMonitoringCache2;
     private final boolean ticketTimeOutCallbackEnabled;
 
     private TicketResponseTimeoutListener<T> responseTimeoutListener;
 
     public ResponseTimeoutHandlerImpl(ScheduledExecutorService executorService,
-                                      int responseTimeout,
+                                      int responseTimeout1,
+                                      int responseTimeout2,
                                       boolean ticketTimeOutCallbackEnabled) {
         Preconditions.checkNotNull(executorService);
 
@@ -39,13 +42,18 @@ public class ResponseTimeoutHandlerImpl<T extends SdkTicket> implements RemovalL
 
         this.executorService = executorService;
 
-        responseTimeoutMonitoringCache = CacheBuilder.newBuilder()
-                .expireAfterWrite(responseTimeout, TimeUnit.MILLISECONDS)
+        responseTimeoutMonitoringCache1 = CacheBuilder.newBuilder()
+                .expireAfterWrite(responseTimeout1, TimeUnit.MILLISECONDS)
+                .removalListener(this)
+                .build();
+        responseTimeoutMonitoringCache2 = CacheBuilder.newBuilder()
+                .expireAfterWrite(responseTimeout2, TimeUnit.MILLISECONDS)
                 .removalListener(this)
                 .build();
 
         if (this.ticketTimeOutCallbackEnabled) {
-            executorService.scheduleAtFixedRate(responseTimeoutMonitoringCache::cleanUp, 500, 500, TimeUnit.MILLISECONDS);
+            executorService.scheduleAtFixedRate(responseTimeoutMonitoringCache1::cleanUp, 500, 500, TimeUnit.MILLISECONDS);
+            executorService.scheduleAtFixedRate(responseTimeoutMonitoringCache2::cleanUp, 500, 500, TimeUnit.MILLISECONDS);
         }
     }
 
@@ -68,7 +76,13 @@ public class ResponseTimeoutHandlerImpl<T extends SdkTicket> implements RemovalL
             return;
         }
 
-        responseTimeoutMonitoringCache.put(ticket.getCorrelationId(), ticket);
+        if(ticket instanceof Ticket){
+            if(((Ticket) ticket).getSelections().stream().anyMatch(a->a.getId().contains("lcoo"))){
+                responseTimeoutMonitoringCache2.put(ticket.getCorrelationId(), ticket);
+                return;
+            }
+        }
+        responseTimeoutMonitoringCache1.put(ticket.getCorrelationId(), ticket);
     }
 
     @Override
@@ -79,7 +93,8 @@ public class ResponseTimeoutHandlerImpl<T extends SdkTicket> implements RemovalL
             return;
         }
 
-        responseTimeoutMonitoringCache.invalidate(correlationId);
+        responseTimeoutMonitoringCache1.invalidate(correlationId);
+        responseTimeoutMonitoringCache2.invalidate(correlationId);
     }
 
     @Override
@@ -88,7 +103,8 @@ public class ResponseTimeoutHandlerImpl<T extends SdkTicket> implements RemovalL
             return;
         }
 
-        responseTimeoutMonitoringCache.invalidate(correlationId);
+        responseTimeoutMonitoringCache1.invalidate(correlationId);
+        responseTimeoutMonitoringCache2.invalidate(correlationId);
     }
 
     @Override

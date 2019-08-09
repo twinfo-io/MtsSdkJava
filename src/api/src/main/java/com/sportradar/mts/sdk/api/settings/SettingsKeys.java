@@ -44,7 +44,11 @@ public class SettingsKeys {
     /**
      * Used only when sending with {@link TicketSender#sendBlocking(Ticket)}
      */
-    public static final String TICKET_RESPONSE_TIMEOUT = PREFIX + "ticketResponseTimeout";
+    public static final String TICKET_RESPONSE_TIMEOUT_LIVE = PREFIX + "ticketResponseTimeout";
+    /**
+     * Used only when sending with {@link TicketSender#sendBlocking(Ticket)}
+     */
+    public static final String TICKET_RESPONSE_TIMEOUT_PREMATCH = PREFIX + "ticketResponseTimeoutPrematch";
     /**
      * Used only when sending with {@link TicketSender#sendBlocking(Ticket)}
      */

@@ -148,8 +148,9 @@ public class SdkInjectionModule extends AbstractModule {
         return new TicketHandlerImpl(amqpPublisher,
                                      routingKey,
                                      executorService,
-                                     getTimeoutHandler(executorService, sdkConfiguration.getTicketResponseTimeout()),
-                                     sdkConfiguration.getTicketResponseTimeout(),
+                                     getTimeoutHandler(executorService, sdkConfiguration.getTicketResponseTimeoutLive(), sdkConfiguration.getTicketResponseTimeoutPrematch()),
+                                     sdkConfiguration.getTicketResponseTimeoutLive(),
+                                     sdkConfiguration.getTicketResponseTimeoutPrematch(),
                                      sdkConfiguration.getMessagesPerSecond(),
                                      sdkLogger);
     }
@@ -166,7 +167,7 @@ public class SdkInjectionModule extends AbstractModule {
                                            routingKey,
                                            replyRoutingKey,
                                            executorService,
-                                           getTimeoutHandler(executorService, sdkConfiguration.getTicketCancellationResponseTimeout()),
+                                           getTimeoutHandler(executorService, sdkConfiguration.getTicketCancellationResponseTimeout(), sdkConfiguration.getTicketCancellationResponseTimeout()),
                                            sdkConfiguration.getTicketCancellationResponseTimeout(),
                                            sdkConfiguration.getMessagesPerSecond(),
                                            sdkLogger);
@@ -226,7 +227,7 @@ public class SdkInjectionModule extends AbstractModule {
                 routingKey,
                 replyRoutingKey,
                 executorService,
-                getTimeoutHandler(executorService, sdkConfiguration.getTicketCashoutResponseTimeout()),
+                getTimeoutHandler(executorService, sdkConfiguration.getTicketCashoutResponseTimeout(), sdkConfiguration.getTicketCashoutResponseTimeout()),
                 sdkConfiguration.getTicketCashoutResponseTimeout(),
                 sdkConfiguration.getMessagesPerSecond(),
                 sdkLogger);
@@ -243,7 +244,7 @@ public class SdkInjectionModule extends AbstractModule {
                 routingKey,
                 replyRoutingKey,
                 executorService,
-                getTimeoutHandler(executorService, sdkConfiguration.getTicketNonSrSettleResponseTimeout()),
+                getTimeoutHandler(executorService, sdkConfiguration.getTicketNonSrSettleResponseTimeout(), sdkConfiguration.getTicketNonSrSettleResponseTimeout()),
                 sdkConfiguration.getTicketNonSrSettleResponseTimeout(),
                 sdkConfiguration.getMessagesPerSecond(),
                 sdkLogger);
@@ -799,12 +800,13 @@ public class SdkInjectionModule extends AbstractModule {
                 CAPICalculationResponse.class);
     }
 
-    private <T extends SdkTicket> ResponseTimeoutHandlerImpl<T> getTimeoutHandler(ScheduledExecutorService executorService, int responseTimeout) {
+    private <T extends SdkTicket> ResponseTimeoutHandlerImpl<T> getTimeoutHandler(ScheduledExecutorService executorService, int responseTimeout1, int responseTimeout2) {
         Preconditions.checkNotNull(executorService);
 
         return new ResponseTimeoutHandlerImpl<>(
                 executorService,
-                responseTimeout,
+                responseTimeout1,
+                responseTimeout2,
                 sdkConfiguration.isTicketTimeOutCallbackEnabled());
     }
 

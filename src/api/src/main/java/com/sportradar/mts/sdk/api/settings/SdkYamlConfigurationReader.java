@@ -121,7 +121,8 @@ class SdkYamlConfigurationReader {
         handlePossibleProperty(result, sdkConfiguration, "accessToken", SettingsKeys.ACCESS_TOKEN);
         handlePossibleProperty(result, sdkConfiguration, "ufEnvironment", SettingsKeys.UF_ENVIRONMENT);
         handlePossibleProperty(result, sdkConfiguration, "provideAdditionalMarketSpecifiers", SettingsKeys.PROVIDE_ADDITIONAL_MARKET_SPECIFIERS);
-        handlePossibleProperty(result, sdkConfiguration, "ticketResponseTimeout", SettingsKeys.TICKET_RESPONSE_TIMEOUT);
+        handlePossibleProperty(result, sdkConfiguration, "ticketResponseTimeout", SettingsKeys.TICKET_RESPONSE_TIMEOUT_LIVE);
+        handlePossibleProperty(result, sdkConfiguration, "ticketResponseTimeoutPrematch", SettingsKeys.TICKET_RESPONSE_TIMEOUT_PREMATCH);
         handlePossibleProperty(result, sdkConfiguration, "ticketCancellationResponseTimeout", SettingsKeys.TICKET_CANCELLATION_RESPONSE_TIMEOUT);
         handlePossibleProperty(result, sdkConfiguration, "ticketCashoutResponseTimeout", SettingsKeys.TICKET_CASHOUT_RESPONSE_TIMEOUT);
         handlePossibleProperty(result, sdkConfiguration, "ticketNonSrSettleResponseTimeout", SettingsKeys.TICKET_NON_SR_SETTLE_RESPONSE_TIMEOUT);

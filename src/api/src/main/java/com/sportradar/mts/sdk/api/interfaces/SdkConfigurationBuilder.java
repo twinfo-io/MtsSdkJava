@@ -122,10 +122,26 @@ public interface SdkConfigurationBuilder {
     /**
      * Sets the ticket response timeout(ms). This value is being used only if the ticket is sent blocking or {@link #setTicketTimeOutCallbackEnabled(boolean)} is set to <code>true</code>
      *
-     * @param responseTimeout the ticket response timeout to set(ms)
+     * @param responseTimeout the ticket response timeout to set(ms) (will set for lcoo and live responses)
      * @return {@link SdkConfigurationBuilder}
      */
     SdkConfigurationBuilder setTicketResponseTimeout(int responseTimeout);
+
+    /**
+     * Sets the ticket response timeout(ms). This value is being used only if the ticket is sent blocking or {@link #setTicketTimeOutCallbackEnabled(boolean)} is set to <code>true</code>
+     *
+     * @param responseTimeout the ticket response timeout to set(ms)
+     * @return {@link SdkConfigurationBuilder}
+     */
+    SdkConfigurationBuilder setTicketResponseTimeoutLive(int responseTimeout);
+
+    /**
+     * Sets the ticket response timeout(ms). This value is being used only if the ticket is sent blocking or {@link #setTicketTimeOutCallbackEnabled(boolean)} is set to <code>true</code>
+     *
+     * @param responseTimeout the ticket response timeout to set(ms)
+     * @return {@link SdkConfigurationBuilder}
+     */
+    SdkConfigurationBuilder setTicketResponseTimeoutPrematch(int responseTimeout);
 
     /**
      * Sets the ticket cancellation response timeout(ms). This value is being used only if the ticket is sent blocking or {@link #setTicketTimeOutCallbackEnabled(boolean)} is set to <code>true</code>

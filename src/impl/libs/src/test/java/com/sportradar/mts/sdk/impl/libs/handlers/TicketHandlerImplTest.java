@@ -69,7 +69,7 @@ public class TicketHandlerImplTest extends TimeLimitedTestBase {
         builderFactory = new SdkHelper().getBuilderFactory();
 
         routingKey = "ticket";
-        handler = new TicketHandlerImpl(publisher, routingKey, executor, responseTimeoutHandler, 50, 40, sdkLogger);
+        handler = new TicketHandlerImpl(publisher, routingKey, executor, responseTimeoutHandler, 50, 150, 40, sdkLogger);
         handler.setListener(listener);
         ticket = getTicket();
         count = 0;
@@ -124,7 +124,7 @@ public class TicketHandlerImplTest extends TimeLimitedTestBase {
         byte[] msg = JsonUtils.serialize(ticket);
         String correlationId = getFormattedCorrelationId(ticket);
 
-        handler = new TicketHandlerImpl(publisher, routingKey, executor, responseTimeoutHandler, 50, 5, sdkLogger);
+        handler = new TicketHandlerImpl(publisher, routingKey, executor, responseTimeoutHandler, 50, 150, 5, sdkLogger);
         handler.setListener(listener);
 
         Map<Integer, Long> invocationTimestampsActual = new HashMap<>();
@@ -209,7 +209,7 @@ public class TicketHandlerImplTest extends TimeLimitedTestBase {
     @Test
     public void send_OnListenerNullTest() {
 
-        handler = new TicketHandlerImpl(publisher, routingKey, executor, responseTimeoutHandler, 50, 40, sdkLogger);
+        handler = new TicketHandlerImpl(publisher, routingKey, executor, responseTimeoutHandler, 50, 150, 40, sdkLogger);
         TicketResponseWrapper response = new TicketResponseWrapper();
         response.setTicketId(ticket.getTicketId());
 
@@ -304,7 +304,7 @@ public class TicketHandlerImplTest extends TimeLimitedTestBase {
             }
         });
 
-        handler = new TicketHandlerImpl(publisher, routingKey, executor, responseTimeoutHandler, 300, 40, sdkLogger);
+        handler = new TicketHandlerImpl(publisher, routingKey, executor, responseTimeoutHandler, 300, 350, 40, sdkLogger);
         handler.setListener(listener);
         handler.open();
         new Thread(() -> {

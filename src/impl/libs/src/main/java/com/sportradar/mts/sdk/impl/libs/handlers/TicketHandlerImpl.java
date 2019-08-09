@@ -8,6 +8,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.sportradar.mts.sdk.api.SdkTicket;
 import com.sportradar.mts.sdk.api.Ticket;
 import com.sportradar.mts.sdk.api.TicketResponse;
 import com.sportradar.mts.sdk.api.exceptions.ResponseTimeoutException;
@@ -29,10 +30,13 @@ public class TicketHandlerImpl extends SenderBase<Ticket> implements TicketHandl
 
     private static final Logger logger = LoggerFactory.getLogger(TicketHandlerImpl.class);
     private final String routingKey;
-    private final Cache<String, TicketSendEntry> ticketSendEntries;
-    private final Cache<String, TicketResponse> responseCache;
+    private final Cache<String, TicketSendEntry> ticketSendEntries1;
+    private final Cache<String, TicketResponse> responseCache1;
+    private final Cache<String, TicketSendEntry> ticketSendEntries2;
+    private final Cache<String, TicketResponse> responseCache2;
     private final ExecutorService executorService;
-    private final int responseTimeout;
+    private final int responseTimeout1;
+    private final int responseTimeout2;
     private final ResponseTimeoutHandler<Ticket> responseTimeoutHandler;
     private TicketResponseListener ticketResponseListener;
 
@@ -40,7 +44,8 @@ public class TicketHandlerImpl extends SenderBase<Ticket> implements TicketHandl
                              String routingKey,
                              ExecutorService executorService,
                              ResponseTimeoutHandler<Ticket> responseTimeoutHandler,
-                             int responseTimeout,
+                             int responseTimeout1,
+                             int responseTimeout2,
                              double messagesPerSecond,
                              SdkLogger sdkLogger) {
         super(amqpPublisher, executorService, messagesPerSecond, sdkLogger);
@@ -50,13 +55,20 @@ public class TicketHandlerImpl extends SenderBase<Ticket> implements TicketHandl
 
         this.executorService = executorService;
         this.routingKey = routingKey == null ? "ticket" : routingKey;
-        this.responseTimeout = responseTimeout;
+        this.responseTimeout1 = responseTimeout1;
+        this.responseTimeout2 = responseTimeout2;
         this.responseTimeoutHandler = responseTimeoutHandler;
 
-        ticketSendEntries = CacheBuilder.newBuilder()
-                .expireAfterWrite(responseTimeout, TimeUnit.MILLISECONDS)
+        ticketSendEntries1 = CacheBuilder.newBuilder()
+                .expireAfterWrite(responseTimeout1, TimeUnit.MILLISECONDS)
                 .build();
-        responseCache = CacheBuilder.newBuilder()
+        responseCache1 = CacheBuilder.newBuilder()
+                .expireAfterWrite(1, TimeUnit.MINUTES)
+                .build();
+        ticketSendEntries2 = CacheBuilder.newBuilder()
+                .expireAfterWrite(responseTimeout2, TimeUnit.MILLISECONDS)
+                .build();
+        responseCache2 = CacheBuilder.newBuilder()
                 .expireAfterWrite(1, TimeUnit.MINUTES)
                 .build();
     }
@@ -80,12 +92,17 @@ public class TicketHandlerImpl extends SenderBase<Ticket> implements TicketHandl
         Stopwatch stopwatch = Stopwatch.createStarted();
         String ticketId = ticket.getTicketId();
         Semaphore semaphore = new Semaphore(0);
-        ticketSendEntries.put(ticketId, new TicketSendEntry(ticket, null, semaphore));
+        if(isTicketPrematch(ticket)){
+            ticketSendEntries2.put(ticketId, new TicketSendEntry(ticket, null, semaphore));
+        }
+        else{
+            ticketSendEntries1.put(ticketId, new TicketSendEntry(ticket, null, semaphore));
+        }
         publishAsync(ticket, routingKey);
 
         boolean acquire = false;
         try {
-            acquire = semaphore.tryAcquire(responseTimeout, TimeUnit.MILLISECONDS);
+            acquire = semaphore.tryAcquire(isTicketPrematch(ticket) ? responseTimeout2 : responseTimeout1, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             logger.warn("interrupted waiting for response, throwing timeout");
         }
@@ -93,7 +110,7 @@ public class TicketHandlerImpl extends SenderBase<Ticket> implements TicketHandl
             String error = String.format("Timeout reached. Missing response for ticket %s with correlationId=", ticket.getTicketId(), ticket.getCorrelationId());
             throw new ResponseTimeoutException(error);
         }
-        TicketResponse ticketResponse = responseCache.getIfPresent(ticketId);
+        TicketResponse ticketResponse = isTicketPrematch(ticket) ? responseCache2.getIfPresent(ticketId) : responseCache1.getIfPresent(ticketId);
         stopwatch.stop();
         logger.debug("Response for ticket:{} is received in {} ms.", ticketId, stopwatch.elapsed(TimeUnit.MILLISECONDS));
 
@@ -116,8 +133,13 @@ public class TicketHandlerImpl extends SenderBase<Ticket> implements TicketHandl
         responseTimeoutHandler.onAsyncTicketResponseReceived(ticketResponse.getCorrelationId());
 
         String ticketId = ticketResponse.getTicketId();
-        responseCache.put(ticketId, ticketResponse);
-        TicketSendEntry entry = ticketSendEntries.getIfPresent(ticketId);
+        TicketSendEntry entry = ticketSendEntries1.getIfPresent(ticketId);
+        responseCache1.put(ticketId, ticketResponse);
+        if(entry == null)
+        {
+            entry = ticketSendEntries2.getIfPresent(ticketId);
+            responseCache2.put(ticketId, ticketResponse);
+        }
         final TicketResponseListener listenerToRespond;
         if (entry != null) {
             TicketResponseListener ticketResponseListener = entry.getResponseListener();
@@ -125,7 +147,8 @@ public class TicketHandlerImpl extends SenderBase<Ticket> implements TicketHandl
             if (semaphore != null) {
                 semaphore.release(1);
             }
-            ticketSendEntries.invalidate(ticketId);
+            ticketSendEntries1.invalidate(ticketId);
+            ticketSendEntries2.invalidate(ticketId);
             listenerToRespond = ticketResponseListener;
         } else {
             listenerToRespond = this.ticketResponseListener;
@@ -144,12 +167,24 @@ public class TicketHandlerImpl extends SenderBase<Ticket> implements TicketHandl
     @Override
     public void close() {
         super.close();
-        ticketSendEntries.cleanUp();
-        if (ticketSendEntries.size() > 0) {
+        ticketSendEntries1.cleanUp();
+        if (ticketSendEntries1.size() > 0) {
             logger.info("there are still ticket responses pending, will wait till completion or timeout");
-            while (ticketSendEntries.size() > 0) {
+            while (ticketSendEntries1.size() > 0) {
                 try {
-                    ticketSendEntries.cleanUp();
+                    ticketSendEntries1.cleanUp();
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    logger.error("interrupted waiting to get/timeout all ticket responses");
+                }
+            }
+        }
+        ticketSendEntries2.cleanUp();
+        if (ticketSendEntries2.size() > 0) {
+            logger.info("there are still ticket responses pending, will wait till completion or timeout");
+            while (ticketSendEntries2.size() > 0) {
+                try {
+                    ticketSendEntries2.cleanUp();
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
                     logger.error("interrupted waiting to get/timeout all ticket responses");
@@ -163,7 +198,12 @@ public class TicketHandlerImpl extends SenderBase<Ticket> implements TicketHandl
         checkNotNull(ticket, "ticket cannot be null");
         String ticketId = ticket.getTicketId();
         if (responseListener != null) {
-            ticketSendEntries.put(ticketId, new TicketSendEntry(ticket, responseListener, null));
+            if(isTicketPrematch(ticket)){
+                ticketSendEntries2.put(ticketId, new TicketSendEntry(ticket, responseListener, null));
+            }
+            else{
+                ticketSendEntries1.put(ticketId, new TicketSendEntry(ticket, responseListener, null));
+            }
         }
         publishAsync(ticket, ticket.getCorrelationId(), routingKey);
     }
@@ -205,5 +245,16 @@ public class TicketHandlerImpl extends SenderBase<Ticket> implements TicketHandl
         public TicketResponseListener getResponseListener() {
             return responseListener;
         }
+    }
+
+    public static boolean isTicketPrematch(SdkTicket ticket) {
+        if (ticket != null) {
+            if (ticket instanceof Ticket) {
+                if (((Ticket) ticket).getSelections().stream().anyMatch(a -> a.getId().contains("lcoo"))) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

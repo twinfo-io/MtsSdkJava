@@ -32,7 +32,8 @@ public class SdkConfigurationImpl implements SdkConfiguration {
     private final SenderChannel senderChannel;
     private final String accessToken;
     private final boolean provideAdditionalMarketSpecifiers;
-    private final int ticketResponseTimeout;
+    private final int ticketResponseTimeoutLive;
+    private final int ticketResponseTimeoutPrematch;
     private final int ticketCancellationResponseTimeout;
     private final int ticketCashoutResponseTimeout;
     private final int ticketNonSrSettleResponseTimeout;
@@ -53,7 +54,8 @@ public class SdkConfigurationImpl implements SdkConfiguration {
                                    int node,
                                    boolean ssl,
                                    int port,
-                                   int ticketResponseTimeout,
+                                   int ticketResponseTimeoutLive,
+                                   int ticketResponseTimeoutPrematch,
                                    int ticketCancellationResponseTimeout,
                                    int ticketCashoutResponseTimeout,
                                    int ticketNonSrSettleResponseTimeout,
@@ -95,7 +97,8 @@ public class SdkConfigurationImpl implements SdkConfiguration {
         this.ufEnvironment = ufEnvironment;
         this.provideAdditionalMarketSpecifiers = provideAdditionalMarketSpecifiers;
 
-        this.ticketResponseTimeout = ticketResponseTimeout;
+        this.ticketResponseTimeoutLive = ticketResponseTimeoutLive;
+        this.ticketResponseTimeoutPrematch = ticketResponseTimeoutPrematch;
         this.ticketCancellationResponseTimeout = ticketCancellationResponseTimeout;
         this.ticketCashoutResponseTimeout = ticketCashoutResponseTimeout;
         this.ticketNonSrSettleResponseTimeout = ticketNonSrSettleResponseTimeout;
@@ -136,7 +139,8 @@ public class SdkConfigurationImpl implements SdkConfiguration {
         this.provideAdditionalMarketSpecifiers = config.getProvideAdditionalMarketSpecifiers();
 
         // also check PropertiesToSettingsMapper
-        this.ticketResponseTimeout = config.getTicketResponseTimeout();
+        this.ticketResponseTimeoutLive = config.getTicketResponseTimeoutLive();
+        this.ticketResponseTimeoutPrematch = config.getTicketResponseTimeoutPrematch();
         this.ticketCancellationResponseTimeout = config.getTicketCancellationResponseTimeout();
         this.ticketCashoutResponseTimeout = config.getTicketCashoutResponseTimeout();
         this.ticketNonSrSettleResponseTimeout = config.getTicketNonSrSettleResponseTimeout();
@@ -211,7 +215,9 @@ public class SdkConfigurationImpl implements SdkConfiguration {
         return ticketTimeOutCallbackEnabled;
     }
 
-    public int getTicketResponseTimeout() { return ticketResponseTimeout; }
+    public int getTicketResponseTimeoutLive() { return ticketResponseTimeoutLive; }
+
+    public int getTicketResponseTimeoutPrematch() { return ticketResponseTimeoutPrematch; }
 
     public int getTicketCancellationResponseTimeout() { return ticketCancellationResponseTimeout; }
 
@@ -268,7 +274,8 @@ public class SdkConfigurationImpl implements SdkConfiguration {
                 ", accessToken='*'" +
                 ", ufEnvironment='" + ufEnvironment + '\'' +
                 ", provideAdditionalMarketSpecifiers='" + provideAdditionalMarketSpecifiers + '\'' +
-                ", ticketResponseTimeout=" + ticketResponseTimeout +
+                ", ticketResponseTimeoutLive=" + ticketResponseTimeoutLive +
+                ", ticketResponseTimeoutPrematch=" + ticketResponseTimeoutPrematch +
                 ", ticketCancellationResponseTimeout=" + ticketCancellationResponseTimeout +
                 ", ticketCashoutResponseTimeout=" + ticketCashoutResponseTimeout +
                 ", ticketNonSrSettleResponseTimeout=" + ticketNonSrSettleResponseTimeout +

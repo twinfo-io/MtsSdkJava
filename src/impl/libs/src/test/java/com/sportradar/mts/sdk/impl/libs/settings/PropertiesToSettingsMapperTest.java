@@ -76,7 +76,7 @@ public class PropertiesToSettingsMapperTest extends TimeLimitedTestBase {
         assertEquals(config.getPassword(), password);
         assertEquals(config.getHost(), hostname);
         assertEquals(config.getPort(), (int) Integer.valueOf(port));
-        assertEquals(config.getTicketResponseTimeout(), (int) Integer.valueOf(ticketResponseTimeout));
+        assertEquals(config.getTicketResponseTimeoutLive(), (int) Integer.valueOf(ticketResponseTimeout));
         assertEquals(config.getUseSsl(), Boolean.valueOf(ssl));
         assertEquals(config.getMessagesPerSecond(), Double.valueOf(messagesPerSecond), 0.0);
         assertEquals(config.getAccessToken(), accessToken);
@@ -98,7 +98,7 @@ public class PropertiesToSettingsMapperTest extends TimeLimitedTestBase {
 
     @Test (expected = IllegalArgumentException.class)
     public void getSettings_TicketResponseTimeoutEmptyStringTest() {
-        properties.setProperty(SettingsKeys.TICKET_RESPONSE_TIMEOUT, " ");
+        properties.setProperty(SettingsKeys.TICKET_RESPONSE_TIMEOUT_LIVE, " ");
         retrieveMtsSdkSettings();
     }
 
@@ -181,7 +181,7 @@ public class PropertiesToSettingsMapperTest extends TimeLimitedTestBase {
         properties.setProperty(SettingsKeys.USERNAME, username);
         properties.setProperty(SettingsKeys.PASSWORD, password);
         properties.setProperty(SettingsKeys.HOST, hostname);
-        properties.setProperty(SettingsKeys.TICKET_RESPONSE_TIMEOUT, ticketResponseTimeout);
+        properties.setProperty(SettingsKeys.TICKET_RESPONSE_TIMEOUT_LIVE, ticketResponseTimeout);
         properties.setProperty(SettingsKeys.SSL, ssl);
         properties.setProperty(SettingsKeys.MESSAGES_PER_SECOND, messagesPerSecond);
         properties.setProperty(SettingsKeys.BOOKMAKER_ID, Integer.toString(bookmakerId));
