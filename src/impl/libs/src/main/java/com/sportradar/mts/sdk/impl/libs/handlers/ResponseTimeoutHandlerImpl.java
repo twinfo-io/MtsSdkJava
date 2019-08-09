@@ -30,12 +30,12 @@ public class ResponseTimeoutHandlerImpl<T extends SdkTicket> implements RemovalL
 
     private TicketResponseTimeoutListener<T> responseTimeoutListener;
 
-
     public ResponseTimeoutHandlerImpl(ScheduledExecutorService executorService,
                                       int responseTimeout,
                                       boolean ticketTimeOutCallbackEnabled) {
-        this.ticketTimeOutCallbackEnabled = ticketTimeOutCallbackEnabled;
         Preconditions.checkNotNull(executorService);
+
+        this.ticketTimeOutCallbackEnabled = ticketTimeOutCallbackEnabled;
 
         this.executorService = executorService;
 
@@ -44,7 +44,7 @@ public class ResponseTimeoutHandlerImpl<T extends SdkTicket> implements RemovalL
                 .removalListener(this)
                 .build();
 
-        if (ticketTimeOutCallbackEnabled) {
+        if (this.ticketTimeOutCallbackEnabled) {
             executorService.scheduleAtFixedRate(responseTimeoutMonitoringCache::cleanUp, 500, 500, TimeUnit.MILLISECONDS);
         }
     }

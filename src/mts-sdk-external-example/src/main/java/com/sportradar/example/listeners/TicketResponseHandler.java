@@ -50,4 +50,8 @@ public class TicketResponseHandler extends PublishResultHandler<Ticket> implemen
             }
         }
     }
+
+    public void onTicketResponseTimedOut(Ticket ticket){
+        logger.warn("Sending ticket {} timed-out", ticket.getTicketId());
+    }
 }

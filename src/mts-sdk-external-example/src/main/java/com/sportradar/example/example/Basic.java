@@ -34,7 +34,8 @@ public class Basic {
         TicketAckSender ticketAckSender = mtsSdk.getTicketAckSender(new TicketAckHandler());
         TicketCancelAckSender ticketCancelAckSender = mtsSdk.getTicketCancelAckSender(new TicketCancelAckHandler());
         TicketCancelSender ticketCancelSender = mtsSdk.getTicketCancelSender(new TicketCancelResponseHandler(ticketCancelAckSender, mtsSdk.getBuilderFactory()));
-        TicketSender ticketSender = mtsSdk.getTicketSender(new TicketResponseHandler(ticketCancelSender, ticketAckSender, mtsSdk.getBuilderFactory()));
+        TicketResponseHandler ticketResponseHandler = new TicketResponseHandler(ticketCancelSender, ticketAckSender, mtsSdk.getBuilderFactory());
+        TicketSender ticketSender = mtsSdk.getTicketSender(ticketResponseHandler);
 
         Ticket ticket = new TicketBuilderHelper(mtsSdk.getBuilderFactory()).getTicket();
         //Notice: there are two ways of sending tickets to MTS (non-blocking is recommended)
@@ -44,10 +45,14 @@ public class Basic {
 
         try {
             long maxStake = mtsSdk.getClientApi().getMaxStake(ticket);
-            Thread.sleep(5000);
         } catch (InterruptedException e) {
             logger.info("interrupted while sleeping");
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            Thread.sleep(50000);
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
         mtsSdk.close();
