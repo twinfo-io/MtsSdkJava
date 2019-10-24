@@ -15,7 +15,7 @@ public class SdkInfo {
         return "2.3";
     }
 
-    public static final int TicketResponseTimeoutLiveDefault = 15000;
+    public static final int TicketResponseTimeoutLiveDefault = 17000;
     public static final int TicketResponseTimeoutPrematchDefault = 5000;
     public static final int TicketCancellationResponseTimeoutDefault = 600000;
     public static final int TicketCashoutResponseTimeoutDefault = 600000;
