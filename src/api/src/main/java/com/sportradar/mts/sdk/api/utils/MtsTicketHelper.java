@@ -90,31 +90,26 @@ public class MtsTicketHelper {
 
     public static Sender.Channel convert(SenderChannel channel)
     {
-        if(channel == SenderChannel.INTERNET)
-        {
-            return Sender.Channel.INTERNET;
+        switch (channel) {
+            case INTERNET:
+                return Sender.Channel.INTERNET;
+            case RETAIL:
+                return Sender.Channel.RETAIL;
+            case TERMINAL:
+                return Sender.Channel.TERMINAL;
+            case MOBILE:
+                return Sender.Channel.MOBILE;
+            case SMS:
+                return Sender.Channel.SMS;
+            case CALLCENTRE:
+                return Sender.Channel.CALL_CENTRE;
+            case TVAPP:
+                return Sender.Channel.TV_APP;
+            case AGENT:
+                return Sender.Channel.AGENT;
+            default:
+                throw new IllegalArgumentException(String.format("Invalid SenderChannel value: %s", channel.toString()));
         }
-        if(channel == SenderChannel.RETAIL)
-        {
-            return Sender.Channel.RETAIL;
-        }
-        if(channel == SenderChannel.TERMINAL)
-        {
-            return Sender.Channel.TERMINAL;
-        }
-        if(channel == SenderChannel.MOBILE)
-        {
-            return Sender.Channel.MOBILE;
-        }
-        if(channel == SenderChannel.SMS)
-        {
-            return Sender.Channel.SMS;
-        }
-        if(channel == SenderChannel.CALLCENTRE)
-        {
-            return Sender.Channel.CALL_CENTRE;
-        }
-        throw new IllegalArgumentException(String.format("Invalid SenderChannel value: %s", channel.toString())) ;
     }
 
     public static TicketAcceptance convert(Result.Status status)

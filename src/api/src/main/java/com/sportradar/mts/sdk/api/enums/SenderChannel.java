@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Possible sender channel values
  */
-public enum SenderChannel{
+public enum SenderChannel {
     /**
      * Internet
      */
@@ -44,5 +44,17 @@ public enum SenderChannel{
      * CallCentre
      */
     @JsonProperty("CallCentre")
-    CALLCENTRE
+    CALLCENTRE,
+
+    /**
+     * TvApp
+     */
+    @JsonProperty("TvApp")
+    TVAPP,
+
+    /**
+     * Agent
+     */
+    @JsonProperty("Agent")
+    AGENT
 }
