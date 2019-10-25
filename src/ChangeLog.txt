@@ -1,6 +1,13 @@
 A MTS SDK Java library
 
 CHANGE LOG:
+2019-10-25 2.3.3.0
+Added onTicketResponseTimedOut handler in TicketResponseHandler
+Added configuration property ticketResponseTimeoutPrematch
+Added setTicketResponseTimeoutLive and setTicketResponseTimeoutPrematch to SdkConfigurationBuilder
+Default timeout for ticket response for live selections increased from 15s to 17s
+Added new distribution channels
+
 2019-07-25 2.3.2.0
 Made Ticket objects serializable
 Removed use of singleton for CustomBetSelectionBuilder
