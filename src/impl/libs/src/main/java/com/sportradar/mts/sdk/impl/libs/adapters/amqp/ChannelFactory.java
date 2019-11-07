@@ -34,6 +34,7 @@ public final class ChannelFactory {
         connectionFactory.setPassword(mqCluster.getPassword());
         connectionFactory.setUsername(mqCluster.getUsername());
         connectionFactory.setVirtualHost(mqCluster.getVhost());
+        connectionFactory.setRequestedHeartbeat(20); // Keep sending the heartbeat every X seconds to prevent any routers from considering the connection stale.
 
         if (mqCluster.useSslProtocol() && shouldUseTlsValidation(mqCluster.getAddresses())) {
             connectionFactory.setSocketConfigurator(socket -> {
@@ -52,9 +53,6 @@ public final class ChannelFactory {
             // because they might be using direct IPs
             connectionFactory.useSslProtocol();
         }
-
-        // Keep sending the heartbeat every 45 seconds to prevent any routers from considering the connection stale.
-        connectionFactory.setRequestedHeartbeat(45);
 
         this.connectionWrapper = new ConnectionWrapper(channelFactoryProvider, connectionFactory, mqCluster);
     }
