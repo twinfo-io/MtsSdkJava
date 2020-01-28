@@ -165,8 +165,7 @@ public class TicketCashoutBuilderTest extends TimeLimitedTestBase {
     }
 
     @Test
-    public void cashoutStakeLowBuildTest(){
-        thrown.expect(IllegalArgumentException.class);
+    public void cashoutStake0BuildTest(){
         TicketCashout ticket = builderFactory.createTicketCashoutBuilder()
                 .setTicketId("ticket-" + StaticRandom.S1000)
                 .setBookmakerId(1111)
@@ -176,9 +175,14 @@ public class TicketCashoutBuilderTest extends TimeLimitedTestBase {
     }
 
     @Test
-    public void cashoutPercentLowBuildTest(){
-        thrown.expect(IllegalArgumentException.class);
-        builderFactory.createTicketCashoutBuilder().setCashoutPercent(0);
+    public void cashoutPercent0BuildTest(){
+        TicketCashout ticket = builderFactory.createTicketCashoutBuilder()
+                .setTicketId("ticket-" + StaticRandom.S1000)
+                .setBookmakerId(1111)
+                .setCashoutStake(0)
+                .setCashoutPercent(0)
+                .build();
+        Assert.assertNotNull(ticket);
     }
 
     @Test

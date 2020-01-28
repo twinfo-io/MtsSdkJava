@@ -84,8 +84,8 @@ public class TicketCashoutImpl implements TicketCashout {
         Preconditions.checkArgument(MtsTicketHelper.validateTimestamp(timestampUtc), "timestampUtc is not valid");
         Preconditions.checkNotNull(version, "version cannot be null");
         Preconditions.checkArgument(version.length() == 3, "version is not valid");
-        Preconditions.checkArgument(cashoutStake == null || cashoutStake > 0, "cashoutStake has wrong value");
-        Preconditions.checkArgument(cashoutPercent == null || cashoutPercent > 0, "cashoutPercent has wrong value");
+        Preconditions.checkArgument(cashoutStake == null || cashoutStake >= 0, "cashoutStake has wrong value");
+        Preconditions.checkArgument(cashoutPercent == null || cashoutPercent >= 0, "cashoutPercent has wrong value");
         Preconditions.checkArgument(cashoutStake != null || cashoutPercent != null || betCashouts != null, "cashoutStake, cashoutPercent or betCashouts must be set");
         Preconditions.checkArgument(!(cashoutStake != null && betCashouts != null), "cashoutStake and betCashouts cannot be set at the same time");
         Preconditions.checkArgument(!(cashoutPercent != null && betCashouts != null), "cashoutPercent and betCashouts cannot be set at the same time");

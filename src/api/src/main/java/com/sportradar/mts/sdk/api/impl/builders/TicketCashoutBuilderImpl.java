@@ -96,7 +96,7 @@ public class TicketCashoutBuilderImpl implements TicketCashoutBuilder {
      */
     @Override
     public TicketCashoutBuilder setCashoutStake(long cashoutStake) {
-        if (cashoutStake < 1)
+        if (cashoutStake < 0)
         {
             throw new IllegalArgumentException("Stake not valid");
         }
