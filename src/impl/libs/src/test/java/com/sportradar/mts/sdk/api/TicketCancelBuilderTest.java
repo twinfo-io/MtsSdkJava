@@ -121,7 +121,6 @@ public class TicketCancelBuilderTest extends TimeLimitedTestBase {
 
     @Test
     public void cancelPercentLowBuildTest(){
-        thrown.expect(IllegalArgumentException.class);
         builderFactory.createTicketCancelBuilder().setCancelPercent(0);
     }
 
@@ -178,7 +177,6 @@ public class TicketCancelBuilderTest extends TimeLimitedTestBase {
 
     @Test
     public void betCancelWrong01Test(){
-        thrown.expect(IllegalArgumentException.class);
         BetCancel betCancel = new BetCancelImpl("bet-id:01", 0);
     }
 

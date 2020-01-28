@@ -714,7 +714,6 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
 
     @Test
     public void betCancelWrong01Test(){
-        thrown.expect(IllegalArgumentException.class);
         BetCancel betCancel = new BetCancelImpl("bet-id:01", 0);
     }
 
