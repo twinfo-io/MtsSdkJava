@@ -16,6 +16,14 @@
 # .idea/workspace.xml
 # .idea/tasks.xml
 # .idea/dictionaries
+#.idea/vcs.xml
+#.idea/jsLibraryMappings.xml
+.idea/
+.target/
+
+sdk-example/target/
+target/
+
 # Sensitive or high-churn files:
 # .idea/dataSources.ids
 # .idea/dataSources.xml
@@ -60,3 +68,5 @@ dependency-reduced-pom.xml
 /src/distribution/deploy
 *.log
 nb-configuration.xml
+
+**/custom

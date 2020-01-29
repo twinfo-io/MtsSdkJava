@@ -47,7 +47,7 @@ public class TicketBuilderHelper {
                                 .setStake(50000, StakeType.UNIT)
                                 .addSelection(builderFactory.createSelectionBuilder()
                                                 .setEventId("11608059")
-                                                .setId("live:2/0/*/1")
+                                                .setIdUof(1, "sr:sport:1", 1, "1", "", null)
                                                 .setOdds(10400)
                                                 .setBanker(false)
                                                 .build())
