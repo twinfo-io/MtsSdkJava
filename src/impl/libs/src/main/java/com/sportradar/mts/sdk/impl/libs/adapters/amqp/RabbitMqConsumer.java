@@ -88,9 +88,12 @@ public final class RabbitMqConsumer extends RabbitMqBase implements AmqpConsumer
     @Override
     protected void doWork(Channel channel, int threadId) throws InterruptedException, IOException {
 
+        Map<String, Object> arguments = new HashMap<>();
+        arguments.putIfAbsent("x-queue-master-locator", "min-masters");
+
         channel.basicQos(this.prefetchCount);
 
-        channel.queueDeclare(this.queueName, durable, exclusiveQueue, autoDelete, null);
+        channel.queueDeclare(this.queueName, durable, exclusiveQueue, autoDelete, arguments);
 
         for (final String key : this.routingKeys) {
             channel.queueBind(this.queueName, this.exchangeName, key, null);
