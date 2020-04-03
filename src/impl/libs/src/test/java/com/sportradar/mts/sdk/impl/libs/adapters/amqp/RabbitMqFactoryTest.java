@@ -34,7 +34,7 @@ public class RabbitMqFactoryTest {
         mqFactory = new RabbitMqFactory(channelFactoryProvider);
 
         instanceName = "test";
-        mqCluster = AmqpCluster.from("testUsername", "testPassword", "testVHost", false, new NetworkAddress("testHost"));
+        mqCluster = AmqpCluster.from("testUsername", "testPassword", "testVHost", false, new NetworkAddress("testHost"), 10);
         exchangeName = "testExchange";
         exchangeType = ExchangeType.TOPIC;
         maxRetryCount = 1;

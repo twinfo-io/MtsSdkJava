@@ -553,7 +553,8 @@ public class SdkInjectionModule extends AbstractModule {
                                 sdkConfiguration.getPassword(),
                                 sdkConfiguration.getVirtualHost(),
                                 sdkConfiguration.getUseSsl(),
-                                new NetworkAddress(sdkConfiguration.getHost(), sdkConfiguration.getPort()));
+                                new NetworkAddress(sdkConfiguration.getHost(), sdkConfiguration.getPort()),
+                                sdkConfiguration.getBookmakerId());
     }
 
     @Singleton

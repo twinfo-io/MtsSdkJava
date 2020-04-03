@@ -71,7 +71,8 @@ public class ChannelFactoryProviderImplTest extends TimeLimitedTestBase {
                 "testPassword",
                 "testVirtualHost",
                 false,
-                new NetworkAddress("127.0.0.1", 8080));
+                new NetworkAddress("127.0.0.1", 8080),
+                10);
 
         ChannelFactory channelFactory = channelFactoryProvider.getChannelFactory(amqpCluster);
 

@@ -32,7 +32,7 @@ public class ChannelWrapperTest extends TimeLimitedTestBase {
     public void setUp() {
         ChannelFactoryProviderImpl channelFactoryProvider = new ChannelFactoryProviderImpl(1);
         ConnectionFactory connectionFactory = mock(ConnectionFactory.class);
-        AmqpCluster mqCluster = AmqpCluster.from("username", "password", "vhost", false, new NetworkAddress("host"));
+        AmqpCluster mqCluster = AmqpCluster.from("username", "password", "vhost", false, new NetworkAddress("host"), 10);
         ConnectionWrapper parentConnection = new ConnectionWrapper(channelFactoryProvider, connectionFactory, mqCluster);
         long index = 0L;
         underlyingChannel = mock(Channel.class);

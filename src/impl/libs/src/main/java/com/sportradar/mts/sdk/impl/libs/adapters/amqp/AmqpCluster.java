@@ -26,11 +26,14 @@ public final class AmqpCluster {
 
     private final String environment;
 
+    private final int bookmakerId;
+
     private AmqpCluster(String un,
                         String pwd,
                         String vhost,
                         boolean useSslProtocol,
-                        NetworkAddress address) {
+                        NetworkAddress address,
+                        int bookmakerId) {
         Preconditions.checkNotNull(un, "un");
         Preconditions.checkNotNull(pwd, "pwd");
         Preconditions.checkNotNull(vhost, "vhost");
@@ -56,13 +59,16 @@ public final class AmqpCluster {
         {
             environment = "CUSTOM";
         }
+
+        this.bookmakerId = bookmakerId;
     }
 
     private AmqpCluster(String un,
                         String pwd,
                         String vhost,
                         boolean useSslProtocol,
-                        Set<NetworkAddress> addresses) {
+                        Set<NetworkAddress> addresses,
+                        int bookmakerId) {
         Preconditions.checkNotNull(un, "un");
         Preconditions.checkNotNull(pwd, "pwd");
         Preconditions.checkNotNull(vhost, "vhost");
@@ -103,46 +109,41 @@ public final class AmqpCluster {
         {
             environment = "CUSTOM";
         }
+        this.bookmakerId = bookmakerId;
     }
 
     public String getUsername() { return un; }
 
-    public String getPassword() {
-        return pwd;
-    }
+    public String getPassword() { return pwd; }
 
-    public String getVhost() {
-        return vhost;
-    }
+    public String getVhost() { return vhost; }
 
-    public boolean useSslProtocol() {
-        return useSslProtocol;
-    }
+    public boolean useSslProtocol() { return useSslProtocol; }
 
-    public NetworkAddress[] getAddresses() {
-        return addresses;
-    }
+    public NetworkAddress[] getAddresses() { return addresses; }
 
-    public String getDescription() {
-        return description;
-    }
+    public String getDescription() { return description; }
 
     public String getEnvironment() { return environment; }
 
+    public int getBookmakerId() { return bookmakerId; }
+
     public static AmqpCluster from(String username,
                                    String pwd,
                                    String vhost,
                                    boolean useSslProtocol,
-                                   NetworkAddress address) {
-        return new AmqpCluster(username, pwd, cleanVHost(vhost), useSslProtocol, address);
+                                   NetworkAddress address,
+                                   int bookmakerId) {
+        return new AmqpCluster(username, pwd, cleanVHost(vhost), useSslProtocol, address, bookmakerId);
     }
 
     public static AmqpCluster from(String username,
                                    String pwd,
                                    String vhost,
                                    boolean useSslProtocol,
-                                   Set<NetworkAddress> addresses) {
-        return new AmqpCluster(username, pwd, cleanVHost(vhost), useSslProtocol, addresses);
+                                   Set<NetworkAddress> addresses,
+                                   int bookmakerId) {
+        return new AmqpCluster(username, pwd, cleanVHost(vhost), useSslProtocol, addresses, bookmakerId);
     }
 
     public static AmqpCluster fromConnectionString(final String connectionString) {
@@ -214,7 +215,7 @@ public final class AmqpCluster {
             }
         }
 
-        return new AmqpCluster(unTmp, pwdTmp, vhostTmp, useSslProtocolTmp, new NetworkAddress(hostTmp, portTmp));
+        return new AmqpCluster(unTmp, pwdTmp, vhostTmp, useSslProtocolTmp, new NetworkAddress(hostTmp, portTmp), 0);
     }
 
     @Override

@@ -60,7 +60,7 @@ public final class ChannelFactory {
         clientProperties.putIfAbsent("SrMtsSdkVersion", SdkInfo.getVersion());
         clientProperties.putIfAbsent("SrMtsSdkInit", new SimpleDateFormat("yyyyMMddHHmm").format(new Date()));
         clientProperties.putIfAbsent("connection_name", "RabbitMQ / Java");
-        clientProperties.putIfAbsent("SrMtsSdkBId", SdkInfo.getVersion());
+        clientProperties.putIfAbsent("SrMtsSdkBId", String.valueOf(mqCluster.getBookmakerId()));
         connectionFactory.setClientProperties(clientProperties);
 
         this.connectionWrapper = new ConnectionWrapper(channelFactoryProvider, connectionFactory, mqCluster);
