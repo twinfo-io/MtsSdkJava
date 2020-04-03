@@ -36,6 +36,7 @@ public class SdkInfo {
     public static String getVersion()
     {
         try {
+            //String version = SdkConfiguration.class.getPackage().getSpecificationVersion();
             InputStream is = SdkConfiguration.class.getResourceAsStream("/version/sdk.properties");
             Properties props = new Properties();
             props.load(is);

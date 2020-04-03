@@ -6,12 +6,14 @@ package com.sportradar.mts.sdk.impl.libs.adapters.amqp;
 
 import com.google.common.collect.ImmutableSet;
 import com.rabbitmq.client.ConnectionFactory;
+import com.sportradar.mts.sdk.api.utils.SdkInfo;
 
 import javax.net.ssl.*;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
-import java.util.Set;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.TimeoutException;
 
 public final class ChannelFactory {
@@ -46,13 +48,20 @@ public final class ChannelFactory {
                     sslSocket.setSSLParameters(sslParameters);
                 }
             });
-
             connectionFactory.useSslProtocol(TLS_VERSION, getDefaultTrustManager());
         } else if (mqCluster.useSslProtocol()) {
             // some clients might be having issues with the validation for now,
             // because they might be using direct IPs
             connectionFactory.useSslProtocol();
         }
+
+        Map<String, Object> clientProperties = new HashMap<String, Object>();
+        clientProperties.putIfAbsent("SrMtsSdkType", "java");
+        clientProperties.putIfAbsent("SrMtsSdkVersion", SdkInfo.getVersion());
+        clientProperties.putIfAbsent("SrMtsSdkInit", new SimpleDateFormat("yyyyMMddHHmm").format(new Date()));
+        clientProperties.putIfAbsent("connection_name", "RabbitMQ / Java");
+        clientProperties.putIfAbsent("SrMtsSdkBId", SdkInfo.getVersion());
+        connectionFactory.setClientProperties(clientProperties);
 
         this.connectionWrapper = new ConnectionWrapper(channelFactoryProvider, connectionFactory, mqCluster);
     }

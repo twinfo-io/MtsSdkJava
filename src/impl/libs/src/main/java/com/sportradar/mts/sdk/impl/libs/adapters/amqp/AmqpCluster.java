@@ -105,9 +105,7 @@ public final class AmqpCluster {
         }
     }
 
-    public String getUsername() {
-        return un;
-    }
+    public String getUsername() { return un; }
 
     public String getPassword() {
         return pwd;

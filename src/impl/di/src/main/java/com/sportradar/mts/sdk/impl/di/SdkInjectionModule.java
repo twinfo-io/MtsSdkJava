@@ -10,8 +10,10 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.inject.AbstractModule;
+import com.google.inject.Binder;
 import com.google.inject.Provides;
 import com.google.inject.name.Named;
+import com.google.inject.name.Names;
 import com.sportradar.mts.api.rest.custombet.datamodel.CAPIAvailableSelections;
 import com.sportradar.mts.api.rest.custombet.datamodel.CAPICalculationResponse;
 import com.sportradar.mts.api.rest.sportsapi.datamodel.MarketDescriptions;
@@ -34,6 +36,7 @@ import com.sportradar.mts.sdk.api.interfaces.TicketSender;
 import com.sportradar.mts.sdk.api.interfaces.customBet.CustomBetManager;
 import com.sportradar.mts.sdk.api.rest.*;
 import com.sportradar.mts.sdk.api.utils.MtsDtoMapper;
+import com.sportradar.mts.sdk.api.utils.SdkInfo;
 import com.sportradar.mts.sdk.api.utils.StringUtils;
 import com.sportradar.mts.sdk.impl.libs.adapters.amqp.*;
 import com.sportradar.mts.sdk.impl.libs.clientapi.MtsClientApiImpl;
@@ -654,6 +657,8 @@ public class SdkInjectionModule extends AbstractModule {
 
         bind(SdkConfiguration.class).toInstance(sdkConfiguration);
 //        bind(BuilderFactory.class).to();
+
+        this.binder().bindConstant().annotatedWith(Names.named("version")).to(SdkInfo.getVersion());
     }
 
 
