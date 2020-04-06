@@ -59,7 +59,7 @@ public final class ChannelFactory {
         clientProperties.putIfAbsent("SrMtsSdkType", "java");
         clientProperties.putIfAbsent("SrMtsSdkVersion", SdkInfo.getVersion());
         clientProperties.putIfAbsent("SrMtsSdkInit", new SimpleDateFormat("yyyyMMddHHmm").format(new Date()));
-        clientProperties.putIfAbsent("connection_name", "RabbitMQ / Java");
+        clientProperties.putIfAbsent("SrMtsSdkConnName", "RabbitMQ / Java");
         clientProperties.putIfAbsent("SrMtsSdkBId", String.valueOf(mqCluster.getBookmakerId()));
         connectionFactory.setClientProperties(clientProperties);
 
