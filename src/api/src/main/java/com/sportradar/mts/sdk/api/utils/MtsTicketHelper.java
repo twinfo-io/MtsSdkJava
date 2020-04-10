@@ -18,7 +18,7 @@ import java.util.UUID;
  */
 public class MtsTicketHelper {
     private static final String BET_ID_PATTERN = "^[0-9A-Za-z:_-]*";
-    private static final String USER_ID_PATTERN = "^[0-9A-Za-z_-]*";
+    private static final String USER_ID_PATTERN = "^[0-9A-Za-z#_-]*";
 
     public static String GenerateTicketCorrelationId()
     {
