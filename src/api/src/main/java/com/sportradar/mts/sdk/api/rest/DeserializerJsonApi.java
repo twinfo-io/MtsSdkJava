@@ -19,6 +19,7 @@ import java.io.InputStream;
 public class DeserializerJsonApi implements Deserializer {
     private final static Logger logger = LoggerFactory.getLogger(DeserializerJsonApi.class);
 
+    @SuppressWarnings("UnstableApiUsage")
     @Override
     public synchronized <T> T deserialize(InputStream inStr, Class<T> clazz){
         try {
@@ -30,7 +31,7 @@ public class DeserializerJsonApi implements Deserializer {
     }
 
     @Override
-    public <T> String serialize(T inObj) {
+    public synchronized <T> String serialize(T inObj) {
         try {
             return JsonUtils.serializeAsString(inObj);
         } catch (Exception e) {

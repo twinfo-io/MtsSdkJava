@@ -28,6 +28,7 @@ public class DeserializerJaxbApi implements Deserializer {
         this.marshaller = marshaller;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public synchronized <T> T deserialize(InputStream inStr, Class<T> clazz){
         try {
@@ -39,7 +40,7 @@ public class DeserializerJaxbApi implements Deserializer {
     }
 
     @Override
-    public <T> String serialize(T inObj) {
+    public synchronized <T> String serialize(T inObj) {
         try {
             StringWriter writer = new StringWriter();
             marshaller.marshal(inObj, writer);
