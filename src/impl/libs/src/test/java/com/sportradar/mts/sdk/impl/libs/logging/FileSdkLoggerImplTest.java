@@ -8,11 +8,7 @@ import com.sportradar.mts.sdk.impl.libs.TimeLimitedTestBase;
 import org.junit.After;
 import org.junit.Test;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.Scanner;
 
 import static org.junit.Assert.assertFalse;

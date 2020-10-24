@@ -5,11 +5,7 @@
 package com.sportradar.mts.sdk.impl.libs.handlers;
 
 import com.google.common.base.Preconditions;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.RemovalCause;
-import com.google.common.cache.RemovalListener;
-import com.google.common.cache.RemovalNotification;
+import com.google.common.cache.*;
 import com.sportradar.mts.sdk.api.SdkTicket;
 import com.sportradar.mts.sdk.api.Ticket;
 import com.sportradar.mts.sdk.api.interfaces.TicketResponseTimeoutListener;

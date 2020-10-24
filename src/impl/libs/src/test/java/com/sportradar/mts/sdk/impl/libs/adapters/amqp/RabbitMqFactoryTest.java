@@ -53,16 +53,16 @@ public class RabbitMqFactoryTest {
     @Test
     public void createProducerTest() {
         AmqpProducer mqProducer = mqFactory.createProducer(
-                instanceName,
-                mqCluster,
-                exchangeName,
-                exchangeType,
-                maxRetryCount,
-                maxBufferSize,
-                concurrencyLevel,
-                msgMemOnly,
-                waitForPublishConfirmations,
-                mandatory);
+                                                            instanceName,
+                                                            mqCluster,
+                                                            exchangeName,
+                                                            exchangeType,
+                                                            maxRetryCount,
+                                                            maxBufferSize,
+                                                            concurrencyLevel,
+                                                            msgMemOnly,
+                                                            waitForPublishConfirmations,
+                                                            mandatory);
 
         assertThat(mqProducer, is(notNullValue()));
         assertThat(mqProducer, instanceOf(RabbitMqProducer.class));
@@ -71,17 +71,17 @@ public class RabbitMqFactoryTest {
     @Test
     public void createConsumerTest() {
         AmqpConsumer mqConsumer = mqFactory.createConsumer(
-                instanceName,
-                mqCluster,
-                exchangeName,
-                exchangeType,
-                "testQueue",
-                "replyRoutingKey",
-                maxRetryCount,
-                1,
-                concurrencyLevel,
-                true,
-                false);
+                                                            instanceName,
+                                                            mqCluster,
+                                                            exchangeName,
+                                                            exchangeType,
+                                                            "testQueue",
+                                                            "replyRoutingKey",
+                                                            maxRetryCount,
+                                                            1,
+                                                            concurrencyLevel,
+                                                            true,
+                                                            false);
 
         assertThat(mqConsumer, is(notNullValue()));
         assertThat(mqConsumer, instanceOf(RabbitMqConsumer.class));

@@ -31,17 +31,11 @@ import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.Semaphore;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author andrej.resnik on 16/06/16 at 10:03
@@ -133,7 +127,7 @@ public class TicketHandlerImplTest extends TimeLimitedTestBase {
             invocationTimestampsActual.put(count, System.currentTimeMillis());
             handler.ticketResponseReceived(response);
             return null;
-        }).when(publisher).publishAsync(msg, correlationId, routingKey, routingKey);
+        }).when(publisher).publishAsync(ticket.getTicketId(), msg, correlationId, routingKey, routingKey);
 
         Map<Integer, Long> invocationTimestampsInitial = new HashMap<>();
         handler.open();
@@ -144,7 +138,7 @@ public class TicketHandlerImplTest extends TimeLimitedTestBase {
             handler.send(ticket);
         }
 
-        verify(publisher, times(10)).publishAsync(msg, correlationId, routingKey, routingKey);
+        verify(publisher, times(10)).publishAsync(ticket.getTicketId(), msg, correlationId, routingKey, routingKey);
 
         List<Boolean> invocationResults = new ArrayList<>();
 //        invocationTimestampsInitial.entrySet().forEach(entry -> System.out.println(invocationTimestampsActual.get(entry.getKey()) - entry.getValue()));
@@ -175,12 +169,12 @@ public class TicketHandlerImplTest extends TimeLimitedTestBase {
         doAnswer(invocation -> {
             handler.ticketResponseReceived(response);
             return null;
-        }).when(publisher).publishAsync(msg, correlationId, routingKey, routingKey);
+        }).when(publisher).publishAsync(ticket.getTicketId(), msg, correlationId, routingKey, routingKey);
 
         handler.open();
         handler.sendBlocking(ticket);
 
-        verify(publisher, times(1)).publishAsync(msg, correlationId, routingKey, routingKey);
+        verify(publisher, times(1)).publishAsync(ticket.getTicketId(), msg, correlationId, routingKey, routingKey);
         assertThat(response, is(notNullValue()));
 
         String ticketString = JsonUtils.serializeAsString(ticket);
@@ -231,12 +225,13 @@ public class TicketHandlerImplTest extends TimeLimitedTestBase {
         doAnswer(invocation -> {
             handler.ticketResponseReceived(response);
             return null;
-        }).when(publisher).publishAsync(msg, correlationId, routingKey, routingKey);
+        }).when(publisher).publishAsync(ticket.getTicketId(), msg, correlationId, routingKey, routingKey);
 
         handler.open();
         handler.send(ticket);
 
-        verify(publisher, times(1)).publishAsync(JsonUtils.serialize(ticket), correlationId, routingKey, routingKey);
+        verify(publisher, times(1)).publishAsync(ticket.getTicketId(), JsonUtils.serialize(ticket), correlationId, routingKey,
+                                                 routingKey);
 
         String ticketString = JsonUtils.serializeAsString(ticket);
         verify(sdkLogger, times(1)).logSendMessage(ticketString);
@@ -254,7 +249,7 @@ public class TicketHandlerImplTest extends TimeLimitedTestBase {
         doAnswer(invocation -> {
             handler.ticketResponseReceived(null);
             return null;
-        }).when(publisher).publishAsync(msg, correlationId, routingKey, routingKey);
+        }).when(publisher).publishAsync(ticket.getTicketId(), msg, correlationId, routingKey, routingKey);
 
         handler.open();
         handler.sendBlocking(ticket);
@@ -271,7 +266,7 @@ public class TicketHandlerImplTest extends TimeLimitedTestBase {
         doAnswer(invocation -> {
             handler.ticketResponseReceived(response);
             return null;
-        }).when(publisher).publishAsync(msg, correlationId, routingKey, routingKey);
+        }).when(publisher).publishAsync(ticket.getTicketId(), msg, correlationId, routingKey, routingKey);
 
         Semaphore semaphore = new Semaphore(0);
         when(executor.submit(any(Runnable.class))).then(invocation -> {

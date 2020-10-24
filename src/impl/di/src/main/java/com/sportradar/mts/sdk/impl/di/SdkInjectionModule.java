@@ -10,7 +10,6 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.inject.AbstractModule;
-import com.google.inject.Binder;
 import com.google.inject.Provides;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
@@ -25,14 +24,12 @@ import com.sportradar.mts.sdk.api.caching.MarketDescriptionCache;
 import com.sportradar.mts.sdk.api.caching.MarketDescriptionCacheImpl;
 import com.sportradar.mts.sdk.api.caching.MarketDescriptionProvider;
 import com.sportradar.mts.sdk.api.enums.UfEnvironment;
+import com.sportradar.mts.sdk.api.impl.ConnectionStatusImpl;
 import com.sportradar.mts.sdk.api.impl.builders.BuilderFactoryImpl;
 import com.sportradar.mts.sdk.api.impl.mtsdto.clientapi.AccessTokenSchema;
 import com.sportradar.mts.sdk.api.impl.mtsdto.clientapi.CcfResponseSchema;
 import com.sportradar.mts.sdk.api.impl.mtsdto.clientapi.MaxStakeResponseSchema;
-import com.sportradar.mts.sdk.api.interfaces.MtsClientApi;
-import com.sportradar.mts.sdk.api.interfaces.SdkConfiguration;
-import com.sportradar.mts.sdk.api.interfaces.TicketCancelSender;
-import com.sportradar.mts.sdk.api.interfaces.TicketSender;
+import com.sportradar.mts.sdk.api.interfaces.*;
 import com.sportradar.mts.sdk.api.interfaces.customBet.CustomBetManager;
 import com.sportradar.mts.sdk.api.rest.*;
 import com.sportradar.mts.sdk.api.utils.MtsDtoMapper;
@@ -298,20 +295,20 @@ public class SdkInjectionModule extends AbstractModule {
     @Provides
     @TicketReofferCancelProducerBinding
     public AmqpProducer provideTicketReofferCancelAmqpProducer(ChannelFactoryProvider channelFactoryProvider,
-                                                        AmqpCluster amqpCluster
+                                                               AmqpCluster amqpCluster
     ) {
         String exchangeName = sdkConfiguration.getVirtualHost().replace("/", "") + "-Control";
         return new RabbitMqProducer(channelFactoryProvider,
-                "ticket--reoffer-cancel-producer",
-                amqpCluster,
-                exchangeName,
-                ExchangeType.TOPIC,
-                1,
-                64,
-                1,
-                true,
-                true,
-                true);
+                                    "ticket--reoffer-cancel-producer",
+                                    amqpCluster,
+                                    exchangeName,
+                                    ExchangeType.TOPIC,
+                                    1,
+                                    64,
+                                    1,
+                                    true,
+                                    true,
+                                    true);
     }
 
     @Singleton
@@ -322,36 +319,36 @@ public class SdkInjectionModule extends AbstractModule {
     ) {
         String exchangeName = sdkConfiguration.getVirtualHost().replace("/", "") + "-Control";
         return new RabbitMqProducer(channelFactoryProvider,
-                "ticket-cashout-producer",
-                amqpCluster,
-                exchangeName,
-                ExchangeType.TOPIC,
-                1,
-                64,
-                1,
-                true,
-                true,
-                true);
+                                    "ticket-cashout-producer",
+                                    amqpCluster,
+                                    exchangeName,
+                                    ExchangeType.TOPIC,
+                                    1,
+                                    64,
+                                    1,
+                                    true,
+                                    true,
+                                    true);
     }
 
     @Singleton
     @Provides
     @TicketNonSrSettleProducerBinding
     public AmqpProducer provideTicketNonSrSettleAmqpProducer(ChannelFactoryProvider channelFactoryProvider,
-                                                         AmqpCluster amqpCluster
+                                                             AmqpCluster amqpCluster
     ) {
         String exchangeName = sdkConfiguration.getVirtualHost().replace("/", "") + "-Control";
         return new RabbitMqProducer(channelFactoryProvider,
-                "ticket-non-sr-settle-producer",
-                amqpCluster,
-                exchangeName,
-                ExchangeType.TOPIC,
-                1,
-                64,
-                1,
-                true,
-                true,
-                true);
+                                    "ticket-non-sr-settle-producer",
+                                    amqpCluster,
+                                    exchangeName,
+                                    ExchangeType.TOPIC,
+                                    1,
+                                    64,
+                                    1,
+                                    true,
+                                    true,
+                                    true);
     }
 
     @Singleton
@@ -378,7 +375,8 @@ public class SdkInjectionModule extends AbstractModule {
     @Provides
     @TicketResponseConsumerBinding
     public AmqpConsumer provideTicketResponseConsumer(ChannelFactoryProvider channelFactoryProvider,
-                                                      AmqpCluster amqpCluster) {
+                                                      AmqpCluster amqpCluster
+    ) {
         String exchangeName = sdkConfiguration.getVirtualHost().replace("/", "") + "-Confirm";
         String routingKey = "node" + sdkConfiguration.getNode() + ".ticket.confirm";
         String queueName = sdkConfiguration.getUsername() + "-Confirm-node" + sdkConfiguration.getNode();
@@ -401,7 +399,8 @@ public class SdkInjectionModule extends AbstractModule {
     @Provides
     @TicketCancelResponseConsumerBinding
     public AmqpConsumer provideTicketCancelResponseConsumer(ChannelFactoryProvider channelFactoryProvider,
-                                                            AmqpCluster amqpCluster) {
+                                                            AmqpCluster amqpCluster
+    ) {
         String exchangeName = sdkConfiguration.getVirtualHost().replace("/", "") + "-Reply";
         String routingKey = "node" + sdkConfiguration.getNode() + ".cancel.confirm";
         String queueName = sdkConfiguration.getUsername() + "-Reply-node" + sdkConfiguration.getNode();
@@ -423,7 +422,8 @@ public class SdkInjectionModule extends AbstractModule {
     @Provides
     @TicketCashoutResponseConsumerBinding
     public AmqpConsumer provideTicketCashoutResponseConsumer(ChannelFactoryProvider channelFactoryProvider,
-                                                            AmqpCluster amqpCluster) {
+                                                            AmqpCluster amqpCluster
+    ) {
         String exchangeName = sdkConfiguration.getVirtualHost().replace("/", "") + "-Reply";
         String routingKey = "node" + sdkConfiguration.getNode() + ".ticket.cashout";
         String queueName = sdkConfiguration.getUsername() + "-Reply-cashout-node" + sdkConfiguration.getNode();
@@ -445,33 +445,34 @@ public class SdkInjectionModule extends AbstractModule {
     @Provides
     @TicketNonSrSettleResponseConsumerBinding
     public AmqpConsumer provideTicketNonSrSettleResponseConsumer(ChannelFactoryProvider channelFactoryProvider,
-                                                             AmqpCluster amqpCluster) {
+                                                                 AmqpCluster amqpCluster
+    ) {
         String exchangeName = sdkConfiguration.getVirtualHost().replace("/", "") + "-Reply";
         String routingKey = "node" + sdkConfiguration.getNode() + ".ticket.nonsrsettle";
         String queueName = sdkConfiguration.getUsername() + "-Reply-nonsrsettle-node" + sdkConfiguration.getNode();
         return new RabbitMqConsumer(channelFactoryProvider,
-                routingKey,
-                "ticket-nonsrsettle-response-consumer",
-                amqpCluster,
-                exchangeName,
-                ExchangeType.TOPIC,
-                queueName,
-                1,
-                rabbitPrefetchCount,
-                1,
-                false,
-                sdkConfiguration.getExclusiveConsumer());
+                                    routingKey,
+                                    "ticket-nonsrsettle-response-consumer",
+                                    amqpCluster,
+                                    exchangeName,
+                                    ExchangeType.TOPIC,
+                                    queueName,
+                                    1,
+                                    rabbitPrefetchCount,
+                                    1,
+                                    false,
+                                    sdkConfiguration.getExclusiveConsumer());
     }
-
 
     @Singleton
     @Provides
     @TicketPublisherBinding
     public AmqpPublisher provideTicketAmqpPublisher(
             @TicketProducerBinding AmqpProducer amqpProducer,
-            @TicketAmqpSendResultHandlerBinding AmqpSendResultHandler amqpSendResultHandler
+            @TicketAmqpSendResultHandlerBinding AmqpSendResultHandler amqpSendResultHandler,
+            ConnectionStatus connectionStatus
     ) {
-        return new AmqpPublisherImpl(amqpProducer, amqpSendResultHandler);
+        return new AmqpPublisherImpl(amqpProducer, amqpSendResultHandler, connectionStatus);
     }
 
     @Singleton
@@ -479,9 +480,10 @@ public class SdkInjectionModule extends AbstractModule {
     @TicketCancelPublisherBinding
     public AmqpPublisher provideTicketCancelAmqpPublisher(
             @TicketCancelProducerBinding AmqpProducer amqpProducer,
-            @TicketCancelAmqpSendResultHandlerBinding AmqpSendResultHandler amqpSendResultHandler
+            @TicketCancelAmqpSendResultHandlerBinding AmqpSendResultHandler amqpSendResultHandler,
+            ConnectionStatus connectionStatus
     ) {
-        return new AmqpPublisherImpl(amqpProducer, amqpSendResultHandler);
+        return new AmqpPublisherImpl(amqpProducer, amqpSendResultHandler, connectionStatus);
     }
 
     @Singleton
@@ -489,9 +491,10 @@ public class SdkInjectionModule extends AbstractModule {
     @TicketReofferCancelPublisherBinding
     public AmqpPublisher provideTicketReofferCancelAmqpPublisher(
             @TicketReofferCancelProducerBinding AmqpProducer amqpProducer,
-            @TicketReofferCancelAmqpSendResultHandlerBinding AmqpSendResultHandler amqpSendResultHandler
+            @TicketReofferCancelAmqpSendResultHandlerBinding AmqpSendResultHandler amqpSendResultHandler,
+            ConnectionStatus connectionStatus
     ) {
-        return new AmqpPublisherImpl(amqpProducer, amqpSendResultHandler);
+        return new AmqpPublisherImpl(amqpProducer, amqpSendResultHandler, connectionStatus);
     }
 
     @Singleton
@@ -499,9 +502,10 @@ public class SdkInjectionModule extends AbstractModule {
     @TicketAcknowledgmentPublisherBinding
     public AmqpPublisher provideTicketAcknowledgmentAmqpPublisher(
             @AcknowledgmentProducerBinding AmqpProducer amqpProducer,
-            @TicketAckAmqpSendResultHandlerBinding AmqpSendResultHandler amqpSendResultHandler
+            @TicketAckAmqpSendResultHandlerBinding AmqpSendResultHandler amqpSendResultHandler,
+            ConnectionStatus connectionStatus
     ) {
-        return new AmqpPublisherImpl(amqpProducer, amqpSendResultHandler);
+        return new AmqpPublisherImpl(amqpProducer, amqpSendResultHandler, connectionStatus);
     }
 
     @Singleton
@@ -509,9 +513,10 @@ public class SdkInjectionModule extends AbstractModule {
     @TicketCancelAcknowledgmentPublisherBinding
     public AmqpPublisher provideTicketCancelAcknowledgmentAmqpPublisher(
             @AcknowledgmentProducerBinding AmqpProducer amqpProducer,
-            @TicketCancelAckAmqpSendResultHandlerBinding AmqpSendResultHandler amqpSendResultHandler
+            @TicketCancelAckAmqpSendResultHandlerBinding AmqpSendResultHandler amqpSendResultHandler,
+            ConnectionStatus connectionStatus
     ) {
-        return new AmqpPublisherImpl(amqpProducer, amqpSendResultHandler);
+        return new AmqpPublisherImpl(amqpProducer, amqpSendResultHandler, connectionStatus);
     }
 
     @Singleton
@@ -519,9 +524,10 @@ public class SdkInjectionModule extends AbstractModule {
     @TicketCashoutPublisherBinding
     public AmqpPublisher provideTicketCashoutAmqpPublisher(
             @TicketCashoutProducerBinding AmqpProducer amqpProducer,
-            @TicketCashoutAmqpSendResultHandlerBinding AmqpSendResultHandler amqpSendResultHandler
+            @TicketCashoutAmqpSendResultHandlerBinding AmqpSendResultHandler amqpSendResultHandler,
+            ConnectionStatus connectionStatus
     ) {
-        return new AmqpPublisherImpl(amqpProducer, amqpSendResultHandler);
+        return new AmqpPublisherImpl(amqpProducer, amqpSendResultHandler, connectionStatus);
     }
 
     @Singleton
@@ -529,9 +535,10 @@ public class SdkInjectionModule extends AbstractModule {
     @TicketNonSrSettlePublisherBinding
     public AmqpPublisher provideTicketNonSrSettleAmqpPublisher(
             @TicketNonSrSettleProducerBinding AmqpProducer amqpProducer,
-            @TicketNonSrSettleAmqpSendResultHandlerBinding AmqpSendResultHandler amqpSendResultHandler
+            @TicketNonSrSettleAmqpSendResultHandlerBinding AmqpSendResultHandler amqpSendResultHandler,
+            ConnectionStatus connectionStatus
     ) {
-        return new AmqpPublisherImpl(amqpProducer, amqpSendResultHandler);
+        return new AmqpPublisherImpl(amqpProducer, amqpSendResultHandler, connectionStatus);
     }
 
     @Singleton
@@ -559,9 +566,9 @@ public class SdkInjectionModule extends AbstractModule {
 
     @Singleton
     @Provides
-    public ChannelFactoryProvider provideChannelFactoryProvider() {
+    public ChannelFactoryProvider provideChannelFactoryProvider(ConnectionStatus connectionStatus) {
         // 3 producers + 2 receivers + 1 extra
-        return new ChannelFactoryProviderImpl(6);
+        return new ChannelFactoryProviderImpl(6, connectionStatus);
     }
 
     @Singleton
@@ -618,32 +625,36 @@ public class SdkInjectionModule extends AbstractModule {
     @Provides
     @TicketResponseMessageReceiverBinding
     public AmqpMessageReceiver provideTicketAmqpMessageReceived(@TicketResponseConsumerBinding AmqpConsumer amqpConsumer,
-                                                                TicketResponseReceiver ticketResponseReceiver) {
-        return new AmqpTicketResponseReceiverImpl(amqpConsumer, ticketResponseReceiver);
+                                                                TicketResponseReceiver ticketResponseReceiver,
+                                                                ConnectionStatus connectionStatus) {
+        return new AmqpTicketResponseReceiverImpl(amqpConsumer, ticketResponseReceiver, connectionStatus);
     }
 
     @Singleton
     @Provides
     @TicketCancelResponseMessageReceiverBinding
     public AmqpMessageReceiver provideTicketAmqpMessageReceived(@TicketCancelResponseConsumerBinding AmqpConsumer amqpConsumer,
-                                                                TicketCancelResponseReceiver ticketCancelResponseReceiver) {
-        return new AmqpTicketCancelResponseReceiverImpl(amqpConsumer, ticketCancelResponseReceiver);
+                                                                TicketCancelResponseReceiver ticketCancelResponseReceiver,
+                                                                ConnectionStatus connectionStatus) {
+        return new AmqpTicketCancelResponseReceiverImpl(amqpConsumer, ticketCancelResponseReceiver, connectionStatus);
     }
 
     @Singleton
     @Provides
     @TicketCashoutResponseMessageReceiverBinding
     public AmqpMessageReceiver provideTicketAmqpMessageReceived(@TicketCashoutResponseConsumerBinding AmqpConsumer amqpConsumer,
-                                                                TicketCashoutResponseReceiver ticketCashoutResponseReceiver) {
-        return new AmqpTicketCashoutResponseReceiverImpl(amqpConsumer, ticketCashoutResponseReceiver);
+                                                                TicketCashoutResponseReceiver ticketCashoutResponseReceiver,
+                                                                ConnectionStatus connectionStatus) {
+        return new AmqpTicketCashoutResponseReceiverImpl(amqpConsumer, ticketCashoutResponseReceiver, connectionStatus);
     }
 
     @Singleton
     @Provides
     @TicketNonSrSettleResponseMessageReceiverBinding
     public AmqpMessageReceiver provideTicketAmqpMessageReceived(@TicketNonSrSettleResponseConsumerBinding AmqpConsumer amqpConsumer,
-                                                                TicketNonSrSettleResponseReceiver ticketNonSrSettleResponseReceiver) {
-        return new AmqpTicketNonSrSettleResponseReceiverImpl(amqpConsumer, ticketNonSrSettleResponseReceiver);
+                                                                TicketNonSrSettleResponseReceiver ticketNonSrSettleResponseReceiver,
+                                                                ConnectionStatus connectionStatus) {
+        return new AmqpTicketNonSrSettleResponseReceiverImpl(amqpConsumer, ticketNonSrSettleResponseReceiver, connectionStatus);
     }
 
     @Override
@@ -655,6 +666,7 @@ public class SdkInjectionModule extends AbstractModule {
         bind(TicketCashoutResponseReceiver.class).to(TicketCashoutHandler.class);
         bind(TicketNonSrSettleResponseReceiver.class).to(TicketNonSrSettleHandler.class);
         bind(CustomBetManager.class).to(CustomBetManagerImpl.class).in(com.google.inject.Singleton.class);
+        bind(ConnectionStatus.class).to(ConnectionStatusImpl.class).in(com.google.inject.Singleton.class);
 
         bind(SdkConfiguration.class).toInstance(sdkConfiguration);
 //        bind(BuilderFactory.class).to();

@@ -88,7 +88,11 @@ public abstract class SenderBase<T extends SdkTicket> implements MessageSender {
             logger.warn("Ticket %s is missing correlationId", message.getTicketId());
         }
         messages.put(message.getCorrelationId(), message);
-        amqpPublisher.publishAsync(msgString.getBytes(StandardCharsets.UTF_8), message.getCorrelationId(), routingKey, replyRoutingKey);
+        amqpPublisher.publishAsync(message.getTicketId(),
+                                   msgString.getBytes(StandardCharsets.UTF_8),
+                                   message.getCorrelationId(),
+                                   routingKey,
+                                   replyRoutingKey);
     }
 
     protected abstract String getSerializedDto(T message);

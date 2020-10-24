@@ -4,6 +4,9 @@
 
 package com.sportradar.mts.sdk.impl.libs.adapters.amqp;
 
+import com.sportradar.mts.sdk.api.impl.ConnectionStatusImpl;
+import com.sportradar.mts.sdk.api.interfaces.ConnectionStatus;
+
 import java.util.HashMap;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -15,18 +18,24 @@ public class AmqpPublisherImpl implements AmqpPublisher {
     private final AmqpProducer messageSender;
     private final AmqpSendResultHandler messageHandler;
     private boolean opened;
+    private ConnectionStatusImpl connectionStatus;
 
     public AmqpPublisherImpl(AmqpProducer messageSender,
-                             AmqpSendResultHandler sendResultHandler
+                             AmqpSendResultHandler sendResultHandler,
+                             ConnectionStatus connectionStatus
     ) {
         checkNotNull(messageSender, "messageSender cannot be null");
         checkNotNull(sendResultHandler, "sendResultHandler cannot be null");
+        checkNotNull(connectionStatus, "connectionStatus cannot be null");
+
         this.messageSender = messageSender;
         this.messageHandler = sendResultHandler;
+        this.connectionStatus = (ConnectionStatusImpl) connectionStatus;
     }
 
     @Override
-    public void publishAsync(byte[] msg,
+    public void publishAsync(String ticketId,
+                             byte[] msg,
                              String correlationId,
                              String routingKey,
                              String replyRoutingKey) {
@@ -34,6 +43,7 @@ public class AmqpPublisherImpl implements AmqpPublisher {
         HashMap<String, Object> messageHeaders = new HashMap<>();
         messageHeaders.put("replyRoutingKey", replyRoutingKey);
         AmqpSendResult sendResult = messageSender.sendAsync(correlationId, msg, routingKey, messageHeaders);
+        connectionStatus.ticketSend(ticketId);
         messageHandler.handleSendResult(sendResult);
     }
 

@@ -7,11 +7,7 @@ package com.sportradar.example.tickets;
 import com.sportradar.mts.sdk.api.Sender;
 import com.sportradar.mts.sdk.api.Ticket;
 import com.sportradar.mts.sdk.api.builders.BuilderFactory;
-import com.sportradar.mts.sdk.api.enums.BetBonusMode;
-import com.sportradar.mts.sdk.api.enums.BetBonusType;
-import com.sportradar.mts.sdk.api.enums.OddsChangeType;
-import com.sportradar.mts.sdk.api.enums.SenderChannel;
-import com.sportradar.mts.sdk.api.enums.StakeType;
+import com.sportradar.mts.sdk.api.enums.*;
 
 /**
  * Examples how to build tickets from the MTS Ticket Integration guide (V31), chapter 10

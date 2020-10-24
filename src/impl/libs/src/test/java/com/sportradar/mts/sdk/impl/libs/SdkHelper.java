@@ -7,8 +7,6 @@ package com.sportradar.mts.sdk.impl.libs;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.sportradar.mts.api.rest.sportsapi.datamodel.MarketDescriptions;
-import com.sportradar.mts.sdk.api.SdkTicket;
-import com.sportradar.mts.sdk.api.Ticket;
 import com.sportradar.mts.sdk.api.builders.BuilderFactory;
 import com.sportradar.mts.sdk.api.caching.MarketDescriptionCI;
 import com.sportradar.mts.sdk.api.caching.MarketDescriptionCache;

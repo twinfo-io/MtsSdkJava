@@ -5,7 +5,9 @@
 package com.sportradar.mts.sdk.impl.libs.receivers;
 
 import com.sportradar.mts.sdk.api.TicketCancelResponse;
+import com.sportradar.mts.sdk.api.impl.ConnectionStatusImpl;
 import com.sportradar.mts.sdk.api.impl.mtsdto.ticketcancelresponse.TicketCancelResponseSchema;
+import com.sportradar.mts.sdk.api.interfaces.ConnectionStatus;
 import com.sportradar.mts.sdk.api.utils.JsonUtils;
 import com.sportradar.mts.sdk.api.utils.MtsDtoMapper;
 import com.sportradar.mts.sdk.impl.libs.adapters.amqp.AmqpConsumer;
@@ -27,14 +29,19 @@ public class AmqpTicketCancelResponseReceiverImpl implements AmqpMessageReceiver
     private final AmqpConsumer consumer;
     private final TicketCancelResponseReceiver ticketCancelResponseReceiver;
     private boolean opened;
+    private final ConnectionStatusImpl connectionStatus;
 
     public AmqpTicketCancelResponseReceiverImpl(AmqpConsumer consumer,
-                                                TicketCancelResponseReceiver responseReceiver
+                                                TicketCancelResponseReceiver responseReceiver,
+                                                ConnectionStatus connectionStatus
     ) {
         checkNotNull(consumer, "consumer cannot be null");
         checkNotNull(responseReceiver, "responseReceiver cannot be null");
+        checkNotNull(connectionStatus, "connectionStatus cannot be null");
+
         this.consumer = consumer;
         this.ticketCancelResponseReceiver = responseReceiver;
+        this.connectionStatus = (ConnectionStatusImpl) connectionStatus;
         consumer.setMessageReceivedHandler(this);
     }
 
@@ -82,6 +89,7 @@ public class AmqpTicketCancelResponseReceiverImpl implements AmqpMessageReceiver
         try {
             TicketCancelResponseSchema ticketCancelResponseSchema = JsonUtils.deserialize(msg, TicketCancelResponseSchema.class);
             ticketCancelResponse = MtsDtoMapper.map(ticketCancelResponseSchema, correlationId, messageHeaders, msgBody);
+            connectionStatus.ticketReceived(ticketCancelResponse.getTicketId());
         }
         catch (IOException e) {
             logger.error("failed to deserialize ticket cancel response! msg: {}", msgBody, e);

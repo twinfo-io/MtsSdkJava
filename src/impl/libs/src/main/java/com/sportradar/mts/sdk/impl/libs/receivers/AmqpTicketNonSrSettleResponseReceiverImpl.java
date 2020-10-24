@@ -5,7 +5,9 @@
 package com.sportradar.mts.sdk.impl.libs.receivers;
 
 import com.sportradar.mts.sdk.api.TicketNonSrSettleResponse;
+import com.sportradar.mts.sdk.api.impl.ConnectionStatusImpl;
 import com.sportradar.mts.sdk.api.impl.mtsdto.ticketnonsrsettle.TicketNonSrSettleResponseSchema;
+import com.sportradar.mts.sdk.api.interfaces.ConnectionStatus;
 import com.sportradar.mts.sdk.api.utils.JsonUtils;
 import com.sportradar.mts.sdk.api.utils.MtsDtoMapper;
 import com.sportradar.mts.sdk.impl.libs.adapters.amqp.AmqpConsumer;
@@ -26,16 +28,19 @@ public class AmqpTicketNonSrSettleResponseReceiverImpl implements AmqpMessageRec
     private final AmqpConsumer consumer;
     private final TicketNonSrSettleResponseReceiver ticketNonSrSettleResponseReceiver;
     private boolean opened;
+    private final ConnectionStatusImpl connectionStatus;
 
 
     public AmqpTicketNonSrSettleResponseReceiverImpl(AmqpConsumer consumer,
-                                                 TicketNonSrSettleResponseReceiver ticketNonSrSettleResponseReceiver) {
+                                                     TicketNonSrSettleResponseReceiver ticketNonSrSettleResponseReceiver,
+                                                     ConnectionStatus connectionStatus) {
         checkNotNull(consumer, "consumer cannot be null");
         checkNotNull(ticketNonSrSettleResponseReceiver, "ticketCashoutResponseReceiver cannot be null");
+        checkNotNull(connectionStatus, "connectionStatus cannot be null");
 
         this.consumer = consumer;
         this.ticketNonSrSettleResponseReceiver = ticketNonSrSettleResponseReceiver;
-
+        this.connectionStatus = (ConnectionStatusImpl) connectionStatus;
         consumer.setMessageReceivedHandler(this);
     }
 
@@ -58,6 +63,7 @@ public class AmqpTicketNonSrSettleResponseReceiverImpl implements AmqpMessageRec
         try {
             TicketNonSrSettleResponseSchema ticketSchema = JsonUtils.deserialize(msg, TicketNonSrSettleResponseSchema.class);
             ticketNonSrSettleResponse = MtsDtoMapper.map(ticketSchema, correlationId, messageHeaders, msgBody);
+            connectionStatus.ticketReceived(ticketNonSrSettleResponse.getTicketId());
         }
         catch (IOException e) {
             logger.error("failed to deserialize ticket non-sportaradar settle response! msg: {}", msgBody, e);

@@ -6,6 +6,7 @@ package com.sportradar.mts.sdk.impl.libs.adapters.amqp;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.ConnectionFactory;
+import com.sportradar.mts.sdk.api.impl.ConnectionStatusImpl;
 import com.sportradar.mts.sdk.impl.libs.LoggerTestAppender;
 import com.sportradar.mts.sdk.impl.libs.TimeLimitedTestBase;
 import org.junit.Before;
@@ -30,10 +31,10 @@ public class ChannelWrapperTest extends TimeLimitedTestBase {
 
     @Before
     public void setUp() {
-        ChannelFactoryProviderImpl channelFactoryProvider = new ChannelFactoryProviderImpl(1);
+        ChannelFactoryProviderImpl channelFactoryProvider = new ChannelFactoryProviderImpl(1, new ConnectionStatusImpl());
         ConnectionFactory connectionFactory = mock(ConnectionFactory.class);
         AmqpCluster mqCluster = AmqpCluster.from("username", "password", "vhost", false, new NetworkAddress("host"), 10);
-        ConnectionWrapper parentConnection = new ConnectionWrapper(channelFactoryProvider, connectionFactory, mqCluster);
+        ConnectionWrapper parentConnection = new ConnectionWrapper(channelFactoryProvider, connectionFactory, mqCluster, new ConnectionStatusImpl());
         long index = 0L;
         underlyingChannel = mock(Channel.class);
         channelWrapper = new ChannelWrapper(parentConnection, index, underlyingChannel);

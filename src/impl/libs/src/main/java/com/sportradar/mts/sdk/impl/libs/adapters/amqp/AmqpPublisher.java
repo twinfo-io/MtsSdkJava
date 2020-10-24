@@ -8,7 +8,8 @@ import com.sportradar.mts.sdk.api.interfaces.Openable;
 
 public interface AmqpPublisher extends Openable {
 
-    void publishAsync(byte[] msg,
+    void publishAsync(String ticketId,
+                      byte[] msg,
                       String correlationId,
                       String routingKey,
                       String replyRoutingKey);

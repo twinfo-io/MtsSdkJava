@@ -7,13 +7,7 @@ package com.sportradar.example;
 import com.google.common.base.Preconditions;
 import com.sportradar.mts.sdk.api.*;
 import com.sportradar.mts.sdk.api.builders.BuilderFactory;
-import com.sportradar.mts.sdk.api.enums.OddsChangeType;
-import com.sportradar.mts.sdk.api.enums.SenderChannel;
-import com.sportradar.mts.sdk.api.enums.StakeType;
-import com.sportradar.mts.sdk.api.enums.TicketAcceptance;
-import com.sportradar.mts.sdk.api.enums.TicketAckStatus;
-import com.sportradar.mts.sdk.api.enums.TicketCancelAckStatus;
-import com.sportradar.mts.sdk.api.enums.TicketCancellationReason;
+import com.sportradar.mts.sdk.api.enums.*;
 
 import java.util.Random;
 

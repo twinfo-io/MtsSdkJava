@@ -4,15 +4,7 @@
 
 package com.sportradar.mts.sdk.impl.libs.root;
 
-import com.sportradar.mts.sdk.api.TicketNonSrSettle;
-import com.sportradar.mts.sdk.api.interfaces.TicketAckResponseListener;
-import com.sportradar.mts.sdk.api.interfaces.TicketAckSender;
-import com.sportradar.mts.sdk.api.interfaces.TicketCancelAckResponseListener;
-import com.sportradar.mts.sdk.api.interfaces.TicketCancelAckSender;
-import com.sportradar.mts.sdk.api.interfaces.TicketCancelResponseListener;
-import com.sportradar.mts.sdk.api.interfaces.TicketCancelSender;
-import com.sportradar.mts.sdk.api.interfaces.TicketResponseListener;
-import com.sportradar.mts.sdk.api.interfaces.TicketSender;
+import com.sportradar.mts.sdk.api.interfaces.*;
 import com.sportradar.mts.sdk.impl.libs.LoggerTestAppender;
 import com.sportradar.mts.sdk.impl.libs.TimeLimitedTestBase;
 import com.sportradar.mts.sdk.impl.libs.adapters.amqp.AmqpMessageReceiver;
@@ -26,18 +18,8 @@ import org.mockito.InOrder;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 /**
  * @author andrej.resnik on 20/06/16 at 14:30

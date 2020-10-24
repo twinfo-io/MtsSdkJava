@@ -28,6 +28,7 @@ public class TicketAckHandlerImplTest {
 
     private AmqpPublisher publisher;
     private TicketAck ticketAcknowledgment;
+    private String ticketId;
     private String routingKey;
     private String correlationId;
     private TicketAckSender ackSender;
@@ -41,6 +42,7 @@ public class TicketAckHandlerImplTest {
         ExecutorService executorService = mock(ExecutorService.class);
         builderFactory = new SdkHelper().getBuilderFactory();
 
+        ticketId = "ticket-001";
         routingKey = "ack.ticket";
         publisher = mock(AmqpPublisher.class);
         ackSender = new TicketAckHandlerImpl(publisher, routingKey, executorService, 40, sdkLogger);
@@ -65,7 +67,7 @@ public class TicketAckHandlerImplTest {
         ackSender.open();
         ackSender.send(ticketAcknowledgment);
 
-        verify(publisher, times(1)).publishAsync(msg, correlationId, routingKey, routingKey);
+        verify(publisher, times(1)).publishAsync(ticketAcknowledgment.getTicketId(), msg, correlationId, routingKey, routingKey);
 
         String ticketAckString = JsonUtils.serializeAsString(MtsDtoMapper.map(ticketAcknowledgment));
         verify(sdkLogger, times(1)).logSendMessage(ticketAckString);

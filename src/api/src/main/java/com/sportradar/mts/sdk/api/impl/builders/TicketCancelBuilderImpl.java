@@ -11,7 +11,6 @@ import com.sportradar.mts.sdk.api.TicketCancel;
 import com.sportradar.mts.sdk.api.builders.TicketCancelBuilder;
 import com.sportradar.mts.sdk.api.enums.TicketCancellationReason;
 import com.sportradar.mts.sdk.api.impl.BetCancelImpl;
-import com.sportradar.mts.sdk.api.impl.BetCashoutImpl;
 import com.sportradar.mts.sdk.api.impl.TicketCancelImpl;
 import com.sportradar.mts.sdk.api.interfaces.SdkConfiguration;
 import com.sportradar.mts.sdk.api.utils.MtsTicketHelper;

@@ -21,16 +21,10 @@ import org.junit.Test;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Semaphore;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author andrej.resnik on 16/06/16 at 10:02
@@ -110,13 +104,13 @@ public class TicketCancelHandlerImplTest extends TimeLimitedTestBase {
         doAnswer(invocation -> {
             handler.ticketCancelResponseReceived(response);
             return null;
-        }).when(publisher).publishAsync(msg, correlationId, routingKey, replyRoutingKey);
+        }).when(publisher).publishAsync(ticketCancel.getTicketId(), msg, correlationId, routingKey, replyRoutingKey);
 
         handler.setListener(listener);
         handler.open();
         handler.send(ticketCancel);
 
-        verify(publisher, times(1)).publishAsync(msg, correlationId, routingKey, replyRoutingKey);
+        verify(publisher, times(1)).publishAsync(ticketCancel.getTicketId(), msg, correlationId, routingKey, replyRoutingKey);
         assertThat(response, is(notNullValue()));
 
         String ticketCancelString = JsonUtils.serializeAsString(ticketCancel);
@@ -135,7 +129,7 @@ public class TicketCancelHandlerImplTest extends TimeLimitedTestBase {
         doAnswer(invocation -> {
             handler.ticketCancelResponseReceived(null);
             return null;
-        }).when(publisher).publishAsync(msg, correlationId, routingKey, replyRoutingKey);
+        }).when(publisher).publishAsync(ticketCancel.getTicketId(), msg, correlationId, routingKey, replyRoutingKey);
 
         handler.open();
         handler.send(ticketCancel);
@@ -152,7 +146,7 @@ public class TicketCancelHandlerImplTest extends TimeLimitedTestBase {
         doAnswer(invocation -> {
             handler.ticketCancelResponseReceived(response);
             return null;
-        }).when(publisher).publishAsync(msg, correlationId, routingKey, replyRoutingKey);
+        }).when(publisher).publishAsync(ticketCancel.getTicketId(), msg, correlationId, routingKey, replyRoutingKey);
 
         Semaphore semaphore = new Semaphore(0);
         when(executor.submit(any(Runnable.class))).then(invocation -> {

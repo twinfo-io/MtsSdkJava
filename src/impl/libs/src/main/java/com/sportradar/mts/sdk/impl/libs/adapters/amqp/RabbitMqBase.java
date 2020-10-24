@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.NoRouteToHostException;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -158,11 +159,14 @@ public abstract class RabbitMqBase implements Openable {
 
     private static boolean isConnectionException(IOException e) {
         if (e.getCause() == null) {
-            return false;
+            return e.getClass().equals(ShutdownSignalException.class)
+                    || e.getClass().equals(AlreadyClosedException.class)
+                    || e.getClass().equals(NoRouteToHostException.class);
         }
 
-        return e.getCause().getClass().equals(ShutdownSignalException.class) ||
-                e.getCause().getClass().equals(AlreadyClosedException.class);
+        return e.getCause().getClass().equals(ShutdownSignalException.class)
+                || e.getCause().getClass().equals(AlreadyClosedException.class)
+                || e.getCause().getClass().equals(NoRouteToHostException.class);
     }
 
     private static long getSleepMillis(boolean isConnectionException, long oldSleepMillis) {
@@ -209,8 +213,8 @@ public abstract class RabbitMqBase implements Openable {
 
                 try {
                     try (final ChannelWrapper channelWrapper = this.parent.channelFactory.getChannel()) {
-                        this.parent.doWork(channelWrapper.getChannel(), this.threadId);
                         this.sleepMillis = 0L;
+                        this.parent.doWork(channelWrapper.getChannel(), this.threadId);
                     }
 
                 } catch (IOException exc) {

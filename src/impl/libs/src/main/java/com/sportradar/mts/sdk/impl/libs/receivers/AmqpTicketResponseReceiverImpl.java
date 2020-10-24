@@ -5,7 +5,9 @@
 package com.sportradar.mts.sdk.impl.libs.receivers;
 
 import com.sportradar.mts.sdk.api.TicketResponse;
+import com.sportradar.mts.sdk.api.impl.ConnectionStatusImpl;
 import com.sportradar.mts.sdk.api.impl.mtsdto.ticketresponse.TicketResponseSchema;
+import com.sportradar.mts.sdk.api.interfaces.ConnectionStatus;
 import com.sportradar.mts.sdk.api.utils.JsonUtils;
 import com.sportradar.mts.sdk.api.utils.MtsDtoMapper;
 import com.sportradar.mts.sdk.impl.libs.adapters.amqp.AmqpConsumer;
@@ -26,14 +28,19 @@ public class AmqpTicketResponseReceiverImpl implements AmqpMessageReceiver {
     private final AmqpConsumer consumer;
     private final TicketResponseReceiver ticketResponseReceiver;
     private boolean opened;
+    private final ConnectionStatusImpl connectionStatus;
 
     public AmqpTicketResponseReceiverImpl(AmqpConsumer consumer,
-                                          TicketResponseReceiver responseReceiver
+                                          TicketResponseReceiver responseReceiver,
+                                          ConnectionStatus connectionStatus
     ) {
         checkNotNull(consumer, "consumer cannot be null");
         checkNotNull(responseReceiver, "responseReceiver cannot be null");
+        checkNotNull(connectionStatus, "connectionStatus cannot be null");
+
         this.consumer = consumer;
         this.ticketResponseReceiver = responseReceiver;
+        this.connectionStatus = (ConnectionStatusImpl) connectionStatus;
         consumer.setMessageReceivedHandler(this);
     }
 
@@ -81,6 +88,7 @@ public class AmqpTicketResponseReceiverImpl implements AmqpMessageReceiver {
         try {
             TicketResponseSchema ticketResponseSchema = JsonUtils.deserialize(msg, TicketResponseSchema.class);
             ticketResponse = MtsDtoMapper.map(ticketResponseSchema, correlationId, messageHeaders, msgBody);
+            connectionStatus.ticketReceived(ticketResponse.getTicketId());
         }
         catch (IOException e) {
             logger.error("failed to deserialize ticket response! msg: {}", msgBody, e);

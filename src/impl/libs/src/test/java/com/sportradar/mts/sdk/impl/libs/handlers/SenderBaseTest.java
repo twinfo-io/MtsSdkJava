@@ -4,6 +4,7 @@
 
 package com.sportradar.mts.sdk.impl.libs.handlers;
 
+import com.sportradar.mts.sdk.api.impl.ConnectionStatusImpl;
 import com.sportradar.mts.sdk.impl.libs.TimeLimitedTestBase;
 import com.sportradar.mts.sdk.impl.libs.adapters.amqp.AmqpProducer;
 import com.sportradar.mts.sdk.impl.libs.adapters.amqp.AmqpPublisher;
@@ -34,7 +35,7 @@ public class SenderBaseTest extends TimeLimitedTestBase {
         sender = mock(AmqpProducer.class);
         resender = mock(AmqpSendResultHandler.class);
 
-        publisher = new AmqpPublisherImpl(sender, resender);
+        publisher = new AmqpPublisherImpl(sender, resender, new ConnectionStatusImpl());
     }
 
     @Test

@@ -4,11 +4,7 @@
 
 package com.sportradar.example;
 
-import com.sportradar.example.example.Basic;
-import com.sportradar.example.example.Blocking;
-import com.sportradar.example.example.Cashout;
-import com.sportradar.example.example.Examples;
-import com.sportradar.example.example.Reoffer;
+import com.sportradar.example.example.*;
 
 import java.io.IOException;
 

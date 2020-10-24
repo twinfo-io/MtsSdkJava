@@ -4,7 +4,6 @@
 
 package com.sportradar.mts.sdk.impl.libs.root;
 
-import com.sportradar.mts.sdk.api.TicketNonSrSettleResponse;
 import com.sportradar.mts.sdk.api.interfaces.*;
 
 public interface SdkRoot extends Openable {

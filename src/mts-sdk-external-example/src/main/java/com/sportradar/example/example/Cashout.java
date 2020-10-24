@@ -5,24 +5,14 @@
 package com.sportradar.example.example;
 
 import com.sportradar.example.TicketBuilderHelper;
-import com.sportradar.example.listeners.TicketAckHandler;
-import com.sportradar.example.listeners.TicketCancelAckHandler;
-import com.sportradar.example.listeners.TicketCancelResponseHandler;
-import com.sportradar.example.listeners.TicketCashoutResponseHandler;
-import com.sportradar.example.listeners.TicketResponseHandler;
+import com.sportradar.example.listeners.*;
 import com.sportradar.mts.sdk.api.Ticket;
 import com.sportradar.mts.sdk.api.TicketAck;
 import com.sportradar.mts.sdk.api.TicketCashout;
 import com.sportradar.mts.sdk.api.TicketResponse;
 import com.sportradar.mts.sdk.api.enums.TicketAcceptance;
 import com.sportradar.mts.sdk.api.exceptions.ResponseTimeoutException;
-import com.sportradar.mts.sdk.api.interfaces.MtsSdkApi;
-import com.sportradar.mts.sdk.api.interfaces.SdkConfiguration;
-import com.sportradar.mts.sdk.api.interfaces.TicketAckSender;
-import com.sportradar.mts.sdk.api.interfaces.TicketCancelAckSender;
-import com.sportradar.mts.sdk.api.interfaces.TicketCancelSender;
-import com.sportradar.mts.sdk.api.interfaces.TicketCashoutSender;
-import com.sportradar.mts.sdk.api.interfaces.TicketSender;
+import com.sportradar.mts.sdk.api.interfaces.*;
 import com.sportradar.mts.sdk.app.MtsSdk;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

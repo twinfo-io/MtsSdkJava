@@ -4,6 +4,7 @@
 
 package com.sportradar.mts.sdk.impl.libs.adapters.amqp;
 
+import com.sportradar.mts.sdk.api.impl.ConnectionStatusImpl;
 import com.sportradar.mts.sdk.impl.libs.TimeLimitedTestBase;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,6 +29,7 @@ public class AmqpPublisherImplTest extends TimeLimitedTestBase {
     @Mock
     private AmqpSendResultHandler resender;
 
+    private String ticketId;
     private String correlationId;
     private String routingKey;
     private byte[] msg;
@@ -36,12 +38,12 @@ public class AmqpPublisherImplTest extends TimeLimitedTestBase {
     public void setUp() {
         sender = mock(AmqpProducer.class);
         resender = mock(AmqpSendResultHandler.class);
-        publisher = new AmqpPublisherImpl(sender, resender);
+        publisher = new AmqpPublisherImpl(sender, resender, new ConnectionStatusImpl());
+        ticketId = "ticket-001";
         correlationId = "correlationId";
         routingKey = "routingKey";
         msg = new byte[] {};
     }
-
 
     @Test
     public void propagateSenderExceptions() {
@@ -55,7 +57,7 @@ public class AmqpPublisherImplTest extends TimeLimitedTestBase {
         when(sender.sendAsync(correlationId, msg, routingKey, messageHeaders)).thenThrow(error);
 
         publisher.open();
-        publisher.publishAsync(msg, correlationId, routingKey, routingKey);
+        publisher.publishAsync(ticketId, msg, correlationId, routingKey, routingKey);
     }
 
 
@@ -66,7 +68,7 @@ public class AmqpPublisherImplTest extends TimeLimitedTestBase {
         thrown.expect(IllegalStateException.class);
         thrown.expectMessage("sender is not open");
 
-        publisher.publishAsync(msg, correlationId, routingKey, routingKey);
+        publisher.publishAsync(ticketId, msg, correlationId, routingKey, routingKey);
     }
 
     @Test
@@ -78,7 +80,7 @@ public class AmqpPublisherImplTest extends TimeLimitedTestBase {
         when(sender.sendAsync(correlationId, msg, routingKey, messageHeaders)).thenReturn(result);
 
         publisher.open();
-        publisher.publishAsync(msg, correlationId, routingKey, routingKey);
+        publisher.publishAsync(ticketId, msg, correlationId, routingKey, routingKey);
         verify(sender, times(1)).sendAsync(correlationId, msg, routingKey, messageHeaders);
         verify(resender, times(1)).handleSendResult(result);
     }

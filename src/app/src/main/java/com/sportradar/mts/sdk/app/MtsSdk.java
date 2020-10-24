@@ -9,6 +9,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.sportradar.mts.sdk.api.builders.BuilderFactory;
 import com.sportradar.mts.sdk.api.exceptions.MtsPropertiesException;
+import com.sportradar.mts.sdk.api.impl.ConnectionStatusImpl;
 import com.sportradar.mts.sdk.api.interfaces.*;
 import com.sportradar.mts.sdk.api.interfaces.customBet.CustomBetManager;
 import com.sportradar.mts.sdk.api.settings.SdkConfigurationBuilderImpl;
@@ -38,6 +39,7 @@ public class MtsSdk implements MtsSdkApi {
     private BuilderFactory builderFactory;
     private MtsClientApi mtsClientApi;
     private CustomBetManager customBetManager;
+    private ConnectionStatusImpl connectionStatus;
 
     /**
      * Creates new MTS SDK instance
@@ -46,6 +48,12 @@ public class MtsSdk implements MtsSdkApi {
         Preconditions.checkNotNull(config, "config cannot be null");
 
         this.config = config;
+        Injector injector = Guice.createInjector(new SdkInjectionModule(this.config));
+        builderFactory = injector.getInstance(BuilderFactory.class);
+        mtsClientApi = injector.getInstance(MtsClientApi.class);
+        customBetManager = injector.getInstance(CustomBetManager.class);
+        connectionStatus = (ConnectionStatusImpl) injector.getInstance(ConnectionStatus.class);
+        sdkRoot = injector.getInstance(SdkRoot.class);
         logInit();
     }
 
@@ -107,9 +115,7 @@ public class MtsSdk implements MtsSdkApi {
      *
      * @return {@link SdkConfiguration}
      */
-    public static SdkConfiguration getConfigurationFromYaml() {
-        return SdkConfigurationImpl.getConfigurationFromYaml();
-    }
+    public static SdkConfiguration getConfigurationFromYaml() { return SdkConfigurationImpl.getConfigurationFromYaml(); }
 
     /**
      * Gets the {@link SdkConfigurationBuilder} to construct {@link SdkConfiguration}
@@ -170,6 +176,14 @@ public class MtsSdk implements MtsSdkApi {
     }
 
     @Override
+    public ConnectionStatus getConnectionStatus(ConnectionChangeListener connectionChangeListener) {
+        if(connectionChangeListener != null) {
+            connectionStatus.setConnectionChangeListener(connectionChangeListener);
+        }
+        return connectionStatus;
+    }
+
+    @Override
     public boolean isOpen() {
         return opened;
     }
@@ -178,11 +192,12 @@ public class MtsSdk implements MtsSdkApi {
         checkNotNull(config, "configuration cannot be null");
         logger.info("Opening the MTS SDK");
         opened = true;
-        Injector injector = Guice.createInjector(new SdkInjectionModule(config));
-        builderFactory = injector.getInstance(BuilderFactory.class);
-        mtsClientApi = injector.getInstance(MtsClientApi.class);
-        customBetManager = injector.getInstance(CustomBetManager.class);
-        sdkRoot = injector.getInstance(SdkRoot.class);
+//        Injector injector = Guice.createInjector(new SdkInjectionModule(config));
+//        builderFactory = injector.getInstance(BuilderFactory.class);
+//        mtsClientApi = injector.getInstance(MtsClientApi.class);
+//        customBetManager = injector.getInstance(CustomBetManager.class);
+//        connectionStatus = (ConnectionStatusImpl) injector.getInstance(ConnectionStatus.class);
+//        sdkRoot = injector.getInstance(SdkRoot.class);
         sdkRoot.open();
         logger.info("MTS SDK opened");
     }

@@ -10,12 +10,7 @@ import com.sportradar.example.listeners.TicketCancelAckHandler;
 import com.sportradar.example.listeners.TicketCancelResponseHandler;
 import com.sportradar.example.listeners.TicketResponseHandler;
 import com.sportradar.mts.sdk.api.Ticket;
-import com.sportradar.mts.sdk.api.interfaces.MtsSdkApi;
-import com.sportradar.mts.sdk.api.interfaces.SdkConfiguration;
-import com.sportradar.mts.sdk.api.interfaces.TicketAckSender;
-import com.sportradar.mts.sdk.api.interfaces.TicketCancelAckSender;
-import com.sportradar.mts.sdk.api.interfaces.TicketCancelSender;
-import com.sportradar.mts.sdk.api.interfaces.TicketSender;
+import com.sportradar.mts.sdk.api.interfaces.*;
 import com.sportradar.mts.sdk.app.MtsSdk;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,14 +39,7 @@ public class Basic {
         ticketSender.send(ticket);
 
         try {
-            long maxStake = mtsSdk.getClientApi().getMaxStake(ticket);
-        } catch (InterruptedException e) {
-            logger.info("interrupted while sleeping");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            Thread.sleep(50000);
+            Thread.sleep(30000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

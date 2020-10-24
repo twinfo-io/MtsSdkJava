@@ -5,6 +5,7 @@
 package com.sportradar.mts.sdk.impl.libs.adapters.amqp;
 
 import com.google.common.base.Preconditions;
+import com.sportradar.mts.sdk.api.interfaces.ConnectionStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,9 +29,12 @@ public final class ChannelFactoryProviderImpl implements ChannelFactoryProvider 
     private volatile ExecutorService executorService;
     private int executorRegistrationCount = 0;
     private boolean opened;
+    private ConnectionStatus connectionStatus;
 
-    public ChannelFactoryProviderImpl(int mqWorkerThreadCount) {
+    public ChannelFactoryProviderImpl(int mqWorkerThreadCount, ConnectionStatus connectionStatus) {
+
         this.mqWorkerThreadCount = mqWorkerThreadCount;
+        this.connectionStatus = connectionStatus;
     }
 
     @Override
@@ -67,7 +71,7 @@ public final class ChannelFactoryProviderImpl implements ChannelFactoryProvider 
         try {
             synchronized (this.factoriesLock) {
                 if (!this.factories.containsKey(mqCluster)) {
-                    this.factories.put(mqCluster, new ChannelFactory(mqCluster, this));
+                    this.factories.put(mqCluster, new ChannelFactory(mqCluster, this, connectionStatus));
                 }
                 return this.factories.get(mqCluster);
             }

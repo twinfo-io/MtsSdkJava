@@ -11,6 +11,28 @@
     <property name="MTS_SDK_LOG_LEVEL" value="info" />
 
     <!-- the execution log file appender configuration -->
+    <appender name="SdkExampleLogFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- the main/current execution log file -->
+        <file>${MTS_SDK_LOG_FOLDER}/example.log</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover
+            Once any of the below condition met, it will change the file name as below and compressed it. -->
+            <fileNamePattern>${MTS_SDK_LOG_FOLDER}/example-%d{yyyy-MM-dd}_%i.log.zip</fileNamePattern>
+            <!-- or whenever the file size reaches 10MB -->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <!-- keep 7 days' worth of history -->
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%d [%-5level] [%thread] [%logger{32}] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- the execution log file appender configuration -->
     <appender name="SdkExecutionLogFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!-- the main/current execution log file -->
         <file>${MTS_SDK_LOG_FOLDER}/mts-sdk.log</file>
@@ -82,6 +104,12 @@
             <pattern>%d [%-5level] [%thread] [%logger{32}] - %msg%n</pattern>
         </encoder>
     </appender>
+
+    <!-- example log config assigned to the execution logger -->
+    <logger name="com.sportradar.example" level="${MTS_SDK_LOG_LEVEL}">
+        <appender-ref ref="SdkExecutionLogFileAppender" />
+        <appender-ref ref="SdkExampleLogFileAppender" />
+    </logger>
 
     <!-- execution log config assigned to the execution logger -->
     <logger name="com.sportradar.mts.sdk" level="${MTS_SDK_LOG_LEVEL}">

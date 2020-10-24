@@ -101,4 +101,11 @@ public interface MtsSdkApi extends Openable {
      * @return the {@link CustomBetManager}
      */
     CustomBetManager getCustomBetManager();
+
+    /**
+     * Get the connection status
+     * @param connectionChangeListener - client implementation of connection change listener
+     * @return the connection status
+     */
+    ConnectionStatus getConnectionStatus(ConnectionChangeListener connectionChangeListener);
 }

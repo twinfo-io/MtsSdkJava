@@ -5,7 +5,9 @@
 package com.sportradar.mts.sdk.impl.libs.receivers;
 
 import com.sportradar.mts.sdk.api.TicketCashoutResponse;
+import com.sportradar.mts.sdk.api.impl.ConnectionStatusImpl;
 import com.sportradar.mts.sdk.api.impl.mtsdto.ticketcashoutresponse.TicketCashoutResponseSchema;
+import com.sportradar.mts.sdk.api.interfaces.ConnectionStatus;
 import com.sportradar.mts.sdk.api.utils.JsonUtils;
 import com.sportradar.mts.sdk.api.utils.MtsDtoMapper;
 import com.sportradar.mts.sdk.impl.libs.adapters.amqp.AmqpConsumer;
@@ -26,16 +28,19 @@ public class AmqpTicketCashoutResponseReceiverImpl implements AmqpMessageReceive
     private final AmqpConsumer consumer;
     private final TicketCashoutResponseReceiver ticketCashoutResponseReceiver;
     private boolean opened;
+    private final ConnectionStatusImpl connectionStatus;
 
 
     public AmqpTicketCashoutResponseReceiverImpl(AmqpConsumer consumer,
-                                                 TicketCashoutResponseReceiver ticketCashoutResponseReceiver) {
+                                                 TicketCashoutResponseReceiver ticketCashoutResponseReceiver,
+                                                 ConnectionStatus connectionStatus) {
         checkNotNull(consumer, "consumer cannot be null");
         checkNotNull(ticketCashoutResponseReceiver, "ticketCashoutResponseReceiver cannot be null");
+        checkNotNull(connectionStatus, "connectionStatus cannot be null");
 
         this.consumer = consumer;
         this.ticketCashoutResponseReceiver = ticketCashoutResponseReceiver;
-
+        this.connectionStatus = (ConnectionStatusImpl) connectionStatus;
         consumer.setMessageReceivedHandler(this);
     }
 
@@ -58,6 +63,7 @@ public class AmqpTicketCashoutResponseReceiverImpl implements AmqpMessageReceive
         try {
             TicketCashoutResponseSchema ticketSchema = JsonUtils.deserialize(msg, TicketCashoutResponseSchema.class);
             ticketCashoutResponse = MtsDtoMapper.map(ticketSchema, correlationId, messageHeaders, msgBody);
+            connectionStatus.ticketReceived(ticketCashoutResponse.getTicketId());
         }
         catch (IOException e) {
             logger.error("failed to deserialize ticket cashout response! msg: {}", msgBody, e);

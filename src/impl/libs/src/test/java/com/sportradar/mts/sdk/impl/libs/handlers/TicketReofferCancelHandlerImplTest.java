@@ -64,7 +64,7 @@ public class TicketReofferCancelHandlerImplTest {
         reofferCancelSender.open();
         reofferCancelSender.send(ticketReofferCancel);
 
-        verify(publisher, times(1)).publishAsync(msg, correlationId, routingKey, routingKey);
+        verify(publisher, times(1)).publishAsync(ticketReofferCancel.getTicketId(), msg, correlationId, routingKey, routingKey);
 
         String ticketString = JsonUtils.serializeAsString(MtsDtoMapper.map(ticketReofferCancel));
         verify(sdkLogger, times(1)).logSendMessage(ticketString);

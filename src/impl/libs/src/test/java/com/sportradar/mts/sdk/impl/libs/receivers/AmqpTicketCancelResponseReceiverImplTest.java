@@ -4,6 +4,7 @@
 
 package com.sportradar.mts.sdk.impl.libs.receivers;
 
+import com.sportradar.mts.sdk.api.impl.ConnectionStatusImpl;
 import com.sportradar.mts.sdk.api.utils.StringUtils;
 import com.sportradar.mts.sdk.impl.libs.LoggerTestAppender;
 import com.sportradar.mts.sdk.impl.libs.TimeLimitedTestBase;
@@ -42,7 +43,7 @@ public class AmqpTicketCancelResponseReceiverImplTest extends TimeLimitedTestBas
     public void setUp() {
         consumer = mock(AmqpConsumer.class);
         responseReceiver = mock(TicketCancelResponseReceiver.class);
-        msgReceiver = new AmqpTicketCancelResponseReceiverImpl(consumer, responseReceiver);
+        msgReceiver = new AmqpTicketCancelResponseReceiverImpl(consumer, responseReceiver, new ConnectionStatusImpl());
 
         msg = "testMessage".getBytes();
         correlationId = "correlationId";

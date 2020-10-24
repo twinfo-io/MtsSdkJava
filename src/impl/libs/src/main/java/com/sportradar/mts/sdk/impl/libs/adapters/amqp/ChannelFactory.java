@@ -6,6 +6,7 @@ package com.sportradar.mts.sdk.impl.libs.adapters.amqp;
 
 import com.google.common.collect.ImmutableSet;
 import com.rabbitmq.client.ConnectionFactory;
+import com.sportradar.mts.sdk.api.interfaces.ConnectionStatus;
 import com.sportradar.mts.sdk.api.utils.SdkInfo;
 
 import javax.net.ssl.*;
@@ -13,7 +14,10 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
 public final class ChannelFactory {
@@ -29,7 +33,9 @@ public final class ChannelFactory {
 
     private final ConnectionWrapper connectionWrapper;
 
-    ChannelFactory(final AmqpCluster mqCluster, final ChannelFactoryProviderImpl channelFactoryProvider) throws Exception {
+    ChannelFactory(final AmqpCluster mqCluster,
+                   final ChannelFactoryProviderImpl channelFactoryProvider,
+                   ConnectionStatus connectionStatus) throws Exception {
         final ConnectionFactory connectionFactory = new ConnectionFactory();
         connectionFactory.setThreadFactory(channelFactoryProvider.getAmqpThreadFactory());
 
@@ -63,7 +69,7 @@ public final class ChannelFactory {
         clientProperties.putIfAbsent("SrMtsSdkBId", String.valueOf(mqCluster.getBookmakerId()));
         connectionFactory.setClientProperties(clientProperties);
 
-        this.connectionWrapper = new ConnectionWrapper(channelFactoryProvider, connectionFactory, mqCluster);
+        this.connectionWrapper = new ConnectionWrapper(channelFactoryProvider, connectionFactory, mqCluster, connectionStatus);
     }
 
     public ChannelWrapper getChannel() throws IOException, TimeoutException {

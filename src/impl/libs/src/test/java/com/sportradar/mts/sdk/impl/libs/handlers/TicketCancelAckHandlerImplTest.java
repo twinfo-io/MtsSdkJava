@@ -73,7 +73,8 @@ public class TicketCancelAckHandlerImplTest extends TimeLimitedTestBase {
         cancelAckSender.open();
         cancelAckSender.send(ticketCancelAcknowledgment);
 
-        verify(publisher, times(1)).publishAsync(msg, correlationId, routingKey, routingKey);
+        verify(publisher, times(1)).publishAsync(ticketCancelAcknowledgment.getTicketId(), msg, correlationId, routingKey,
+                                                 routingKey);
 
         String ticketCancelAckString = JsonUtils.serializeAsString(MtsDtoMapper.map(ticketCancelAcknowledgment));
         verify(sdkLogger, times(1)).logSendMessage(ticketCancelAckString);

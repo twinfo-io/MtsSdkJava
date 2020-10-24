@@ -158,8 +158,7 @@ public final class RabbitMqProducer extends RabbitMqBase implements AmqpProducer
 
         int currentSize = this.normalQueue.size();
         if (currentSize > this.maxBufferSize) {
-            logger.warn("buffer size limit reached [size={}, limit={}, exName={}]",
-                    currentSize, this.maxBufferSize, this.exchangeName);
+            logger.warn("buffer size limit reached [size={}, limit={}, exName={}]", currentSize, this.maxBufferSize, this.exchangeName);
             return new RejectedMessage(correlationId, msg, routingKey, messageHeaders, this);
         }
 

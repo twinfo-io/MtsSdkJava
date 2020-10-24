@@ -4,6 +4,7 @@
 
 package com.sportradar.mts.sdk.impl.libs.adapters.amqp;
 
+import com.sportradar.mts.sdk.api.impl.ConnectionStatusImpl;
 import com.sportradar.mts.sdk.impl.libs.TimeLimitedTestBase;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +28,7 @@ public class ChannelFactoryProviderImplTest extends TimeLimitedTestBase {
     @Before
     public void setUp(){
         int mqWorkerThreadCount = 1;
-        channelFactoryProvider = new ChannelFactoryProviderImpl(mqWorkerThreadCount);
+        channelFactoryProvider = new ChannelFactoryProviderImpl(mqWorkerThreadCount, new ConnectionStatusImpl());
     }
 
     @Test

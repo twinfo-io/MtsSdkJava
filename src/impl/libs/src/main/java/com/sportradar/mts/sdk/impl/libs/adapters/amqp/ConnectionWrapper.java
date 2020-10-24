@@ -5,20 +5,14 @@
 package com.sportradar.mts.sdk.impl.libs.adapters.amqp;
 
 import com.google.common.collect.Lists;
-import com.rabbitmq.client.Address;
-import com.rabbitmq.client.AddressResolver;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.*;
+import com.sportradar.mts.sdk.api.impl.ConnectionStatusImpl;
+import com.sportradar.mts.sdk.api.interfaces.ConnectionStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.TimeoutException;
 
 final class ConnectionWrapper {
@@ -33,14 +27,17 @@ final class ConnectionWrapper {
     private final DummyAddressResolver addressResolver;
     private final TreeMap<Long, ConnectionHolder> connections = new TreeMap<>();
     private long lastIndex = 0;
+    private ConnectionStatusImpl connectionStatus;
 
     ConnectionWrapper(final ChannelFactoryProviderImpl channelFactoryProvider,
                       final ConnectionFactory connectionFactory,
-                      final AmqpCluster cluster) {
+                      final AmqpCluster cluster,
+                      ConnectionStatus connectionStatus) {
         this.parentChannelFactoryProvider = channelFactoryProvider;
         this.connectionFactory = connectionFactory;
         this.cluster = cluster;
         this.addressResolver = new DummyAddressResolver(extractAddresses(this.cluster));
+        this.connectionStatus = (ConnectionStatusImpl) connectionStatus;
     }
 
     ChannelWrapper getChannel() throws IOException, TimeoutException {
@@ -113,6 +110,7 @@ final class ConnectionWrapper {
         this.lastIndex = nextIndex;
         final ConnectionHolder result = new ConnectionHolder(this.lastIndex, connection);
         this.connections.put(this.lastIndex, result);
+        this.connectionStatus.connect("Connection established.");
         return result;
     }
 
@@ -155,7 +153,7 @@ final class ConnectionWrapper {
         }
     }
 
-    private final static class ConnectionHolder {
+    private final class ConnectionHolder {
 
         private final long index;
         private final Connection connection;
@@ -164,6 +162,8 @@ final class ConnectionWrapper {
         ConnectionHolder(final long index, final Connection connection) {
             this.index = index;
             this.connection = connection;
+            this.connection.addShutdownListener(new ConnectionShutdownHandler());
+            this.connection.addBlockedListener(new ConnectionBlockedHandler());
         }
     }
 
@@ -178,6 +178,32 @@ final class ConnectionWrapper {
         @Override
         public List<Address> getAddresses() {
             return this.addresses;
+        }
+    }
+
+    private class ConnectionShutdownHandler implements ShutdownListener{
+
+        @Override
+        public void shutdownCompleted(ShutdownSignalException e) {
+            if(!e.isInitiatedByApplication())
+            {
+                logger.warn("Connection shutdown invoked.");
+                connectionStatus.disconnect("Connection shutdown invoked. Message: " + e.getMessage());
+            }
+        }
+    }
+
+    private class ConnectionBlockedHandler implements BlockedListener{
+
+        @Override
+        public void handleBlocked(String s) throws IOException {
+            logger.warn("Connection blocked invoked.");
+//            connectionStatus.disconnect("Connection blocked invoked. Message: " + s);
+        }
+
+        @Override
+        public void handleUnblocked() throws IOException {
+            logger.warn("Connection unblocked invoked.");
         }
     }
 }
