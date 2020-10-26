@@ -42,10 +42,10 @@ public class BetImpl implements Bet {
         Preconditions.checkArgument(MtsTicketHelper.validateTicketId(id), "betId is not valid");
         Preconditions.checkNotNull(selections, "selections cannot be null");
         Preconditions.checkArgument(selections.size() > 0, "missing selections, at least one selection must be specified");
-        Preconditions.checkArgument(selections.size() < 64, "no more then 64 selections allowed");
+//        Preconditions.checkArgument(selections.size() < 64, "no more then 64 selections allowed");
         Preconditions.checkArgument(selections.size() == selections.stream().distinct().count(), "selection can not be repeated");
         Preconditions.checkArgument(selectedSystems.size() > 0, "missing selectedSystems, at least one selectedSystems must be specified");
-        Preconditions.checkArgument(selectedSystems.size() < 64, "no more then 64 selectedSystems allowed");
+//        Preconditions.checkArgument(selectedSystems.size() < 64, "no more then 64 selectedSystems allowed");
         Preconditions.checkArgument(selectedSystems.size() == selectedSystems.stream().distinct().count(), "selectedSystems can not be repeated");
         Preconditions.checkArgument(selectedSystems.stream().allMatch(a->a > 0), "selectedSystems - 0 is not valid value");
         Preconditions.checkArgument(selectedSystems.stream().allMatch(a->a <= selections.size()), "selectedSystems contains invalid value");

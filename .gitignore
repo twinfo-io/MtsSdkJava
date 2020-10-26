@@ -70,3 +70,4 @@ dependency-reduced-pom.xml
 nb-configuration.xml
 
 **/custom
+src/impl/libs/com.sportradar.mts.sdk/mts-sdk-2020-02-25_0.log.zip
