@@ -1,7 +1,13 @@
 A MTS SDK Java library
 
 CHANGE LOG:
-2019-04-07 2.3.4.0
+2020-11-06 2.3.5.0
+Added # to the User ID pattern
+MtsSdk extended with getConnectionStatus - can be used with connection change listener
+Fix: make serialization synchronized
+Removed ticket selection count limit
+
+2020-04-07 2.3.4.0
 Allow 0 cashout stake when building TicketCashout
 Added client_properties to rabbit connection
 Added argument to rabbit queue declare: queue-master-locator

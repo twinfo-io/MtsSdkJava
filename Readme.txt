@@ -1,6 +1,27 @@
 A MTS SDK Java library
 
 CHANGE LOG:
+2020-11-06 2.3.5.0
+Added # to the User ID pattern
+MtsSdk extended with getConnectionStatus - can be used with connection change listener
+Fix: make serialization synchronized
+Removed ticket selection count limit
+
+2020-04-07 2.3.4.0
+Allow 0 cashout stake when building TicketCashout
+Added client_properties to rabbit connection
+Added argument to rabbit queue declare: queue-master-locator
+Examples updated to use UOF markets
+Changed connection heartbeat from 45s to 20s
+Changed jackson.version from 2.6.5 to 2.10.1
+
+2019-10-25 2.3.3.0
+Added onTicketResponseTimedOut handler in TicketResponseHandler
+Added configuration property ticketResponseTimeoutPrematch
+Added setTicketResponseTimeoutLive and setTicketResponseTimeoutPrematch to SdkConfigurationBuilder
+Default timeout for ticket response for live selections increased from 15s to 17s
+Added new distribution channels
+
 2019-07-25 2.3.2.0
 Made Ticket objects serializable
 Removed use of singleton for CustomBetSelectionBuilder

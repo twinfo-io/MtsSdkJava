@@ -55,8 +55,9 @@ public class MtsClientApiImpl implements MtsClientApi {
             AccessToken token = accessTokenCache.get(getCacheKey(username, password));
             HttpEntity content = new StringEntity(ticket.getJsonValue(), ContentType.APPLICATION_JSON);
             Long result = MtsDtoMapper.map(maxStakeDataProvider.postData(token, content));
-            if (result == null)
+            if (result == null) {
                 throw new Exception("Failed to get max stake result.");
+            }
             return result;
         } catch (ExecutionException e) {
             logger.warn("Getting max stake for ticketId={} failed.", ticket.getTicketId());
@@ -79,8 +80,9 @@ public class MtsClientApiImpl implements MtsClientApi {
             logger.info("Called getCcf with sourceId={}.", sourceId);
             AccessToken token = accessTokenCache.get(getCacheKey(username, password));
             Ccf result = MtsDtoMapper.map(ccfDataProvider.getData(token, sourceId));
-            if (result == null)
+            if (result == null) {
                 throw new Exception("Failed to get ccf result.");
+            }
             return result;
         } catch (ExecutionException e) {
             logger.warn("Getting ccf for sourceId={} failed.", sourceId);
