@@ -111,7 +111,7 @@ public final class RabbitMqConsumer extends RabbitMqBase implements AmqpConsumer
 //        exclusive - true if this is an exclusive consumer
 //        callback - an interface to the consumer object
         QueueingConsumer consumer = new QueueingConsumer(channel);
-        String consumerName = channel.basicConsume(this.queueName, !autoMessageAcknowledgmentEnabled, consumerTag, false, exclusiveConsumer, null, consumer);
+        String consumerName = channel.basicConsume(this.queueName, autoMessageAcknowledgmentEnabled, consumerTag, false, exclusiveConsumer, null, consumer);
 
         final int throwSafetyDisconnectExcLimit = (this.prefetchCount * 2);
         final int maxCountOfLocalMsgs = Math.max(1, this.prefetchCount >> 1);
@@ -181,6 +181,9 @@ public final class RabbitMqConsumer extends RabbitMqBase implements AmqpConsumer
                              messageStatus);
             }
 
+            if(autoMessageAcknowledgmentEnabled){
+                continue;
+            }
             /*
              * Msg handled
              */
