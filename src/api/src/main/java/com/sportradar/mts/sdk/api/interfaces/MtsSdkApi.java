@@ -103,6 +103,13 @@ public interface MtsSdkApi extends Openable {
     CustomBetManager getCustomBetManager();
 
     /**
+     * Returns the {@link ReportManager} instance which can be used to get report data
+     *
+     * @return the {@link ReportManager}
+     */
+    ReportManager getReportManager();
+
+    /**
      * Get the connection status
      * @param connectionChangeListener - client implementation of connection change listener
      * @return the connection status

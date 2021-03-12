@@ -39,6 +39,7 @@ public class MtsSdk implements MtsSdkApi {
     private BuilderFactory builderFactory;
     private MtsClientApi mtsClientApi;
     private CustomBetManager customBetManager;
+    private ReportManager reportManager;
     private ConnectionStatusImpl connectionStatus;
 
     /**
@@ -52,6 +53,7 @@ public class MtsSdk implements MtsSdkApi {
         builderFactory = injector.getInstance(BuilderFactory.class);
         mtsClientApi = injector.getInstance(MtsClientApi.class);
         customBetManager = injector.getInstance(CustomBetManager.class);
+        reportManager = injector.getInstance(ReportManager.class);
         connectionStatus = (ConnectionStatusImpl) injector.getInstance(ConnectionStatus.class);
         sdkRoot = injector.getInstance(SdkRoot.class);
         logInit();
@@ -174,6 +176,12 @@ public class MtsSdk implements MtsSdkApi {
     public CustomBetManager getCustomBetManager() {
         return customBetManager;
     }
+
+    @Override
+    public ReportManager getReportManager() {
+        return reportManager;
+    }
+
 
     @Override
     public ConnectionStatus getConnectionStatus(ConnectionChangeListener connectionChangeListener) {

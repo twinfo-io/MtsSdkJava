@@ -184,10 +184,7 @@ public class DataProvider <TOut>{
             return null;
         }
 
-        InputStream inputStream = new ByteArrayInputStream(fetchedContent.getBytes());
-
-        try {
-
+        try (InputStream inputStream = new ByteArrayInputStream(fetchedContent.getBytes())) {
             return deserializer.deserialize(inputStream, clazz);
         } catch (Exception e) {
             e.printStackTrace();
