@@ -50,6 +50,11 @@ public class MtsReportManagerImpl implements ReportManager {
     }
 
     @Override
+    public void getHistoryCcfChangeCsvExport(OutputStream outputStream, Date startDate, Date endDate) throws MtsReportException {
+        getHistoryCcfChangeCsvExport(outputStream, startDate, endDate, defaultBookmakerId, null, null, null, username, password);
+    }
+
+    @Override
     public void getHistoryCcfChangeCsvExport(OutputStream outputStream, Date startDate, Date endDate, Integer bookmakerId, List<Integer> subBookmakerIds, String sourceId, SourceType sourceType) throws MtsReportException {
         getHistoryCcfChangeCsvExport(outputStream, startDate, endDate, bookmakerId, subBookmakerIds, sourceId, sourceType, username, password);
     }
@@ -60,10 +65,14 @@ public class MtsReportManagerImpl implements ReportManager {
     }
 
     @Override
+    public List<CcfChange> getHistoryCcfChangeCsvExport(Date startDate, Date endDate) throws MtsReportException {
+        return getHistoryCcfChangeCsvExport(startDate, endDate, defaultBookmakerId, null, null, null, username, password);
+    }
+
+    @Override
     public void getHistoryCcfChangeCsvExport(OutputStream outputStream, Date startDate, Date endDate, Integer bookmakerId, List<Integer> subBookmakerIds, String sourceId, SourceType sourceType, String username, String password) throws MtsReportException {
-        Preconditions.checkNotNull(outputStream);
-        Preconditions.checkNotNull(username);
-        Preconditions.checkNotNull(password);
+        username = checkValue(username, this.username);
+        password = checkValue(password, this.password);
 
         CcfChangeFilter filter = new CcfChangeFilter(startDate, endDate, bookmakerId, subBookmakerIds, sourceId, sourceType, this.defaultBookmakerId);
 
@@ -78,8 +87,8 @@ public class MtsReportManagerImpl implements ReportManager {
 
     @Override
     public List<CcfChange> getHistoryCcfChangeCsvExport(Date startDate, Date endDate, Integer bookmakerId, List<Integer> subBookmakerIds, String sourceId, SourceType sourceType, String username, String password) throws MtsReportException {
-        Preconditions.checkNotNull(username);
-        Preconditions.checkNotNull(password);
+        username = checkValue(username, this.username);
+        password = checkValue(password, this.password);
 
         CcfChangeFilter filter = new CcfChangeFilter(startDate, endDate, bookmakerId, subBookmakerIds, sourceId, sourceType, this.defaultBookmakerId);
         AccessToken token = getAccessToken(username, password);
@@ -153,18 +162,18 @@ public class MtsReportManagerImpl implements ReportManager {
                     ccfChange.setCcf(Double.valueOf(ccfValue));
                 }
 
-                String previousCcfValue = csvRecord.get(index++);
+                String previousCcfValue = csvRecord.get(++index);
                 if (previousCcfValue != null && !previousCcfValue.isEmpty()) {
                     ccfChange.setPreviousCcf(Double.valueOf(previousCcfValue));
                 }
 
                 String sportIdValue = csvRecord.get(++index);
-                if(sportIdValue != null && !sportIdValue.isEmpty()) {
+                if (sportIdValue != null && !sportIdValue.isEmpty()) {
                     ccfChange.setSportId(sportIdValue);
                 }
 
                 String sportNameValue = csvRecord.get(++index);
-                if(sportNameValue != null && !sportNameValue.isEmpty()) {
+                if (sportNameValue != null && !sportNameValue.isEmpty()) {
                     ccfChange.setSportName(sportNameValue);
                 }
 
@@ -178,6 +187,14 @@ public class MtsReportManagerImpl implements ReportManager {
         } catch (Exception e) {
             throw new MtsReportException("Error parsing csv buffer!");
         }
+    }
+
+    private String checkValue(String value, String defaulyValue) {
+        if (value == null) {
+            value = defaulyValue;
+        }
+        Preconditions.checkNotNull(value);
+        return value;
     }
 
     private String getCacheKey(String username, String password) {

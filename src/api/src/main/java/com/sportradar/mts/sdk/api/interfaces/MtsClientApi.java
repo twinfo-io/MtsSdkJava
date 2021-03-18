@@ -17,6 +17,7 @@ public interface MtsClientApi {
      *
      * @param ticket A {@link Ticket} to be send
      * @return Maximum reoffer stake (quantity multiplied by 10000 and rounded to a long value)
+     * @throws Exception throws runtime exception
      */
     long getMaxStake(Ticket ticket) throws Exception;
 
@@ -27,6 +28,7 @@ public interface MtsClientApi {
      * @param username A username used for authentication
      * @param password A password used for authentication
      * @return Maximum reoffer stake (quantity multiplied by 10000 and rounded to a long value)
+     * @throws Exception throws runtime exception
      */
     long getMaxStake(Ticket ticket, String username, String password) throws Exception;
 
@@ -35,6 +37,7 @@ public interface MtsClientApi {
      *
      * @param sourceId A source ID which identifies a customer
      * @return A {@link Ccf} values for sport and prematch/live (if set for customer)
+     * @throws Exception throws runtime exception
      */
     Ccf getCcf(String sourceId) throws Exception;
 
@@ -45,6 +48,7 @@ public interface MtsClientApi {
      * @param username A username used for authentication
      * @param password A password used for authentication
      * @return A {@link Ccf} values for sport and prematch/live (if set for customer)
+     * @throws Exception throws runtime exception
      */
     Ccf getCcf(String sourceId, String username, String password) throws Exception;
 }

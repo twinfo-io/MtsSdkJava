@@ -66,6 +66,8 @@ public class TicketCashoutImpl implements TicketCashout {
      * @param bookmakerId - the parent bookmaker id
      * @param timestampUtc - the timestamp of the ticket generation in UTC
      * @param cashoutStake - the cashout stake of the assigned ticket
+     * @param cashoutPercent - the cashout percent
+     * @param betCashouts - list of bet cashouts
      * @param version - the version of the format in which the ticket is built
      */
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)

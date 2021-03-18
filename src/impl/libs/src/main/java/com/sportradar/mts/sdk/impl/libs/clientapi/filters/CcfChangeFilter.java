@@ -19,6 +19,9 @@ public class CcfChangeFilter {
     private final SimpleDateFormat formatter;
 
     public CcfChangeFilter(Date startDate, Date endDate, Integer bookmakerId, List<Integer> subBookmakerIds, String sourceId, SourceType sourceType, int defaultBookmakerId) {
+        if (bookmakerId == null && defaultBookmakerId > 0) {
+            bookmakerId = defaultBookmakerId;
+        }
         Preconditions.checkNotNull(startDate);
         Preconditions.checkNotNull(endDate);
         Preconditions.checkNotNull(bookmakerId);
@@ -26,9 +29,6 @@ public class CcfChangeFilter {
         this.formatter = new SimpleDateFormat("yyyyMMddHHmmss");
         this.formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-        if (bookmakerId == null && defaultBookmakerId > 0) {
-            bookmakerId = defaultBookmakerId;
-        }
         if (sourceId != null) {
             this.sourceId = sourceId;
         }

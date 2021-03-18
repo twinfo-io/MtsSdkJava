@@ -80,6 +80,8 @@ public class TicketCashoutHandlerImpl extends SenderBase<TicketCashout> implemen
      * @param routingKey - the routing key used to publish messages
      * @param replyRoutingKey - the routing key used to receive {@link TicketCashoutResponse} messages
      * @param executorService - the {@link ExecutorService} used for async publishing
+     * @param timeoutHandler - the {@link TicketCashout} used for handling timeouts
+     * @param responseTimeout - response timeout in milliseconds
      * @param messagesPerSecond - the max number of messages/second that should be sent
      * @param sdkLogger - the main SDK logging interface
      */

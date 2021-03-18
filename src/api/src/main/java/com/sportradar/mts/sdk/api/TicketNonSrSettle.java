@@ -27,6 +27,8 @@ public interface TicketNonSrSettle extends SdkTicket {
 
     /**
      * Get non-Sportradar settle stake in same currency as original ticket.
+     *
+     * @return non Sportradar settle stake
      */
      Long getNonSrSettleStake();
 }

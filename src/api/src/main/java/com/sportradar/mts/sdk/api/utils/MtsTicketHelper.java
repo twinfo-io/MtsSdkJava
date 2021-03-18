@@ -208,6 +208,7 @@ public class MtsTicketHelper {
     /**
      * Validate if the id is between 1-128 and matches IdPattern
      * @param id to be validated
+     * @param useUserIdPattern should use user regex pattern for match
      * @return bool if check passed
      */
     public static boolean validateId(String id, boolean useUserIdPattern)

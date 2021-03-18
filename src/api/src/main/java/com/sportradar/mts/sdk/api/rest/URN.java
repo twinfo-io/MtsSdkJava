@@ -140,6 +140,7 @@ public class URN {
 
     /**
      * Returns the prefix of the current instance
+     * @return - prefix of the current instance
      */
     public String getPrefix() {
         return prefix;
@@ -147,6 +148,7 @@ public class URN {
 
     /**
      * Returns the type of the resource associated with the current instance
+     * @return - type of the resource associated with the current instance
      */
     public String getType() {
         return type;
@@ -154,6 +156,7 @@ public class URN {
 
     /**
      * Returns the numerical part of the identifier associated with the current instance
+     * @return - the numerical part of the identifier associated with the current instance
      */
     public long getId() {
         return id;
@@ -161,6 +164,7 @@ public class URN {
 
     /**
      * Returns the {@link ResourceTypeGroup} enum member describing the group of the current instance
+     * @return - {@link ResourceTypeGroup} enum member describing the group of the current instance
      */
     public ResourceTypeGroup getGroup() {
         return group;
@@ -199,6 +203,7 @@ public class URN {
 
     /**
      * Returns a {@link String} that represents this instance
+     * @return - {@link String} that represents this instance
      */
     @Override
     public String toString() {
@@ -207,6 +212,7 @@ public class URN {
 
     /**
      * Returns a hash code for this instance
+     * @return - a hash code for this instance
      */
     @Override
     public int hashCode() {

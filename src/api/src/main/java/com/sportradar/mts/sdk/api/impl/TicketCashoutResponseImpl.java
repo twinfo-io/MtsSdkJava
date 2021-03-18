@@ -68,7 +68,10 @@ public class TicketCashoutResponseImpl implements TicketCashoutResponse {
      * @param timestampUtc the timestamp of the ticket generation provided in UTC timezone
      * @param reason the reason of the cancellation
      * @param status the status of ticket assigned to the current instance
+     * @param signature the signature
      * @param version the version of the format in which the ticket is built
+     * @param correlationId the correlation id
+     * @param additionalInfo the additional info
      * @param msgBody the raw JSON payload received from MTS
      */
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)

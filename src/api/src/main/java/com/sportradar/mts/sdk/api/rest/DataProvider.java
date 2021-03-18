@@ -24,14 +24,14 @@ public class DataProvider <TOut>{
 
     private final String uriFormat;
     private final SdkConfiguration config;
-    private final LogHttpDataFetcher logHttpDataFetcher;
+    private final HttpDataFetcher logHttpDataFetcher;
     private final Deserializer deserializer;
     private final Locale defaultLocale = Locale.ENGLISH;
     private final Class<TOut> clazz;
 
     public DataProvider(String uriFormat,
                         SdkConfiguration config,
-                        LogHttpDataFetcher logHttpDataFetcher,
+                        HttpDataFetcher logHttpDataFetcher,
                         Deserializer deserializer,
                         Class<TOut> clazz) {
         this.uriFormat = uriFormat;
@@ -43,6 +43,7 @@ public class DataProvider <TOut>{
 
     /**
      * If successful returns the requested API endpoint object, else null
+     * @return - the requested API endpoint object or null
      */
     public TOut getData() {
         return getData(defaultLocale);
@@ -52,6 +53,7 @@ public class DataProvider <TOut>{
      * If successful returns the requested API endpoint object, else null
      *
      * @param content - a content to be sent
+     * @return - the requested API endpoint object or null
      */
     public TOut postData(HttpEntity content) {
         return postData(content, defaultLocale);
@@ -61,6 +63,7 @@ public class DataProvider <TOut>{
      * If successful returns the requested API endpoint object, else null
      *
      * @param token - a {@link AccessToken} used to access protected resources
+     * @return - the requested API endpoint object or null
      */
     public TOut getData(AccessToken token) {
         return getData(token, defaultLocale);
@@ -71,6 +74,7 @@ public class DataProvider <TOut>{
      *
      * @param token - a {@link AccessToken} used to access protected resources
      * @param content - a content to be sent
+     * @return - the requested API endpoint object or null
      */
     public TOut postData(AccessToken token, HttpEntity content) {
         return sendData(token, content, defaultLocale);

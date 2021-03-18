@@ -772,12 +772,13 @@ public class SdkInjectionModule extends AbstractModule {
     @Provides
     private MtsClientApi provideMtsClientApi(CloseableHttpClient httpClient, @Named("ApiJsonDeserializer") Deserializer deserializer, @Named("StreamDeserializer") Deserializer streamDeserializer) {
         LogHttpDataFetcher logHttpDataFetcher = new LogHttpDataFetcher(null, httpClient);
+        NonLogHttpDataFetcher nonLogHttpDataFetcher = new NonLogHttpDataFetcher(null, httpClient);
 
         String keycloakHostFormat = sdkConfiguration.getKeycloakHost() + "/auth/realms/mts/protocol/openid-connect/token";
         String maxStakeUriFormat = sdkConfiguration.getMtsClientApiHost() + "/ClientApi/api/maxStake/v1";
         String ccfUriFormat = sdkConfiguration.getMtsClientApiHost() + "/ClientApi/api/ccf/v1?sourceId=%2$s";
 
-        DataProvider<AccessTokenSchema> accessTokenDataProvider = new DataProvider<>(keycloakHostFormat, null, logHttpDataFetcher, deserializer, AccessTokenSchema.class);
+        DataProvider<AccessTokenSchema> accessTokenDataProvider = new DataProvider<>(keycloakHostFormat, null, nonLogHttpDataFetcher, deserializer, AccessTokenSchema.class); //do not log access tokens!
         DataProvider<MaxStakeResponseSchema> maxStakeDataProvider = new DataProvider<>(maxStakeUriFormat, null, logHttpDataFetcher, deserializer, MaxStakeResponseSchema.class);
         DataProvider<CcfResponseSchema> ccfDataProvider = new DataProvider<>(ccfUriFormat, null, logHttpDataFetcher, deserializer, CcfResponseSchema.class);
 
@@ -788,11 +789,12 @@ public class SdkInjectionModule extends AbstractModule {
     @Provides
     private ReportManager provideMtsReportManager(CloseableHttpClient httpClient, @Named("ApiJsonDeserializer") Deserializer deserializer, @Named("StreamDeserializer") Deserializer streamDeserializer) {
         LogHttpDataFetcher logHttpDataFetcher = new LogHttpDataFetcher(null, httpClient);
+        NonLogHttpDataFetcher nonLogHttpDataFetcher = new NonLogHttpDataFetcher(null, httpClient);
 
         String keycloakHostFormat = sdkConfiguration.getKeycloakHost() + "/auth/realms/mts/protocol/openid-connect/token";
-        String ccHistoryExportUriFormat = sdkConfiguration.getMtsClientApiHost() + "/ReportingCcf/api/report/export/history/ccf/changes/client/api?startDatetime=%2$s&endDatetime=%3$s&bookmakerId=%4$s&subBookmakerId=%5$s&sourceType=%6$s&sourceId=%7$s";
+        String ccHistoryExportUriFormat = sdkConfiguration.getMtsClientApiHost() + "/ReportingCcf/external/api/report/export/history/ccf/changes/client/api?startDatetime=%2$s&endDatetime=%3$s&bookmakerId=%4$s&subBookmakerId=%5$s&sourceType=%6$s&sourceId=%7$s";
 
-        DataProvider<AccessTokenSchema> accessTokenDataProvider = new DataProvider<>(keycloakHostFormat, null, logHttpDataFetcher, deserializer, AccessTokenSchema.class);
+        DataProvider<AccessTokenSchema> accessTokenDataProvider = new DataProvider<>(keycloakHostFormat, null, nonLogHttpDataFetcher, deserializer, AccessTokenSchema.class); //do not log access tokens!
         DataProvider<InputStream> ccfHistoryChangeExportCsvDataProvider = new DataProvider<>(ccHistoryExportUriFormat, null, logHttpDataFetcher, streamDeserializer, InputStream.class);
 
         return new MtsReportManagerImpl(sdkConfiguration.getBookmakerId(), createAccessTokenCache(accessTokenDataProvider), ccfHistoryChangeExportCsvDataProvider, sdkConfiguration.getKeycloakUsername(), sdkConfiguration.getKeycloakPassword());
@@ -864,7 +866,7 @@ public class SdkInjectionModule extends AbstractModule {
                         String username = values[0];
                         String password = values[1];
                         HttpEntity content = new UrlEncodedFormEntity( Arrays.asList(
-                                new BasicNameValuePair("client_id", "mts-edge-int"),
+                                new BasicNameValuePair("client_id", "mts-edge-ext"),
                                 new BasicNameValuePair("client_secret", sdkConfiguration.getKeycloakSecret()),
                                 new BasicNameValuePair("username", username),
                                 new BasicNameValuePair("password", password),

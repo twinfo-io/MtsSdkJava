@@ -70,6 +70,7 @@ public interface SelectionBuilder {
      * @param marketId market id
      * @param selectionId selection id
      * @param specifiers the array of specifiers represented as string separated with '|'  (example: "total=3.0|playerid=sr:player:10201")
+     * @param sportEventStatus sport event statuses
      * @return current builder reference
      */
     SelectionBuilder setIdUof(int product, String sportId, int marketId, String selectionId, String specifiers, Map<String, Object> sportEventStatus);
@@ -82,6 +83,7 @@ public interface SelectionBuilder {
      * @param marketId market id
      * @param selectionId selection id
      * @param specifiers specifiers
+     * @param sportEventStatus sport event statuses
      *
      * @return current builder reference
      */

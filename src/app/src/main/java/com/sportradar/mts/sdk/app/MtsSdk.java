@@ -44,6 +44,7 @@ public class MtsSdk implements MtsSdkApi {
 
     /**
      * Creates new MTS SDK instance
+     * @param config Instance of {@link SdkConfiguration} filled with valid configuration values
      */
     public MtsSdk(SdkConfiguration config) {
         Preconditions.checkNotNull(config, "config cannot be null");

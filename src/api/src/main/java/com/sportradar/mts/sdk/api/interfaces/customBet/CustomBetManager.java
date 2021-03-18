@@ -19,14 +19,16 @@ public interface CustomBetManager {
      *
      * @param eventId the {@link URN} identifier of the event for which the available selections should be returned
      * @return an {@link AvailableSelections} providing the the available selections of the associated event
+     * @throws CustomBetException throws bet exception
      */
     AvailableSelections getAvailableSelections(URN eventId) throws CustomBetException;
 
     /**
      * Returns an {@link Calculation} instance providing the probability for the specified selections
      *
-     * @param selections the {@link List <Selection>} containing selections for which the probability should be calculated
+     * @param selections the {@link Selection} containing selections for which the probability should be calculated
      * @return an {@link Calculation} providing the the probability for the specified selections
+     * @throws CustomBetException throws bet exception
      */
     Calculation calculateProbability(List<Selection> selections) throws CustomBetException;
 
