@@ -1,11 +1,11 @@
 A MTS SDK Java library
 
 CHANGE LOG:
-2021-03-17 2.3.6.0
+2021-03-22 2.3.6.0
 Extending MtsSdk with ReportManager for accessing CcfChange history reports
 Fix: removed logging of access token in logs (security)
 Fix: minor fixes for javadoc
-Fix: minor memory leak for client ap
+Fix: minor memory leak for client app
 
 2020-11-06 2.3.5.0
 Added # to the User ID pattern

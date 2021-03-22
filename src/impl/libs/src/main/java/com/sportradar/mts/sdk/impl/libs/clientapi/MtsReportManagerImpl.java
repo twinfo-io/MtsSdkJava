@@ -189,9 +189,9 @@ public class MtsReportManagerImpl implements ReportManager {
         }
     }
 
-    private String checkValue(String value, String defaulyValue) {
+    private String checkValue(String value, String defaultValue) {
         if (value == null) {
-            value = defaulyValue;
+            value = defaultValue;
         }
         Preconditions.checkNotNull(value);
         return value;

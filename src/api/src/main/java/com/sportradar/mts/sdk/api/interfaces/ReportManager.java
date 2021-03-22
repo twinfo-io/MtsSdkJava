@@ -19,7 +19,7 @@ public interface ReportManager {
      * <pre>
      *  Examples:
      *
-     *  try(OutputStream outputStream = new FileOutputStream("someFile.csv")) {
+     *  try(OutputStream outputStream = new FileOutputStream("HistoryCcfChanges.csv")) {
      *      mtsSdk.getReportManager().getHistoryCcfChangeCsvExport(outputStream, startDate, endDate);
      *  }</pre>
      *
@@ -36,7 +36,7 @@ public interface ReportManager {
      * <pre>
      *  Example:
      *
-     *  try(OutputStream outputStream = new FileOutputStream("someFile.csv")) {
+     *  try(OutputStream outputStream = new FileOutputStream("HistoryCcfChanges.csv")) {
      *      mtsSdk.getReportManager().getHistoryCcfChangeCsvExport(outputStream, startDate, endDate, bookmakerId, subBookmakers, sourceId, sourceType);
      *  }</pre>
      *
