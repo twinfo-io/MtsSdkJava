@@ -36,8 +36,130 @@
         </dependency>
     </dependencies>
 
+    <distributionManagement>
+        <snapshotRepository>
+            <id>${sr.snapshotRepository.id}</id>
+            <url>${sr.snapshotRepository.url}</url>
+        </snapshotRepository>
+        <repository>
+            <id>${sr.repository.id}</id>
+            <url>${sr.repository.url}</url>
+            <uniqueVersion>true</uniqueVersion>
+        </repository>
+    </distributionManagement>
+
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.8</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <excludeResources>true</excludeResources>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.0-M1</version>
+                <executions>
+                    <execution>
+                        <id>javadoc-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/javadoc</outputDirectory>
+                            <windowtitle>MTS SDK ${project.version} API</windowtitle>
+                            <doctitle>MTS SDK ${project.version} API</doctitle>
+                            <!-- TODO javadoc overview page -->
+                            <!--<overview>${basedir}/../mts-sdk-javadoc-overview.html</overview>-->
+                            <includeDependencySources>true</includeDependencySources>
+                            <dependencySourceIncludes>
+                                <!--Specify the package that we want the javadoc included. The parent artifact
+                                of the package must be listed as a dependency of the distribution module.-->
+                                <dependencySourceInclude>com.sportradar.mts.*</dependencySourceInclude>
+                            </dependencySourceIncludes>
+                            <failOnError>false</failOnError>
+                            <excludePackageNames>
+                                *com.sportradar.mts.sdk.api.caching*
+                                *com.sportradar.mts.sdk.api.impl*
+                                *com.sportradar.mts.sdk.api.rest*
+                                *com.sportradar.mts.sdk.api.settings*
+                                *com.sportradar.mts.sdk.api.utils*
+                                *datamodel*
+                            </excludePackageNames>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>aggregate-jar</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>javadoc</classifier>
+                            <show>public</show>
+                            <includeDependencySources>true</includeDependencySources>
+                            <dependencySourceIncludes>
+                                <!--Specify the package that we want the javadoc included. The parent artifact
+                                of the package must be listed as a dependency of the distribution module.-->
+                                <dependencySourceInclude>com.sportradar.mts.*</dependencySourceInclude>
+                            </dependencySourceIncludes>
+                            <failOnError>false</failOnError>
+                            <excludePackageNames>
+                                *com.sportradar.mts.sdk.api.caching*
+                                *com.sportradar.mts.sdk.api.impl*
+                                *com.sportradar.mts.sdk.api.rest*
+                                *com.sportradar.mts.sdk.api.settings*
+                                *com.sportradar.mts.sdk.api.utils*
+                                *datamodel*
+                            </excludePackageNames>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
