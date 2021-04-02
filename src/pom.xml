@@ -77,7 +77,7 @@
         <!-- Distribution util -->
         <sr.dollarSign>$</sr.dollarSign>
         <deploy.version>${project.version}</deploy.version>
-        <mts.relocation.supported.ticket.version>ticket22</mts.relocation.supported.ticket.version>
+        <mts.relocation.supported.ticket.version>ticket23</mts.relocation.supported.ticket.version>
     </properties>
 
     <dependencyManagement>
