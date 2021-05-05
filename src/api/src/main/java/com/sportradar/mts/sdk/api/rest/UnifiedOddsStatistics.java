@@ -25,7 +25,7 @@ public class UnifiedOddsStatistics implements UnifiedOddsStatisticsMBean {
     private String lastUrl;
     private int purgesDone;
     private long totalPurgeTime;
-    private final static Logger logger = LoggerFactory.getLogger(UnifiedOddsStatistics.class);
+    private static final Logger logger = LoggerFactory.getLogger(UnifiedOddsStatistics.class);
     private long totalXmlDeserializationTime;
     private long totalLongProcTime;
     private int longProcessing;

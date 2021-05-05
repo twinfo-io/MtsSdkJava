@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * Created on 13/04/2018.
- * // TODO @eti: Javadoc
+ * Sdk yaml configuration test
  */
 public class SdkYamlConfigurationTest {
 

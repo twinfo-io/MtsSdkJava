@@ -8,10 +8,8 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.sportradar.mts.sdk.api.interfaces.ConnectionStatus;
 import com.sportradar.mts.sdk.api.utils.SdkInfo;
 
-import javax.net.ssl.*;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.security.KeyStore;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -19,8 +17,6 @@ import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 public final class ChannelFactory {
-//    private final static String TLS_VERSION = "TLSv1.2";
-//    private final static String ENDPOINT_IDENTIFICATION_ALGORITHM = "HTTPS";
 
     private final ConnectionWrapper connectionWrapper;
 
@@ -35,19 +31,7 @@ public final class ChannelFactory {
         connectionFactory.setVirtualHost(mqCluster.getVhost());
         connectionFactory.setRequestedHeartbeat(20); // Keep sending the heartbeat every X seconds to prevent any routers from considering the connection stale.
 
-//        if (mqCluster.useSslProtocol()) {
-//            connectionFactory.setSocketConfigurator(socket -> {
-//                socket.setTcpNoDelay(true);
-//                if (socket instanceof SSLSocket) {
-//                    SSLSocket sslSocket = (SSLSocket) socket;
-//                    SSLParameters sslParameters = sslSocket.getSSLParameters();
-//                    sslParameters.setEndpointIdentificationAlgorithm(ENDPOINT_IDENTIFICATION_ALGORITHM);
-//                    sslSocket.setSSLParameters(sslParameters);
-//                }
-//            });
-//            connectionFactory.useSslProtocol(TLS_VERSION, getDefaultTrustManager());
-//        } else
-            if (mqCluster.useSslProtocol()) {
+        if (mqCluster.useSslProtocol()) {
             // some clients might be having issues with the validation for now,
             // because they might be using direct IPs
             connectionFactory.useSslProtocol();
@@ -67,23 +51,4 @@ public final class ChannelFactory {
     public ChannelWrapper getChannel() throws IOException, TimeoutException {
         return this.connectionWrapper.getChannel();
     }
-
-//    private static X509TrustManager getDefaultTrustManager() throws GeneralSecurityException {
-//        try {
-//            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance("X509");
-//            trustManagerFactory.init((KeyStore) null);
-//            TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
-//            if (trustManagers != null) {
-//                for (TrustManager trustManager : trustManagers) {
-//                    if (trustManager instanceof X509TrustManager) {
-//                        return (X509TrustManager) trustManager;
-//                    }
-//                }
-//            }
-//        } catch (NullPointerException ex) {
-//            throw new GeneralSecurityException("cannot get default trust manager", ex);
-//        }
-//
-//        throw new GeneralSecurityException("cannot get default trust manager");
-//    }
 }

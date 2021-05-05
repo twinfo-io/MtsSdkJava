@@ -95,7 +95,7 @@ public class TicketCancelHandlerImplTest extends TimeLimitedTestBase {
 
     //TODO: @Test
     public void sendTest() {
-        TicketCancelResponseWrapper response = new TicketCancelResponseWrapper();
+        TicketCancelResponseWrapper response = new TicketCancelResponseWrapper(ticketCancel.getTicketId());
         response.setExtTicket(ticketCancel.getTicketId());
         byte[] msg = JsonUtils.serialize(ticketCancel);
         String correlationId = getFormattedCorrelationId(ticketCancel);
@@ -137,7 +137,7 @@ public class TicketCancelHandlerImplTest extends TimeLimitedTestBase {
 
     //TODO: @Test
     public void ticketCancelResponseReceivedTest() throws InterruptedException {
-        TicketCancelResponseWrapper response = new TicketCancelResponseWrapper();
+        TicketCancelResponseWrapper response = new TicketCancelResponseWrapper(ticketCancel.getTicketId());
         response.setExtTicket(ticketCancel.getTicketId());
         byte[] msg = JsonUtils.serialize(ticketCancel);
         String correlationId = getFormattedCorrelationId(ticketCancel);

@@ -65,6 +65,7 @@ public class LoggerTestAppender {
 
     public boolean searchLoggingEventByTwoFormattedMessage(String shouldContain1, String shouldContain2) {
 
-        return loggingEvents.stream().anyMatch(iLoggingEvent -> iLoggingEvent.getFormattedMessage().contains(shouldContain1)&&iLoggingEvent.getFormattedMessage().contains(shouldContain2));
+        return loggingEvents.stream().anyMatch(iLoggingEvent ->
+                                                       iLoggingEvent.getFormattedMessage().contains(shouldContain1) && iLoggingEvent.getFormattedMessage().contains(shouldContain2));
     }
 }

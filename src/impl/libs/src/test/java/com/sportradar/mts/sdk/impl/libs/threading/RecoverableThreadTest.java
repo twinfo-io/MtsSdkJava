@@ -6,8 +6,11 @@ package com.sportradar.mts.sdk.impl.libs.threading;
 
 import com.sportradar.mts.sdk.impl.libs.LoggerTestAppender;
 import com.sportradar.mts.sdk.impl.libs.TimeLimitedTestBase;
+import junit.framework.TestCase;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.is;
@@ -39,7 +42,7 @@ public class RecoverableThreadTest extends TimeLimitedTestBase {
         }
     }
 
-//    @Test
+    @Test
     public void openTest() {
         appender = new LoggerTestAppender(RecoverableThread.class, loggingEvent -> {
             if (loggingEvent.getFormattedMessage().contains("Started thread [id: ")) {
@@ -51,7 +54,7 @@ public class RecoverableThreadTest extends TimeLimitedTestBase {
         assertTrue(contains);
     }
 
-//    @Test
+    @Test
     public void doubleOpenTest() {
         appender = new LoggerTestAppender(RecoverableThread.class, loggingEvent -> {
             if (loggingEvent.getFormattedMessage().equals("Already open...")) {
@@ -64,7 +67,7 @@ public class RecoverableThreadTest extends TimeLimitedTestBase {
         assertTrue(contains);
     }
 
-//    @Test
+    @Test
     public void closeTest() {
         appender = new LoggerTestAppender(RecoverableThread.class, loggingEvent -> {
             if (!loggingEvent.getFormattedMessage().contains("Interrupting thread [id: ")
@@ -80,7 +83,7 @@ public class RecoverableThreadTest extends TimeLimitedTestBase {
         assertTrue(contains);
     }
 
-//    @Test
+    @Test
     public void doubleCloseTest() {
         appender = new LoggerTestAppender(RecoverableThread.class, loggingEvent -> {
             if (loggingEvent.getFormattedMessage().equals("Skipping join...")) {
@@ -97,7 +100,7 @@ public class RecoverableThreadTest extends TimeLimitedTestBase {
 
     }
 
-//    @Test
+    @Test
     public void closeNowTest() {
         appender = new LoggerTestAppender(RecoverableThread.class, loggingEvent -> {
             if (!loggingEvent.getFormattedMessage().contains("Joining thread [id: ")
@@ -114,7 +117,7 @@ public class RecoverableThreadTest extends TimeLimitedTestBase {
         assertTrue(contains);
     }
 
-//    @Test
+    @Test
     public void doubleCloseNowTest() {
         appender = new LoggerTestAppender(RecoverableThread.class, loggingEvent -> {
             if (loggingEvent.getFormattedMessage().equals("Skipping join...")) {

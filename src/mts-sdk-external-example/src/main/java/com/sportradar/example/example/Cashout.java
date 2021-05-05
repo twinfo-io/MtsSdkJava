@@ -20,10 +20,12 @@ import org.slf4j.LoggerFactory;
 /**
  * Example of creating and sending cashout ticket
  */
-public class Cashout {
+public final class Cashout {
     private static final Logger logger = LoggerFactory.getLogger(Cashout.class);
 
-    public static void Run()
+    private Cashout() { throw new IllegalStateException("Cashout class"); }
+
+    public static void run()
     {
         SdkConfiguration config = MtsSdk.getConfiguration();
         MtsSdkApi mtsSdk = new MtsSdk(config);
@@ -53,14 +55,16 @@ public class Cashout {
                 ticketCashoutSender.send(ticketCashout);
             }
         } catch (ResponseTimeoutException e) {
-            e.printStackTrace();
+            logger.warn("Response timeout: {}", e.getMessage());
         }
 
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
             logger.info("interrupted while sleeping");
+            Thread.currentThread().interrupt();
+        } finally {
+            mtsSdk.close();
         }
-        mtsSdk.close();
     }
 }

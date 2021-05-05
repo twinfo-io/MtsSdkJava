@@ -15,11 +15,11 @@ public class CustomBetException extends MtsSdkException {
         super();
     }
 
-    public CustomBetException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
     public CustomBetException(String message) {
         super(message);
+    }
+
+    public CustomBetException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

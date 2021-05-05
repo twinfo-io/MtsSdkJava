@@ -11,14 +11,11 @@ public abstract class MtsSdkException extends Exception {
 
     private static final long serialVersionUID = 3940119828912029787L;
 
-    public MtsSdkException() {
-    }
+    protected MtsSdkException() { }
 
-    public MtsSdkException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    protected MtsSdkException(String message, Throwable cause) { super(message, cause); }
 
-    public MtsSdkException(String message) {
+    protected MtsSdkException(String message) {
         super(message);
     }
 }

@@ -85,7 +85,7 @@ public abstract class SenderBase<T extends SdkTicket> implements MessageSender {
         getSdkLogger().logSendMessage(msgString);
         if(StringUtils.isNullOrEmpty(message.getCorrelationId()))
         {
-            logger.warn("Ticket %s is missing correlationId", message.getTicketId());
+            logger.warn("Ticket {} is missing correlationId", message.getTicketId());
         }
         messages.put(message.getCorrelationId(), message);
         amqpPublisher.publishAsync(message.getTicketId(),

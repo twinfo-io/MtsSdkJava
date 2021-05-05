@@ -17,7 +17,5 @@ public abstract class PublishResultHandler<T extends SdkTicket> implements Publi
         logger.error("publish failed! we should check if we want to republish msg. message : {}", t);
     }
 
-    public void publishSuccess(T t) {
-        logger.error("publish succeeded", t);
-    }
+    public void publishSuccess(T t) { logger.info("publish succeeded"); }
 }

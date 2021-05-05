@@ -106,6 +106,7 @@ public class AmqpTicketCancelResponseReceiverImpl implements AmqpMessageReceiver
 
     @Override
     public void afterLimitReached(byte[] msg, String routingKey, String correlationId) {
-        logger.error("ticket cancel response consume retry reached! msg : {}", new String(msg, StandardCharsets.UTF_8));
+        String msgStr = msg == null ? "" : new String(msg, StandardCharsets.UTF_8);
+        logger.error("ticket cancel response consume retry reached! msg : {}", msgStr);
     }
 }

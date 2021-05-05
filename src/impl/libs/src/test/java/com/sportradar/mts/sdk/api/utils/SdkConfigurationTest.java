@@ -10,6 +10,7 @@ import com.sportradar.mts.sdk.api.settings.SdkConfigurationBuilderImpl;
 import com.sportradar.mts.sdk.api.settings.SdkConfigurationImpl;
 import com.sportradar.mts.sdk.api.settings.SettingsKeys;
 import com.sportradar.mts.sdk.impl.libs.TimeLimitedTestBase;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Properties;
@@ -970,7 +971,7 @@ public class SdkConfigurationTest extends TimeLimitedTestBase {
 
     @Test
     public void builderMissingKeycloakUsernameAndPassword() {
-        new SdkConfigurationBuilderImpl()
+        SdkConfiguration configuration = new SdkConfigurationBuilderImpl()
                 .setUsername("username")
                 .setPassword("password")
                 .setHost("host")
@@ -978,6 +979,7 @@ public class SdkConfigurationTest extends TimeLimitedTestBase {
                 .setKeycloakHost("keycloak")
                 .setKeycloakSecret("secret")
                 .build();
+        Assert.assertNotNull(configuration);
     }
 
     @Test
@@ -991,6 +993,7 @@ public class SdkConfigurationTest extends TimeLimitedTestBase {
         properties.setProperty(SettingsKeys.KEYCLOAK_SECRET, "secret");
 
         SdkConfiguration config = SdkConfigurationImpl.getConfiguration(properties);
+        Assert.assertNotNull(config);
     }
 
     private static void checkAllSettings(SdkConfiguration config) {

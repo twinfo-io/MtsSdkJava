@@ -7,8 +7,10 @@
 
     <!-- the folder in which the SDK logs will be stored -->
     <property name="MTS_SDK_LOG_FOLDER" value="com.sportradar.mts.sdk" />
+
     <!-- TRACE, DEBUG, INFO, WARN, ERROR, ALL or OFF -->
-    <property name="MTS_SDK_LOG_LEVEL" value="info" />
+    <!-- needs to be set to trace level for some tests to work -->
+    <property name="MTS_SDK_LOG_LEVEL" value="trace" />
 
     <!-- the execution log file appender configuration -->
     <appender name="SdkExecutionLogFileAppender"

@@ -137,7 +137,7 @@ public class RecoverableThread implements Openable {
         }
     }
 
-    private final static class DefaultRunnable implements Runnable {
+    private static final class DefaultRunnable implements Runnable {
 
         private final RecoverableThread parent;
         private final Runnable runnable;
@@ -170,7 +170,7 @@ public class RecoverableThread implements Openable {
         }
     }
 
-    private final static class NewThreadCreator implements Thread.UncaughtExceptionHandler {
+    private static final class NewThreadCreator implements Thread.UncaughtExceptionHandler {
 
         private final RecoverableThread parent;
 

@@ -26,7 +26,7 @@ public final class ChannelFactoryProviderImpl implements ChannelFactoryProvider 
     private final ThreadFactory amqpThreadFactory = new AmqpThreadFactory();
 
     private final Object executorServiceLock = new Object();
-    private volatile ExecutorService executorService;
+    private ExecutorService executorService;
     private int executorRegistrationCount = 0;
     private boolean opened;
     private ConnectionStatus connectionStatus;

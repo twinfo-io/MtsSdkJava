@@ -11,9 +11,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class ConnectionStatusImpl implements ConnectionStatus {
+
     private static final Logger logger = LoggerFactory.getLogger(ConnectionStatusImpl.class);
 
-    private final int queueLimit = 10;
+    private static final int QUEUE_LIMIT = 10;
     private Date connectionTime;
     private Date disconnectionTime;
     private String lastSendTicketId;
@@ -73,9 +74,6 @@ public class ConnectionStatusImpl implements ConnectionStatus {
                 e.printStackTrace();
             }
         }
-//        else{
-//            log("Connecting. Omitted.");
-//        }
         lock.unlock();
     }
 
@@ -96,9 +94,6 @@ public class ConnectionStatusImpl implements ConnectionStatus {
                 e.printStackTrace();
             }
         }
-//        else{
-//            log("Disconnecting. Omitted.");
-//        }
         lock.unlock();
     }
 
@@ -108,7 +103,7 @@ public class ConnectionStatusImpl implements ConnectionStatus {
         lock.lock();
         lastSendTicketId = ticketId;
         sendTicketIds.add(ticketId);
-        if (sendTicketIds.size() > queueLimit)
+        if (sendTicketIds.size() > QUEUE_LIMIT)
         {
             sendTicketIds.remove();
         }
@@ -121,7 +116,7 @@ public class ConnectionStatusImpl implements ConnectionStatus {
         lock.lock();
         lastReceivedTicketId = ticketId;
         receivedTicketIds.add(ticketId);
-        if (receivedTicketIds.size() > queueLimit)
+        if (receivedTicketIds.size() > QUEUE_LIMIT)
         {
             receivedTicketIds.remove();
         }
@@ -129,7 +124,9 @@ public class ConnectionStatusImpl implements ConnectionStatus {
     }
 
     private void log(String message){
-//        logger.info(message);
+        if(!message.isEmpty()) // dummy return
+            return;
+        logger.info(message);
     }
 
     @Override

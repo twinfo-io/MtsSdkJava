@@ -5,6 +5,7 @@
 package com.sportradar.mts.sdk.impl.libs.adapters.amqp;
 
 import com.google.common.base.Preconditions;
+import com.sportradar.mts.sdk.api.exceptions.MtsPropertiesException;
 
 import java.io.IOException;
 import java.net.URI;
@@ -73,7 +74,7 @@ public final class AmqpCluster {
         Preconditions.checkNotNull(pwd, "pwd");
         Preconditions.checkNotNull(vhost, "vhost");
         Preconditions.checkNotNull(addresses, "addresses");
-        Preconditions.checkArgument(addresses.size() > 0, "addresses.size");
+        Preconditions.checkArgument(!addresses.isEmpty(), "addresses.size");
         for (final NetworkAddress address : addresses) {
             Preconditions.checkNotNull(address, "address");
             Preconditions.checkNotNull(address.getHost(), "address.host");
@@ -150,7 +151,7 @@ public final class AmqpCluster {
         try {
             return fromURI(new URI(connectionString));
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new MtsPropertiesException(e.getMessage(), e.getCause());
         }
     }
 
@@ -163,8 +164,8 @@ public final class AmqpCluster {
         String vhostTmp = "/";
         boolean useSslProtocolTmp = false;
 
-        if (!"amqp".equals(uri.getScheme().toLowerCase())) {
-            if (!"amqps".equals(uri.getScheme().toLowerCase())) {
+        if (!"amqp".equalsIgnoreCase(uri.getScheme())) {
+            if (!"amqps".equalsIgnoreCase(uri.getScheme())) {
                 throw new IllegalArgumentException("Wrong scheme in AMQP URI: " + uri.getScheme());
             }
 
@@ -172,50 +173,49 @@ public final class AmqpCluster {
             useSslProtocolTmp = true;
         }
 
-        { // get host
-            String host = uri.getHost();
-            if (host != null) {
-                hostTmp = host;
+        // get host
+        if (uri.getHost() != null) {
+            hostTmp = uri.getHost();
+        }
+
+        // get port
+        if (uri.getPort() != -1) {
+            portTmp = uri.getPort();
+        }
+
+        // get un and pwd
+        String userInfo = uri.getRawUserInfo();
+        if (userInfo != null) {
+            String[] path = userInfo.split(":");
+            if (path.length > 2) {
+                throw new IllegalArgumentException("Bad user info in AMQP URI: " + userInfo);
+            }
+
+            unTmp = uriDecode(path[0]);
+            if (path.length == 2) {
+                pwdTmp = uriDecode(path[1]);
             }
         }
 
-        { // get port
-            int port = uri.getPort();
-            if (port != -1) {
-                portTmp = port;
-            }
-        }
-
-        { // get un and pwd
-            String userInfo = uri.getRawUserInfo();
-            if (userInfo != null) {
-                String[] path = userInfo.split(":");
-                if (path.length > 2) {
-                    throw new IllegalArgumentException("Bad user info in AMQP URI: " + userInfo);
-                }
-
-                unTmp = uriDecode(path[0]);
-                if (path.length == 2) {
-                    pwdTmp = uriDecode(path[1]);
-                }
-            }
-        }
-
-        { // get vhost
-            String path = uri.getRawPath();
-            if (path != null && path.length() > 0) {
-                if (path.indexOf(47, 1) != -1) {
-                    throw new IllegalArgumentException("Multiple segments in path: " + path);
-                }
-
-                String tmp = uriDecode(uri.getPath());
-                if (tmp != null) {
-                    vhostTmp = cleanVHost(tmp);
-                }
-            }
-        }
+        // get vhost
+        vhostTmp = getVhost(vhostTmp, uri.getRawPath(), uri.getPath());
 
         return new AmqpCluster(unTmp, pwdTmp, vhostTmp, useSslProtocolTmp, new NetworkAddress(hostTmp, portTmp), 0);
+    }
+
+    private static String getVhost(String vhost, String rawPath, String uriPath)
+    {
+        if (rawPath != null && rawPath.length() > 0) {
+            if (rawPath.indexOf(47, 1) != -1) {
+                throw new IllegalArgumentException("Multiple segments in path: " + rawPath);
+            }
+
+            String tmp = uriDecode(uriPath);
+            if (tmp != null) {
+                vhost = cleanVHost(tmp);
+            }
+        }
+        return vhost;
     }
 
     @Override
@@ -279,7 +279,7 @@ public final class AmqpCluster {
         try {
             return URLDecoder.decode(s.replace("+", "%2B"), "US-ASCII");
         } catch (IOException var3) {
-            throw new RuntimeException(var3);
+            throw new MtsPropertiesException(var3.getMessage(), var3);
         }
     }
 }

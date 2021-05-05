@@ -112,16 +112,16 @@ public class TicketCancelBuilderTest extends TimeLimitedTestBase {
     @Test
     public void cancelTicketIdNullFailBuildTest(){
         thrown.expect(IllegalArgumentException.class);
-        TicketCancel ticket = builderFactory.createTicketCancelBuilder()
+        builderFactory.createTicketCancelBuilder()
                 .setTicketId(null)
                 .setBookmakerId(1111)
                 .build();
-        Assert.assertNotNull(ticket);
     }
 
     @Test
     public void cancelPercentLowBuildTest(){
         builderFactory.createTicketCancelBuilder().setCancelPercent(0);
+        Assert.assertNotNull(builderFactory);
     }
 
     @Test
@@ -133,13 +133,12 @@ public class TicketCancelBuilderTest extends TimeLimitedTestBase {
     @Test
     public void cancelPercentAndBetCancelBuildTest(){
         thrown.expect(IllegalArgumentException.class);
-        TicketCancel ticket = builderFactory.createTicketCancelBuilder()
+        builderFactory.createTicketCancelBuilder()
                 .setTicketId("ticket-" + StaticRandom.S1000)
                 .setBookmakerId(1111)
                 .setCancelPercent(239)
                 .addBetCancel("bet-id:01", 2939)
                 .build();
-        Assert.assertNotNull(ticket);
     }
 
     @Test
@@ -157,14 +156,13 @@ public class TicketCancelBuilderTest extends TimeLimitedTestBase {
     @Test
     public void cancelBetCashoutRepeatBuildTest(){
         thrown.expect(IllegalArgumentException.class);
-        TicketCancel ticket = builderFactory.createTicketCancelBuilder()
+        builderFactory.createTicketCancelBuilder()
                 .setTicketId("ticket-" + StaticRandom.S1000)
                 .setBookmakerId(1111)
                 .addBetCancel("bet-id:01", 10101)
                 .addBetCancel("bet-id:02", 87866)
                 .addBetCancel("bet-id:01", 42342)
                 .build();
-        Assert.assertNotNull(ticket);
     }
 
     @Test
@@ -178,6 +176,7 @@ public class TicketCancelBuilderTest extends TimeLimitedTestBase {
     @Test
     public void betCancelWrong01Test(){
         BetCancel betCancel = new BetCancelImpl("bet-id:01", 0);
+        Assert.assertNotNull(betCancel);
     }
 
     @Test
@@ -189,43 +188,39 @@ public class TicketCancelBuilderTest extends TimeLimitedTestBase {
     @Test
     public void cancelTicketIdCorruptedFailBuildTest(){
         thrown.expect(IllegalArgumentException.class);
-        TicketCancel ticket = builderFactory.createTicketCancelBuilder()
+        builderFactory.createTicketCancelBuilder()
                 .setTicketId("ticket-***123456")
                 .setBookmakerId(1111)
                 .build();
-        Assert.assertNotNull(ticket);
     }
 
     @Test
     public void cancelInvalidBookmakerIdFailBuildTest(){
         thrown.expect(IllegalArgumentException.class);
-        TicketCancel ticket = builderFactory.createTicketCancelBuilder()
+        builderFactory.createTicketCancelBuilder()
                 .setTicketId("ticket-" + StaticRandom.I1000P)
                 .setBookmakerId(-1)
                 .build();
-        Assert.assertNotNull(ticket);
     }
 
     @Test
     public void cancelInvalidCancelStakeFailBuildTest(){
         thrown.expect(IllegalArgumentException.class);
-        TicketCancel ticket = builderFactory.createTicketCancelBuilder()
+        builderFactory.createTicketCancelBuilder()
                 .setTicketId("ticket-" + StaticRandom.I1000P)
                 .setBookmakerId(1111)
                 .setCancelPercent(-1)
                 .build();
-        Assert.assertNotNull(ticket);
     }
 
     @Test
     public void cancelWrongCombinationTest(){
         thrown.expect(IllegalArgumentException.class);
-        TicketCancel ticket = builderFactory.createTicketCancelBuilder()
+        builderFactory.createTicketCancelBuilder()
                 .setTicketId("ticket-" + StaticRandom.I1000P)
                 .setBookmakerId(1111)
                 .setCancelPercent(123)
                 .addBetCancel("bet01", 101)
                 .build();
-        Assert.assertNotNull(ticket);
     }
 }

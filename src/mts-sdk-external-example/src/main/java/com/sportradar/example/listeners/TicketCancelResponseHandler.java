@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 public class TicketCancelResponseHandler extends PublishResultHandler<TicketCancel> implements TicketCancelResponseListener {
 
-    private static final Logger logger = LoggerFactory.getLogger(TicketResponseHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(TicketCancelResponseHandler.class);
 
     private final TicketCancelAckSender ticketCancelAckSender;
     private final BuilderFactory builderFactory;

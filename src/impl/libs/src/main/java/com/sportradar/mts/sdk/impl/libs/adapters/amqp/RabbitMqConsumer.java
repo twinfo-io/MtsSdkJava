@@ -288,7 +288,7 @@ public final class RabbitMqConsumer extends RabbitMqBase implements AmqpConsumer
         return converted;
     }
 
-    private final static class DeliveryWrapper {
+    private static final class DeliveryWrapper {
 
         public QueueingConsumer.Delivery delivery;
         public int retryCount;

@@ -116,7 +116,7 @@ public class SdkHelper {
 
         CloseableHttpClient closableHttpClient = HttpClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy()).build();
         LogHttpDataFetcher logHttpDataFetcher = new LogHttpDataFetcher(config, closableHttpClient);
-        DataProvider<MarketDescriptions> dataProvider = new DataProvider<>(uriFormat, config, logHttpDataFetcher, deserializer, MarketDescriptions.class);
+        DataProvider<MarketDescriptions> dataProvider = new DataProvider<>(uriFormat, logHttpDataFetcher, deserializer, MarketDescriptions.class);
 
         Cache<String, MarketDescriptionCI> invariantMarketCache = CacheBuilder.newBuilder().build();
         MarketDescriptionCache marketDescriptionCache = new MarketDescriptionCacheImpl(invariantMarketCache, dataProvider, locales, config.getAccessToken());

@@ -21,12 +21,12 @@ public class FileSdkLoggerImpl implements SdkLogger {
 
     @Override
     public void logSendMessage(String value) {
-        logger.info("put -> " + value);
+        logger.info("put -> {}", value);
     }
 
     @Override
     public void logReceivedMessage(String value) {
-        logger.info("get <- " + value);
+        logger.info("get <- {}", value);
     }
 
     @Override

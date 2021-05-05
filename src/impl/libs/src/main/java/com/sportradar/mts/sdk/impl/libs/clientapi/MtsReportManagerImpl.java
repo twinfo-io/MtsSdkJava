@@ -6,7 +6,7 @@ import com.sportradar.mts.sdk.api.AccessToken;
 import com.sportradar.mts.sdk.api.CcfChange;
 import com.sportradar.mts.sdk.api.enums.SourceType;
 import com.sportradar.mts.sdk.api.exceptions.MtsReportException;
-import com.sportradar.mts.sdk.api.impl.CcChangeImpl;
+import com.sportradar.mts.sdk.api.impl.CcfChangeImpl;
 import com.sportradar.mts.sdk.api.interfaces.ReportManager;
 import com.sportradar.mts.sdk.api.rest.DataProvider;
 import com.sportradar.mts.sdk.impl.libs.clientapi.filters.CcfChangeFilter;
@@ -133,7 +133,7 @@ public class MtsReportManagerImpl implements ReportManager {
 
             for (CSVRecord csvRecord : parser) {
                 int index = 0;
-                CcChangeImpl ccfChange = new CcChangeImpl();
+                CcfChangeImpl ccfChange = new CcfChangeImpl();
                 String timeStampStr = csvRecord.get(index);
 
                 if (timeStampStr != null && !timeStampStr.isEmpty()) {

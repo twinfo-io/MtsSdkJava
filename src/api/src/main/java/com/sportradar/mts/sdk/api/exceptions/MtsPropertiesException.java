@@ -11,11 +11,11 @@ public class MtsPropertiesException extends MtsSdkRuntimeException {
 
     private static final long serialVersionUID = 5673034990336874977L;
 
-    public MtsPropertiesException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
     public MtsPropertiesException(String message) {
         super(message);
+    }
+
+    public MtsPropertiesException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

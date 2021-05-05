@@ -81,11 +81,6 @@ public class SdkInjectionModule extends AbstractModule {
     private static final int rabbitPrefetchCount = 10;
     private UfEnvironment ufEnvironment;// = UfEnvironment.PRODUCTION;
 
-//    public SdkInjectionModule(Properties properties) {
-//        sdkConfiguration = PropertiesToSettingsMapper.getSettings(properties);
-//        logger.info("passed MTS SDK settings : {}", sdkConfiguration);
-//    }
-
     public SdkInjectionModule(SdkConfiguration config) {
         sdkConfiguration = config;
         logger.info("passed MTS SDK configuration: {}", sdkConfiguration);
@@ -741,13 +736,14 @@ public class SdkInjectionModule extends AbstractModule {
     @Singleton
     @Provides
     @Named("MarketDescriptionCache")
-    private MarketDescriptionCache provideMarketDescriptionCache(LogHttpDataFetcher logHttpDataFetcher, SdkConfiguration cfg,
+    private MarketDescriptionCache provideMarketDescriptionCache(LogHttpDataFetcher logHttpDataFetcher,
+                                                                 SdkConfiguration cfg,
                                                                  UfEnvironment ufEnvironment,
                                                                  @Named("ApiJaxbDeserializer") Deserializer deserializer) {
 
         String uriFormat = ufEnvironment.getHost() + "/v1/descriptions/%s/markets.xml?include_mappings=true";
 
-        DataProvider<MarketDescriptions> dataProvider = new DataProvider<>(uriFormat, sdkConfiguration, logHttpDataFetcher, deserializer, MarketDescriptions.class);
+        DataProvider<MarketDescriptions> dataProvider = new DataProvider<>(uriFormat, logHttpDataFetcher, deserializer, MarketDescriptions.class);
 
         Cache<String, MarketDescriptionCI> invariantMarketCache = CacheBuilder.newBuilder().build();
         return new MarketDescriptionCacheImpl(invariantMarketCache, dataProvider, locales, sdkConfiguration.getAccessToken());
@@ -778,9 +774,9 @@ public class SdkInjectionModule extends AbstractModule {
         String maxStakeUriFormat = sdkConfiguration.getMtsClientApiHost() + "/ClientApi/api/maxStake/v1";
         String ccfUriFormat = sdkConfiguration.getMtsClientApiHost() + "/ClientApi/api/ccf/v1?sourceId=%2$s";
 
-        DataProvider<AccessTokenSchema> accessTokenDataProvider = new DataProvider<>(keycloakHostFormat, null, nonLogHttpDataFetcher, deserializer, AccessTokenSchema.class); //do not log access tokens!
-        DataProvider<MaxStakeResponseSchema> maxStakeDataProvider = new DataProvider<>(maxStakeUriFormat, null, logHttpDataFetcher, deserializer, MaxStakeResponseSchema.class);
-        DataProvider<CcfResponseSchema> ccfDataProvider = new DataProvider<>(ccfUriFormat, null, logHttpDataFetcher, deserializer, CcfResponseSchema.class);
+        DataProvider<AccessTokenSchema> accessTokenDataProvider = new DataProvider<>(keycloakHostFormat, nonLogHttpDataFetcher, deserializer, AccessTokenSchema.class); //do not log access tokens!
+        DataProvider<MaxStakeResponseSchema> maxStakeDataProvider = new DataProvider<>(maxStakeUriFormat, logHttpDataFetcher, deserializer, MaxStakeResponseSchema.class);
+        DataProvider<CcfResponseSchema> ccfDataProvider = new DataProvider<>(ccfUriFormat, logHttpDataFetcher, deserializer, CcfResponseSchema.class);
 
         return new MtsClientApiImpl(createAccessTokenCache(accessTokenDataProvider), maxStakeDataProvider, ccfDataProvider, sdkConfiguration.getKeycloakUsername(), sdkConfiguration.getKeycloakPassword());
     }
@@ -794,8 +790,8 @@ public class SdkInjectionModule extends AbstractModule {
         String keycloakHostFormat = sdkConfiguration.getKeycloakHost() + "/auth/realms/mts/protocol/openid-connect/token";
         String ccHistoryExportUriFormat = sdkConfiguration.getMtsClientApiHost() + "/ReportingCcf/external/api/report/export/history/ccf/changes/client/api?startDatetime=%2$s&endDatetime=%3$s&bookmakerId=%4$s&subBookmakerId=%5$s&sourceType=%6$s&sourceId=%7$s";
 
-        DataProvider<AccessTokenSchema> accessTokenDataProvider = new DataProvider<>(keycloakHostFormat, null, nonLogHttpDataFetcher, deserializer, AccessTokenSchema.class); //do not log access tokens!
-        DataProvider<InputStream> ccfHistoryChangeExportCsvDataProvider = new DataProvider<>(ccHistoryExportUriFormat, null, logHttpDataFetcher, streamDeserializer, InputStream.class);
+        DataProvider<AccessTokenSchema> accessTokenDataProvider = new DataProvider<>(keycloakHostFormat, nonLogHttpDataFetcher, deserializer, AccessTokenSchema.class); //do not log access tokens!
+        DataProvider<InputStream> ccfHistoryChangeExportCsvDataProvider = new DataProvider<>(ccHistoryExportUriFormat, logHttpDataFetcher, streamDeserializer, InputStream.class);
 
         return new MtsReportManagerImpl(sdkConfiguration.getBookmakerId(), createAccessTokenCache(accessTokenDataProvider), ccfHistoryChangeExportCsvDataProvider, sdkConfiguration.getKeycloakUsername(), sdkConfiguration.getKeycloakPassword());
     }
@@ -806,7 +802,6 @@ public class SdkInjectionModule extends AbstractModule {
                                                                                           @Named("CustomBetApiJaxbDeserializer") Deserializer deserializer) {
         return new DataProvider<>(
                 ufEnvironment.getHost() + "/v1/custombet/%2$s/available_selections",
-                cfg,
                 httpDataFetcher,
                 deserializer,
                 CAPIAvailableSelections.class);
@@ -818,7 +813,6 @@ public class SdkInjectionModule extends AbstractModule {
                                                                                            @Named("CustomBetApiJaxbDeserializer") Deserializer deserializer) {
         return new DataProvider<>(
                 ufEnvironment.getHost() + "/v1/custombet/calculate",
-                cfg,
                 httpDataFetcher,
                 deserializer,
                 CAPICalculationResponse.class);

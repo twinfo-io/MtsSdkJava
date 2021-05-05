@@ -6,7 +6,9 @@ package com.sportradar.mts.sdk.api.utils;
 
 import java.io.*;
 
-public class FileUtils {
+public final class FileUtils {
+
+    private FileUtils() { throw new IllegalStateException("FileUtils class"); }
 
     public static InputStream filePathAsInputStream(String path) throws IOException {
         File file = new File(path);

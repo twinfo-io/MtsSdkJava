@@ -18,7 +18,7 @@ public class AmqpPublisherImpl implements AmqpPublisher {
     private final AmqpProducer messageSender;
     private final AmqpSendResultHandler messageHandler;
     private boolean opened;
-    private ConnectionStatusImpl connectionStatus;
+    private final ConnectionStatusImpl connectionStatus;
 
     public AmqpPublisherImpl(AmqpProducer messageSender,
                              AmqpSendResultHandler sendResultHandler,

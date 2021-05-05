@@ -82,7 +82,8 @@ public class AmqpTicketCashoutResponseReceiverImpl implements AmqpMessageReceive
 
     @Override
     public void afterLimitReached(byte[] msg, String routingKey, String correlationId) {
-        logger.error("ticket cashout response consume retry reached! msg : {}", new String(msg, StandardCharsets.UTF_8));
+        String msgStr = msg == null ? "" : new String(msg, StandardCharsets.UTF_8);
+        logger.error("ticket cashout response consume retry reached! msg : {}", msgStr);
     }
 
     @Override

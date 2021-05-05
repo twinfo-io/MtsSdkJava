@@ -184,7 +184,7 @@ public abstract class RabbitMqBase implements Openable {
         return oldSleepMillis;
     }
 
-    private final static class BackgroundWork implements Runnable {
+    private static final class BackgroundWork implements Runnable {
 
         private final RabbitMqBase parent;
         private final int threadId;

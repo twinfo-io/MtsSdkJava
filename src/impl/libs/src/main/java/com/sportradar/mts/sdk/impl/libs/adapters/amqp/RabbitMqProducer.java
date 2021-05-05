@@ -380,7 +380,7 @@ public final class RabbitMqProducer extends RabbitMqBase implements AmqpProducer
         return sb.toString();
     }
 
-    private final static class RejectedMessage implements AmqpSendResult {
+    private static final class RejectedMessage implements AmqpSendResult {
 
         public final byte[] content;
         public final String routingKey;
@@ -461,7 +461,7 @@ public final class RabbitMqProducer extends RabbitMqBase implements AmqpProducer
         }
     }
 
-    private final static class AcceptedMessageNoConfirm extends AcceptedMessage {
+    private static final class AcceptedMessageNoConfirm extends AcceptedMessage {
 
         public AcceptedMessageNoConfirm(String correlationId,
                                         byte[] content,
@@ -591,7 +591,7 @@ public final class RabbitMqProducer extends RabbitMqBase implements AmqpProducer
 
     }
 
-    private final static class DoneCallbackRunnable implements Runnable {
+    private static final class DoneCallbackRunnable implements Runnable {
 
         private final Consumer<AmqpSendResult> doneCallback;
         private final AmqpSendResult result;

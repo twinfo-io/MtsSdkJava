@@ -17,10 +17,12 @@ import org.slf4j.LoggerFactory;
 /**
  * MTS integration examples
  */
-public class Examples {
+public final class Examples {
     private static final Logger logger = LoggerFactory.getLogger(Examples.class);
 
-    public static void Run()
+    private Examples() { throw new IllegalStateException("Examples class"); }
+
+    public static void run()
     {
         SdkConfiguration config = MtsSdk.getConfiguration();
         MtsSdkApi mtsSdk = new MtsSdk(config);
@@ -64,7 +66,9 @@ public class Examples {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
             logger.info("interrupted while sleeping");
+            Thread.currentThread().interrupt();
+        } finally {
+            mtsSdk.close();
         }
-        mtsSdk.close();
     }
 }

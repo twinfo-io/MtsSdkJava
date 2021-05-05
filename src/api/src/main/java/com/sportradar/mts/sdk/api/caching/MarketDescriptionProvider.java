@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class MarketDescriptionProvider {
-    private final static Logger logger = LoggerFactory.getLogger(MarketDescriptionProvider.class);
+    private static final Logger logger = LoggerFactory.getLogger(MarketDescriptionProvider.class);
 
     private final MarketDescriptionCache marketCache;
     private final List<Locale> locales;

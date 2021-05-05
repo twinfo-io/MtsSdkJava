@@ -23,7 +23,7 @@ import java.util.Map;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class AmqpTicketNonSrSettleResponseReceiverImpl implements AmqpMessageReceiver {
-    private static final Logger logger = LoggerFactory.getLogger(AmqpTicketCashoutResponseReceiverImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(AmqpTicketNonSrSettleResponseReceiverImpl.class);
     private final Object stateLock = new Object();
     private final AmqpConsumer consumer;
     private final TicketNonSrSettleResponseReceiver ticketNonSrSettleResponseReceiver;
@@ -82,7 +82,8 @@ public class AmqpTicketNonSrSettleResponseReceiverImpl implements AmqpMessageRec
 
     @Override
     public void afterLimitReached(byte[] msg, String routingKey, String correlationId) {
-        logger.error("ticket non-sportaradar settle response consume retry reached! msg : {}", new String(msg, StandardCharsets.UTF_8));
+        String msgStr = msg == null ? "" : new String(msg, StandardCharsets.UTF_8);
+        logger.error("ticket non-sportradar settle response consume retry reached! msg : {}", msgStr);
     }
 
     @Override

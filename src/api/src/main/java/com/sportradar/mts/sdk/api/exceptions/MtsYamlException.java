@@ -5,8 +5,7 @@
 package com.sportradar.mts.sdk.api.exceptions;
 
 /**
- * Created on 13/04/2018.
- * // TODO @eti: Javadoc
+ * SDK exception for missing yaml configuration
  */
 public class MtsYamlException extends MtsSdkRuntimeException {
 
