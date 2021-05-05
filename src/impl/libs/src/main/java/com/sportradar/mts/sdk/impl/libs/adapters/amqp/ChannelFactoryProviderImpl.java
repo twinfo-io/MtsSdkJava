@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public final class ChannelFactoryProviderImpl implements ChannelFactoryProvider {
 
-    private static final Logger logger = LoggerFactory.getLogger(ChannelFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(ChannelFactoryProviderImpl.class);
 
     private final int mqWorkerThreadCount;
     private final Object factoriesLock = new Object();
@@ -112,7 +112,7 @@ public final class ChannelFactoryProviderImpl implements ChannelFactoryProvider 
         opened = false;
     }
 
-    private final static class AmqpThreadFactory implements ThreadFactory {
+    private static final class AmqpThreadFactory implements ThreadFactory {
 
         private final ThreadGroup group;
         private final AtomicInteger threadNumber = new AtomicInteger(1);

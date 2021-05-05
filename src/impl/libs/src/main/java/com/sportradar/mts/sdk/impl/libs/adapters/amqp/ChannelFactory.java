@@ -4,7 +4,6 @@
 
 package com.sportradar.mts.sdk.impl.libs.adapters.amqp;
 
-import com.google.common.collect.ImmutableSet;
 import com.rabbitmq.client.ConnectionFactory;
 import com.sportradar.mts.sdk.api.interfaces.ConnectionStatus;
 import com.sportradar.mts.sdk.api.utils.SdkInfo;
@@ -17,25 +16,17 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
 public final class ChannelFactory {
-    private final static String TLS_VERSION = "TLSv1.2";
-    private final static String ENDPOINT_IDENTIFICATION_ALGORITHM = "HTTPS";
-
-    private final static Set<String> TLS_VERIFICATION_IGNORE_LIST = ImmutableSet.of(
-            "91.201.213.134", // Client integration environment
-            "mtsgate-ci.betradar.com",
-            "91.201.212.86", // Production environment
-            "mtsgate-t1.betradar.com"
-    );
+//    private final static String TLS_VERSION = "TLSv1.2";
+//    private final static String ENDPOINT_IDENTIFICATION_ALGORITHM = "HTTPS";
 
     private final ConnectionWrapper connectionWrapper;
 
     ChannelFactory(final AmqpCluster mqCluster,
                    final ChannelFactoryProviderImpl channelFactoryProvider,
-                   ConnectionStatus connectionStatus) throws Exception {
+                   ConnectionStatus connectionStatus) throws GeneralSecurityException {
         final ConnectionFactory connectionFactory = new ConnectionFactory();
         connectionFactory.setThreadFactory(channelFactoryProvider.getAmqpThreadFactory());
 
@@ -44,24 +35,25 @@ public final class ChannelFactory {
         connectionFactory.setVirtualHost(mqCluster.getVhost());
         connectionFactory.setRequestedHeartbeat(20); // Keep sending the heartbeat every X seconds to prevent any routers from considering the connection stale.
 
-        if (mqCluster.useSslProtocol() && shouldUseTlsValidation(mqCluster.getAddresses())) {
-            connectionFactory.setSocketConfigurator(socket -> {
-                socket.setTcpNoDelay(true);
-                if (socket instanceof SSLSocket) {
-                    SSLSocket sslSocket = (SSLSocket) socket;
-                    SSLParameters sslParameters = sslSocket.getSSLParameters();
-                    sslParameters.setEndpointIdentificationAlgorithm(ENDPOINT_IDENTIFICATION_ALGORITHM);
-                    sslSocket.setSSLParameters(sslParameters);
-                }
-            });
-            connectionFactory.useSslProtocol(TLS_VERSION, getDefaultTrustManager());
-        } else if (mqCluster.useSslProtocol()) {
+//        if (mqCluster.useSslProtocol()) {
+//            connectionFactory.setSocketConfigurator(socket -> {
+//                socket.setTcpNoDelay(true);
+//                if (socket instanceof SSLSocket) {
+//                    SSLSocket sslSocket = (SSLSocket) socket;
+//                    SSLParameters sslParameters = sslSocket.getSSLParameters();
+//                    sslParameters.setEndpointIdentificationAlgorithm(ENDPOINT_IDENTIFICATION_ALGORITHM);
+//                    sslSocket.setSSLParameters(sslParameters);
+//                }
+//            });
+//            connectionFactory.useSslProtocol(TLS_VERSION, getDefaultTrustManager());
+//        } else
+            if (mqCluster.useSslProtocol()) {
             // some clients might be having issues with the validation for now,
             // because they might be using direct IPs
             connectionFactory.useSslProtocol();
         }
 
-        Map<String, Object> clientProperties = new HashMap<String, Object>();
+        Map<String, Object> clientProperties = new HashMap<>();
         clientProperties.putIfAbsent("SrMtsSdkType", "java");
         clientProperties.putIfAbsent("SrMtsSdkVersion", SdkInfo.getVersion());
         clientProperties.putIfAbsent("SrMtsSdkInit", new SimpleDateFormat("yyyyMMddHHmm").format(new Date()));
@@ -76,37 +68,22 @@ public final class ChannelFactory {
         return this.connectionWrapper.getChannel();
     }
 
-    private static X509TrustManager getDefaultTrustManager() throws GeneralSecurityException {
-        try {
-            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance("X509");
-            trustManagerFactory.init((KeyStore) null);
-            TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
-            if (trustManagers != null) {
-                for (TrustManager trustManager : trustManagers) {
-                    if (trustManager instanceof X509TrustManager) {
-                        return (X509TrustManager) trustManager;
-                    }
-                }
-            }
-        } catch (NullPointerException ex) {
-            throw new GeneralSecurityException("cannot get default trust manager", ex);
-        }
-
-        throw new GeneralSecurityException("cannot get default trust manager");
-    }
-
-    private boolean shouldUseTlsValidation(NetworkAddress[] addresses) {
-        if (addresses == null || addresses.length == 0) {
-            return true;
-        }
-
-        for (NetworkAddress address : addresses) {
-            String addressToBeValidated = address.getHost();
-            if (TLS_VERIFICATION_IGNORE_LIST.contains(addressToBeValidated)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
+//    private static X509TrustManager getDefaultTrustManager() throws GeneralSecurityException {
+//        try {
+//            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance("X509");
+//            trustManagerFactory.init((KeyStore) null);
+//            TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
+//            if (trustManagers != null) {
+//                for (TrustManager trustManager : trustManagers) {
+//                    if (trustManager instanceof X509TrustManager) {
+//                        return (X509TrustManager) trustManager;
+//                    }
+//                }
+//            }
+//        } catch (NullPointerException ex) {
+//            throw new GeneralSecurityException("cannot get default trust manager", ex);
+//        }
+//
+//        throw new GeneralSecurityException("cannot get default trust manager");
+//    }
 }
