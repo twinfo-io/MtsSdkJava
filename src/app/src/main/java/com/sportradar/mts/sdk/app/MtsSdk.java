@@ -201,12 +201,6 @@ public class MtsSdk implements MtsSdkApi {
         checkNotNull(config, "configuration cannot be null");
         logger.info("Opening the MTS SDK");
         opened = true;
-//        Injector injector = Guice.createInjector(new SdkInjectionModule(config));
-//        builderFactory = injector.getInstance(BuilderFactory.class);
-//        mtsClientApi = injector.getInstance(MtsClientApi.class);
-//        customBetManager = injector.getInstance(CustomBetManager.class);
-//        connectionStatus = (ConnectionStatusImpl) injector.getInstance(ConnectionStatus.class);
-//        sdkRoot = injector.getInstance(SdkRoot.class);
         sdkRoot.open();
         logger.info("MTS SDK opened");
     }
@@ -220,11 +214,11 @@ public class MtsSdk implements MtsSdkApi {
         String javaVersion = System.getProperty("java.version");
         String jarVersion = SdkInfo.getVersion();
         String msg = "/*** MtsSdk initialization. Sdk version: " + jarVersion + ". Java: " + javaVersion + ". ***/";
-        Logger logger = LoggerFactory.getLogger(MtsSdk.class);
-        logger.info(msg);
-        logger = LoggerFactory.getLogger("com.sportradar.mts.traffic");
-        logger.info(msg);
-        logger = LoggerFactory.getLogger("com.sportradar.mts.rest");
-        logger.info(msg);
+        Logger initLogger = LoggerFactory.getLogger(MtsSdk.class);
+        initLogger.info(msg);
+        initLogger = LoggerFactory.getLogger("com.sportradar.mts.traffic");
+        initLogger.info(msg);
+        initLogger = LoggerFactory.getLogger("com.sportradar.mts.rest");
+        initLogger.info(msg);
     }
 }

@@ -21,7 +21,7 @@ public class TicketExamples
         this.builderFactory = builderFactory;
     }
 
-    private Sender GetSender()
+    private Sender getSender()
     {
         return builderFactory.createSenderBuilder()
                 //.setBookmakerId(1)
@@ -37,11 +37,11 @@ public class TicketExamples
      * Ticket with single bet on Live soccer event (Event ID: 11057047), 3way, Away team (TypeID: 2; SubTypeID: 0; Special Odds value: *; Selection: 2)
      * @return Ticket
      */
-    public Ticket Example1()
+    public Ticket example1()
     {
         return builderFactory.createTicketBuilder()
-                .setTicketId("Example1-" + System.nanoTime())
-                .setSender(GetSender())
+                .setTicketId("example1-" + System.nanoTime())
+                .setSender(getSender())
                 .setOddsChange(OddsChangeType.ANY)
                 .addBet(builderFactory.createBetBuilder()
                         .setBetId("B-" + System.nanoTime())
@@ -61,11 +61,11 @@ public class TicketExamples
      * Ticket with single bet on Pre-match Soccer(Sport ID: 1) event (Event ID: 11050343), Halftime - 3way, Draw(oddstype: 42, Special Odds value: *; Selection: X)
      * @return Ticket
      */
-    public Ticket Example2()
+    public Ticket example2()
     {
         return builderFactory.createTicketBuilder()
-                .setTicketId("Example2-" + System.nanoTime())
-                .setSender(GetSender())
+                .setTicketId("example2-" + System.nanoTime())
+                .setSender(getSender())
                 .setOddsChange(OddsChangeType.ANY)
                 .addBet(builderFactory.createBetBuilder()
                         .setBetId("B-" + System.nanoTime())
@@ -87,11 +87,11 @@ public class TicketExamples
      * Soccer (Sport ID: 1), Event ID: 10784408, Asian handicap first half (oddstype: 53), Special Odds value: 0.25; Home
      * @return Ticket
      */
-    public Ticket Example3()
+    public Ticket example3()
     {
         return builderFactory.createTicketBuilder()
-                .setTicketId("Example3-" + System.nanoTime())
-                .setSender(GetSender())
+                .setTicketId("example3-" + System.nanoTime())
+                .setSender(getSender())
                 .setOddsChange(OddsChangeType.ANY)
                 .addBet(builderFactory.createBetBuilder()
                         .setBetId("B-" + System.nanoTime())
@@ -115,11 +115,11 @@ public class TicketExamples
      * 10.4 Treble on Pre-match and Live
      * @return Ticket
      */
-    public Ticket Example4()
+    public Ticket example4()
     {
         return builderFactory.createTicketBuilder()
-                .setTicketId("Example4-" + System.nanoTime())
-                .setSender(GetSender())
+                .setTicketId("example4-" + System.nanoTime())
+                .setSender(getSender())
                 .setOddsChange(OddsChangeType.ANY)
                 .addBet(builderFactory.createBetBuilder()
                         .setBetId("B-" + System.nanoTime())
@@ -148,11 +148,11 @@ public class TicketExamples
      * 10.5 System 3 / 4
      * @return Ticket
      */
-    public Ticket Example5()
+    public Ticket example5()
     {
         return builderFactory.createTicketBuilder()
-                .setTicketId("Example5-" + System.nanoTime())
-                .setSender(GetSender())
+                .setTicketId("example5-" + System.nanoTime())
+                .setSender(getSender())
                 .setOddsChange(OddsChangeType.ANY)
                 .addBet(builderFactory.createBetBuilder()
                         .setBetId("B-" + System.nanoTime())
@@ -186,11 +186,11 @@ public class TicketExamples
      * 10.6 SYSTEM 3 / 4 including 1 Banker
      * @return Ticket
      */
-    public Ticket Example6()
+    public Ticket example6()
     {
         return builderFactory.createTicketBuilder()
-                .setTicketId("Example6-" + System.nanoTime())
-                .setSender(GetSender())
+                .setTicketId("example6-" + System.nanoTime())
+                .setSender(getSender())
                 .setOddsChange(OddsChangeType.ANY)
                 .addBet(builderFactory.createBetBuilder()
                         .setBetId("B-" + System.nanoTime())
@@ -225,11 +225,11 @@ public class TicketExamples
      * 10.7 System 3 / 5 incl 1 Ways
      * @return Ticket
      */
-    public Ticket Example7()
+    public Ticket example7()
     {
         return builderFactory.createTicketBuilder()
-                .setTicketId("Example7-" + System.nanoTime())
-                .setSender(GetSender())
+                .setTicketId("example7-" + System.nanoTime())
+                .setSender(getSender())
                 .setOddsChange(OddsChangeType.ANY)
                 .addBet(builderFactory.createBetBuilder()
                         .setBetId("B-" + System.nanoTime())
@@ -268,11 +268,11 @@ public class TicketExamples
      * 10.8 System 3 / 5 including 1 Ways including 1 banker
      * @return Ticket
      */
-    public Ticket Example8()
+    public Ticket example8()
     {
         return builderFactory.createTicketBuilder()
-                .setTicketId("Example8-" + System.nanoTime())
-                .setSender(GetSender())
+                .setTicketId("example8-" + System.nanoTime())
+                .setSender(getSender())
                 .setOddsChange(OddsChangeType.ANY)
                 .addBet(builderFactory.createBetBuilder()
                         .setBetId("B-" + System.nanoTime())
@@ -312,11 +312,11 @@ public class TicketExamples
      * 10.9 Championship Outright
      * @return Ticket
      */
-    public Ticket Example9()
+    public Ticket example9()
     {
         return builderFactory.createTicketBuilder()
-                .setTicketId("Example9-" + System.nanoTime())
-                .setSender(GetSender())
+                .setTicketId("example9-" + System.nanoTime())
+                .setSender(getSender())
                 .setOddsChange(OddsChangeType.ANY)
                 .addBet(builderFactory.createBetBuilder()
                         .setBetId("B-" + System.nanoTime())
@@ -335,11 +335,11 @@ public class TicketExamples
      * 10.10 Podium Outright
      * @return Ticket
      */
-    public Ticket Example10()
+    public Ticket example10()
     {
         return builderFactory.createTicketBuilder()
-                .setTicketId("Example10-" + System.nanoTime())
-                .setSender(GetSender())
+                .setTicketId("example10-" + System.nanoTime())
+                .setSender(getSender())
                 .setOddsChange(OddsChangeType.ANY)
                 .addBet(builderFactory.createBetBuilder()
                         .setBetId("B-" + System.nanoTime())
@@ -359,11 +359,11 @@ public class TicketExamples
      * Ticket example where punter/better/endCustomer choose two selections from different markets, but from the same event
      * @return Ticket
      */
-    public Ticket Example11()
+    public Ticket example11()
     {
         return builderFactory.createTicketBuilder()
-                .setTicketId("Example11-" + System.nanoTime())
-                .setSender(GetSender())
+                .setTicketId("example11-" + System.nanoTime())
+                .setSender(getSender())
                 .setOddsChange(OddsChangeType.ANY)
                 .addBet(builderFactory.createBetBuilder()
                         .setBetId("B1-" + System.nanoTime())
@@ -392,11 +392,11 @@ public class TicketExamples
      * 10.12 4-Fold Accumulator with 80 Cents Sport-betting bonus
      * @return Ticket
      */
-    public Ticket Example12()
+    public Ticket example12()
     {
         return builderFactory.createTicketBuilder()
-                .setTicketId("Example12-" + System.nanoTime())
-                .setSender(GetSender())
+                .setTicketId("example12-" + System.nanoTime())
+                .setSender(getSender())
                 .setOddsChange(OddsChangeType.ANY)
                 .addBet(builderFactory.createBetBuilder()
                         .setBetId("B-" + System.nanoTime())
@@ -431,11 +431,11 @@ public class TicketExamples
      * 10.13 Multi-system bets ticket with different stakes
      * @return Ticket
      */
-    public Ticket Example13()
+    public Ticket example13()
     {
         return builderFactory.createTicketBuilder()
-                .setTicketId("Example13-" + System.nanoTime())
-                .setSender(GetSender())
+                .setTicketId("example13-" + System.nanoTime())
+                .setSender(getSender())
                 .setOddsChange(OddsChangeType.ANY)
                 .addBet(builderFactory.createBetBuilder()
                         .setBetId("B1-" + System.nanoTime())
@@ -519,11 +519,11 @@ public class TicketExamples
      * 10.14 Multi-systems ticket with different number of selections and with different unit-stakes
      * @return Ticket
      */
-    public Ticket Example14()
+    public Ticket example14()
     {
         return builderFactory.createTicketBuilder()
-                .setTicketId("Example14-" + System.nanoTime())
-                .setSender(GetSender())
+                .setTicketId("example14-" + System.nanoTime())
+                .setSender(getSender())
                 .setOddsChange(OddsChangeType.ANY)
                 .addBet(builderFactory.createBetBuilder()
                         .setBetId("B1-" + System.nanoTime())

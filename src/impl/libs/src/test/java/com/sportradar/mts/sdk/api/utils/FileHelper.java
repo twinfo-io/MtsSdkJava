@@ -4,13 +4,10 @@
 
 package com.sportradar.mts.sdk.api.utils;
 
-import com.google.common.io.Closeables;
-import sun.misc.IOUtils;
-
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,23 +59,25 @@ public class FileHelper {
         }
         if (StringUtils.isNullOrEmpty(startDir))
         {
-            startDir = Paths.get("").toString();
+            startDir = Paths.get("").toAbsolutePath().toString();
         }
         File f = new File(fileName);
         if (f.exists())
         {
-            return fileName;
+            return f.getAbsolutePath();
         }
-        for (File dir : f.listFiles())
+        File dir = new File(startDir);
+        for (File tmpFile : dir.listFiles())
         {
-            if(dir.isDirectory())
+            if(tmpFile.isFile() && tmpFile.getName().equals(fileName)){
+               return tmpFile.getAbsolutePath();
+            }
+
+            if(tmpFile.isDirectory())
             {
-                for(File file : dir.listFiles())
-                {
-                    if(file.getName().equals(fileName))
-                    {
-                        return file.getAbsolutePath();
-                    }
+                String subFilePath = FindFileInDir(fileName, tmpFile.getAbsolutePath());
+                if(!subFilePath.equals(fileName)){
+                    return subFilePath;
                 }
             }
         }
@@ -88,19 +87,27 @@ public class FileHelper {
 
     public byte[] ReadFileToByTe(String filePath)
     {
+        byte[] msg = new byte[]{};
         if (StringUtils.isNullOrEmpty(filePath))
         {
-            return new byte[]{};
+            return msg;
         }
-        filePath = filePath.replace("\\", "/");
-        InputStream stream = this.getClass().getClassLoader().getResourceAsStream(filePath);
-        byte[] msg = null;
-        try {
-            msg = IOUtils.readFully(stream, -1, false);
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        filePath = filePath.replace("\\", File.separator);
+        filePath = filePath.replace("/", File.separator);
+        if(filePath.contains(File.separator)){
+            String fileName = filePath.substring(filePath.lastIndexOf(File.separator)+1);
+            filePath = FindFileInDir(fileName, "");
         }
-        Closeables.closeQuietly(stream);
+        Path path = Paths.get(filePath);
+        if(Files.exists(path)){
+            try {
+                msg = Files.readAllBytes(path);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         return msg;
     }
 

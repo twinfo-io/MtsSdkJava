@@ -20,16 +20,18 @@ public final class MtsDateFormatter {
     private static final Logger logger = LoggerFactory.getLogger(MtsDateFormatter.class);
     private static final TimeZone utcTimeZone = TimeZone.getTimeZone("UTC");
 
+    private MtsDateFormatter() { throw new IllegalStateException("MtsDateFormatter class"); }
+
     private static final ThreadLocal<SimpleDateFormat> formatter = ThreadLocal.withInitial(() -> {
-        SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
-        formatter.setTimeZone(utcTimeZone);
-        return formatter;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT);
+        simpleDateFormat.setTimeZone(utcTimeZone);
+        return simpleDateFormat;
     });
 
     private static final ThreadLocal<SimpleDateFormat> formatterReadableShort = ThreadLocal.withInitial(() -> {
-        SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT_READABLE_SHORT);
-        formatter.setTimeZone(utcTimeZone);
-        return formatter;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT_READABLE_SHORT);
+        simpleDateFormat.setTimeZone(utcTimeZone);
+        return simpleDateFormat;
     });
 
     public static String dateToString(Date input) {
@@ -63,16 +65,11 @@ public final class MtsDateFormatter {
         }
     }
 
-    public static Date stringToDateChecked(String input) throws ParseException {
-        return get().parse(input);
-    }
+    public static Date stringToDateChecked(String input) throws ParseException { return get().parse(input); }
 
     private static SimpleDateFormat getReadableShortFormat() {
         return formatterReadableShort.get();
     }
 
-    public static long DateTimeToUnixTime(Date input)
-    {
-        return input.toInstant().toEpochMilli();
-    }
+    public static long dateTimeToUnixTime(Date input) { return input.toInstant().toEpochMilli(); }
 }

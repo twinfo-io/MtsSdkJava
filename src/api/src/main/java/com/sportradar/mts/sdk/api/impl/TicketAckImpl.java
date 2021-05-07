@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.base.Preconditions;
 import com.sportradar.mts.sdk.api.TicketAck;
 import com.sportradar.mts.sdk.api.enums.TicketAckStatus;
+import com.sportradar.mts.sdk.api.exceptions.MtsSdkProcessException;
 import com.sportradar.mts.sdk.api.utils.JsonUtils;
 import com.sportradar.mts.sdk.api.utils.MtsDtoMapper;
 import com.sportradar.mts.sdk.api.utils.MtsTicketHelper;
@@ -53,7 +54,7 @@ public class TicketAckImpl implements TicketAck {
         this.status = ackStatus;
         this.timestampUtc = timestampUtc;
         this.version = version;
-        this.correlationId = MtsTicketHelper.GenerateTicketCorrelationId();
+        this.correlationId = MtsTicketHelper.generateTicketCorrelationId();
     }
 
     @Override
@@ -107,7 +108,7 @@ public class TicketAckImpl implements TicketAck {
         }
         catch (JsonProcessingException ex)
         {
-            throw new RuntimeException("Exception during dto mapping: " + ex.getMessage(), ex.getCause());
+            throw new MtsSdkProcessException("Exception during dto mapping: " + ex.getMessage(), ex.getCause());
         }
     }
 

@@ -33,10 +33,10 @@ public abstract class SenderBase<T extends SdkTicket> implements MessageSender {
     private final RateLimiter rateLimiter;
     private boolean opened;
 
-    public SenderBase(AmqpPublisher amqpPublisher,
-                      ExecutorService executorService,
-                      double messagesPerSecond,
-                      SdkLogger sdkLogger) {
+    protected SenderBase(AmqpPublisher amqpPublisher,
+                         ExecutorService executorService,
+                         double messagesPerSecond,
+                         SdkLogger sdkLogger) {
         checkNotNull(amqpPublisher, "amqpPublisher cannot be null");
         checkNotNull(executorService, "executorService cannot be null");
         checkNotNull(sdkLogger, "sdkLogger cannot be null");
@@ -74,7 +74,6 @@ public abstract class SenderBase<T extends SdkTicket> implements MessageSender {
 
     protected void publishAsync(T message, String routingKey, String replyRoutingKey) {
         rateLimiter.acquire();
-        //String msgString = JsonUtils.serializeAsString(message);
         logger.trace("PUBLISH ticket:{}, correlationId:{}, routingKey:{}, replyRoutingKey:{}",
                 message.getTicketId(),
                 message.getCorrelationId(),

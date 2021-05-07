@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 public class UnifiedOddsStatistics implements UnifiedOddsStatisticsMBean {
     private static final int LONG_PROCESSING_TIME_THRESHOLD = 50; // ms
-    private static final long start = System.currentTimeMillis();
+    private static final long START = System.currentTimeMillis();
 
     private int messages;
     private long lastMessageReceived;
@@ -65,29 +65,13 @@ public class UnifiedOddsStatistics implements UnifiedOddsStatisticsMBean {
         return betSettlementRollbacks;
     }
 
-    public void onMessageReceived(long now, long finished, Object o) {
+    public void onMessageReceived(long now, long finished) {
         lastMessageReceived = now;
         messages++;
-        //totalXmlDeserializationTime += xmlDeserializationTimeNs;
         if ((finished - now) > LONG_PROCESSING_TIME_THRESHOLD) {
             longProcessing++;
             totalLongProcTime += (finished - now);
         }
-        //totalMsgSizeReceived += body.length;
-//        if (o instanceof UFOddsChange)
-//            oddsChanges++;
-//        else if (o instanceof UFBetSettlement)
-//            betSettlements++;
-//        else if (o instanceof UFBetCancel)
-//            betCancels++;
-//        else if (o instanceof UFRollbackBetCancel)
-//            betCancelRollbacks++;
-//        else if (o instanceof UFRollbackBetSettlement)
-//            betSettlementRollbacks++;
-//        else if (o instanceof UFFixtureChange)
-//            fixtureChanges++;
-        byte[] b = tmpBuf.get();
-        //System.arraycopy(body, 0, b, 0, b.length < body.length ? b.length : body.length);
         String msgExcerpt = new String(tmpBuf.get());
         if (msgExcerpt.contains("request_id")) {
             recoveryMessages++;
@@ -129,7 +113,7 @@ public class UnifiedOddsStatistics implements UnifiedOddsStatisticsMBean {
 
     @Override
     public int getSecondsSinceStart() {
-        return (int) ((System.currentTimeMillis() - start) / 1000);
+        return (int) ((System.currentTimeMillis() - START) / 1000);
     }
 
     @Override
@@ -158,7 +142,7 @@ public class UnifiedOddsStatistics implements UnifiedOddsStatisticsMBean {
     }
 
     public void cachePurgeRun(long purgeTime) {
-        logger.debug("Trimmed all caches. Took " + purgeTime + "ms");
+        logger.debug("Trimmed all caches. Took {}ms", purgeTime);
         purgesDone++;
         totalPurgeTime += purgeTime;
     }

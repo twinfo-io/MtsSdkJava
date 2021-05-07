@@ -6,10 +6,12 @@ package com.sportradar.mts.sdk.api;
 
 import com.sportradar.mts.sdk.api.enums.SenderChannel;
 
+import java.io.Serializable;
+
 /**
  * Interface definition for the EndCustomer
  */
-public interface EndCustomer {
+public interface EndCustomer extends Serializable {
 
     /**
      * Gets end customer ip

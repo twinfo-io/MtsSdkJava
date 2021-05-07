@@ -9,6 +9,7 @@ import com.sportradar.mts.sdk.api.enums.SenderChannel;
 import com.sportradar.mts.sdk.api.enums.UfEnvironment;
 import com.sportradar.mts.sdk.api.interfaces.SdkConfiguration;
 import com.sportradar.mts.sdk.api.interfaces.SdkConfigurationBuilder;
+import com.sportradar.mts.sdk.api.utils.SdkInfo;
 import com.sportradar.mts.sdk.api.utils.StringUtils;
 
 import java.util.Properties;
@@ -32,7 +33,7 @@ public class SdkConfigurationBuilderImpl implements SdkConfigurationBuilder {
     public SdkConfigurationBuilder setUsername(String username) {
         if(StringUtils.isNullOrEmpty(username))
         {
-            throw new IllegalArgumentException("Value cannot be a null reference or an empty string");
+            throw new IllegalArgumentException(SdkInfo.Literals.CONFIG_BUILDER_PARAM_EMPTY);
         }
         properties.setProperty(SettingsKeys.USERNAME, username);
         return this;
@@ -48,7 +49,7 @@ public class SdkConfigurationBuilderImpl implements SdkConfigurationBuilder {
     public SdkConfigurationBuilder setPassword(String password) {
         if(StringUtils.isNullOrEmpty(password))
         {
-            throw new IllegalArgumentException("Value cannot be a null reference or an empty string");
+            throw new IllegalArgumentException(SdkInfo.Literals.CONFIG_BUILDER_PARAM_EMPTY);
         }
         properties.setProperty(SettingsKeys.PASSWORD, password);
         return this;
@@ -64,7 +65,7 @@ public class SdkConfigurationBuilderImpl implements SdkConfigurationBuilder {
     public SdkConfigurationBuilder setHost(String host) {
         if(StringUtils.isNullOrEmpty(host))
         {
-            throw new IllegalArgumentException("Value cannot be a null reference or an empty string");
+            throw new IllegalArgumentException(SdkInfo.Literals.CONFIG_BUILDER_PARAM_EMPTY);
         }
         properties.setProperty(SettingsKeys.HOST, host);
         return this;
@@ -96,7 +97,7 @@ public class SdkConfigurationBuilderImpl implements SdkConfigurationBuilder {
     public SdkConfigurationBuilder setVirtualHost(String vhost) {
         if(StringUtils.isNullOrEmpty(vhost))
         {
-            throw new IllegalArgumentException("Value cannot be a null reference or an empty string");
+            throw new IllegalArgumentException(SdkInfo.Literals.CONFIG_BUILDER_PARAM_EMPTY);
         }
         properties.setProperty(SettingsKeys.VIRTUAL_HOST, vhost);
         return this;
@@ -112,7 +113,7 @@ public class SdkConfigurationBuilderImpl implements SdkConfigurationBuilder {
     public SdkConfigurationBuilder setNode(int nodeId) {
         if(nodeId < 1)
         {
-            throw new IllegalArgumentException("Value must be greater than zero");
+            throw new IllegalArgumentException(SdkInfo.Literals.CONFIG_BUILDER_PARAM_ZERO);
         }
         properties.setProperty(SettingsKeys.NODE_ID, String.valueOf(nodeId));
         return this;
@@ -140,7 +141,7 @@ public class SdkConfigurationBuilderImpl implements SdkConfigurationBuilder {
     public SdkConfigurationBuilder setBookmakerId(int bookmakerId) {
         if(bookmakerId < 1)
         {
-            throw new IllegalArgumentException("Value must be greater than zero");
+            throw new IllegalArgumentException(SdkInfo.Literals.CONFIG_BUILDER_PARAM_ZERO);
         }
         properties.setProperty(SettingsKeys.BOOKMAKER_ID, String.valueOf(bookmakerId));
         return this;
@@ -156,7 +157,7 @@ public class SdkConfigurationBuilderImpl implements SdkConfigurationBuilder {
     public SdkConfigurationBuilder setLimitId(int limitId) {
         if(limitId < 1)
         {
-            throw new IllegalArgumentException("Value must be greater than zero");
+            throw new IllegalArgumentException(SdkInfo.Literals.CONFIG_BUILDER_PARAM_ZERO);
         }
         properties.setProperty(SettingsKeys.LIMIT_ID, String.valueOf(limitId));
         return this;
@@ -172,7 +173,7 @@ public class SdkConfigurationBuilderImpl implements SdkConfigurationBuilder {
     public SdkConfigurationBuilder setCurrency(String currency) {
         if(StringUtils.isNullOrEmpty(currency) || currency.length() < 3 || currency.length() > 4)
         {
-            throw new IllegalArgumentException("Value cannot be a null reference or an empty string");
+            throw new IllegalArgumentException(SdkInfo.Literals.CONFIG_BUILDER_PARAM_EMPTY);
         }
         properties.setProperty(SettingsKeys.CURRENCY, currency);
         return this;
@@ -200,7 +201,7 @@ public class SdkConfigurationBuilderImpl implements SdkConfigurationBuilder {
     public SdkConfigurationBuilder setAccessToken(String accessToken) {
         if(StringUtils.isNullOrEmpty(accessToken))
         {
-            throw new IllegalArgumentException("Value cannot be a null reference or an empty string");
+            throw new IllegalArgumentException(SdkInfo.Literals.CONFIG_BUILDER_PARAM_EMPTY);
         }
         properties.setProperty(SettingsKeys.ACCESS_TOKEN, accessToken);
         return this;
@@ -341,7 +342,7 @@ public class SdkConfigurationBuilderImpl implements SdkConfigurationBuilder {
     public SdkConfigurationBuilder setKeycloakHost(String keycloakHost) {
         if(StringUtils.isNullOrEmpty(keycloakHost))
         {
-            throw new IllegalArgumentException("Value cannot be a null reference or an empty string");
+            throw new IllegalArgumentException(SdkInfo.Literals.CONFIG_BUILDER_PARAM_EMPTY);
         }
         properties.setProperty(SettingsKeys.KEYCLOAK_HOST, keycloakHost);
         return this;
@@ -357,7 +358,7 @@ public class SdkConfigurationBuilderImpl implements SdkConfigurationBuilder {
     public SdkConfigurationBuilder setKeycloakUsername(String keycloakUsername) {
         if(StringUtils.isNullOrEmpty(keycloakUsername))
         {
-            throw new IllegalArgumentException("Value cannot be a null reference or an empty string");
+            throw new IllegalArgumentException(SdkInfo.Literals.CONFIG_BUILDER_PARAM_EMPTY);
         }
         properties.setProperty(SettingsKeys.KEYCLOAK_USERNAME, keycloakUsername);
         return this;
@@ -373,7 +374,7 @@ public class SdkConfigurationBuilderImpl implements SdkConfigurationBuilder {
     public SdkConfigurationBuilder setKeycloakPassword(String keycloakPassword) {
         if(StringUtils.isNullOrEmpty(keycloakPassword))
         {
-            throw new IllegalArgumentException("Value cannot be a null reference or an empty string");
+            throw new IllegalArgumentException(SdkInfo.Literals.CONFIG_BUILDER_PARAM_EMPTY);
         }
         properties.setProperty(SettingsKeys.KEYCLOAK_PASSWORD, keycloakPassword);
         return this;
@@ -389,7 +390,7 @@ public class SdkConfigurationBuilderImpl implements SdkConfigurationBuilder {
     public SdkConfigurationBuilder setKeycloakSecret(String keycloakSecret) {
         if(StringUtils.isNullOrEmpty(keycloakSecret))
         {
-            throw new IllegalArgumentException("Value cannot be a null reference or an empty string");
+            throw new IllegalArgumentException(SdkInfo.Literals.CONFIG_BUILDER_PARAM_EMPTY);
         }
         properties.setProperty(SettingsKeys.KEYCLOAK_SECRET, keycloakSecret);
         return this;
@@ -405,7 +406,7 @@ public class SdkConfigurationBuilderImpl implements SdkConfigurationBuilder {
     public SdkConfigurationBuilder setMtsClientApiHost(String mtsClientApiHost) {
         if(StringUtils.isNullOrEmpty(mtsClientApiHost))
         {
-            throw new IllegalArgumentException("Value cannot be a null reference or an empty string");
+            throw new IllegalArgumentException(SdkInfo.Literals.CONFIG_BUILDER_PARAM_EMPTY);
         }
         properties.setProperty(SettingsKeys.MTS_CLIENT_API_HOST, mtsClientApiHost);
         return this;

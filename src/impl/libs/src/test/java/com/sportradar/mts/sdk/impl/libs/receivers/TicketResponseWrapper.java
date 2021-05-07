@@ -27,7 +27,7 @@ public class TicketResponseWrapper extends TicketResponseImpl {
     private long alternativeStake;
 
     public TicketResponseWrapper() {
-        super("ticket-" + System.currentTimeMillis(), new ResponseReasonImpl(101, "Response message"), TicketAcceptance.ACCEPTED, null, "123", 123, new Date(), SdkInfo.mtsTicketVersion(), StaticRandom.S1000, null, null, "{response-payload}");
+        super("ticket-" + System.currentTimeMillis(), new ResponseReasonImpl(101, "Response message"), TicketAcceptance.ACCEPTED, null, "123", 123, new Date(), SdkInfo.MTS_TICKET_VERSION, StaticRandom.S1000, null, null, "{response-payload}");
     }
 
     public Integer getCode() {

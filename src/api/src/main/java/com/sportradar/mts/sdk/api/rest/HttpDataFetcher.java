@@ -101,7 +101,7 @@ class HttpDataFetcher {
                 if (statusCode == HttpStatus.SC_OK || (isWhoAmI && statusCode == HttpStatus.SC_FORBIDDEN)) {
                     return EntityUtils.toString(resp.getEntity());
                 } else {
-                    logger.warn("Non OK API response: " + resp.getStatusLine() + " " + statusCode + " " + path);
+                    logger.warn("Non OK API response: {} {} {}", resp.getStatusLine(), statusCode, path);
                     return "";
                 }
             };

@@ -162,6 +162,6 @@ public class TicketCashoutBuilderImpl implements TicketCashoutBuilder {
      */
     @Override
     public TicketCashout build() {
-        return new TicketCashoutImpl(ticketId, bookmakerId, new Date(), cashoutStake, cashoutPercent, betCashouts, SdkInfo.mtsTicketVersion());
+        return new TicketCashoutImpl(ticketId, bookmakerId, new Date(), cashoutStake, cashoutPercent, betCashouts, SdkInfo.MTS_TICKET_VERSION);
     }
 }

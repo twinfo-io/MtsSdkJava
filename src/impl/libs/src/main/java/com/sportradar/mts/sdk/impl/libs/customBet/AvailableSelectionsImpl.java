@@ -33,9 +33,9 @@ public class AvailableSelectionsImpl implements AvailableSelections {
 
         this.event = URN.parse(availableSelections.getEvent().getId());
 
-        CAPIMarketsType markets = availableSelections.getEvent().getMarkets();
-        this.markets = (markets != null) ?
-                markets.getMarkets().stream()
+        CAPIMarketsType marketList = availableSelections.getEvent().getMarkets();
+        this.markets = (marketList != null) ?
+                marketList.getMarkets().stream()
                         .map(MarketImpl::new)
                         .collect(ImmutableList.toImmutableList()) :
                 ImmutableList.of();

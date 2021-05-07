@@ -157,7 +157,7 @@ class SdkYamlConfigurationReader {
     private static void isYamlReaderDependencyPresent() {
         try {
             Class.forName("org.yaml.snakeyaml.Yaml");
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             throw new MtsYamlException("Yaml configuration reader dependency missing", ex);
         }
     }

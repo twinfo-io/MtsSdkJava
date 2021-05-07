@@ -20,13 +20,7 @@ public interface SelectionBuilder {
      * Method create() is obsolete. Please use the appropriate method on BuilderFactory interface which can be obtained through MtsSdk instance
      */
     @Deprecated
-    static SelectionBuilder create()
-    {
-//        SdkConfiguration config = SdkConfiguration.getConfiguration();
-//        MarketDescriptionProvider marketDescriptionProvider = new MarketDescriptionProvider(config);
-//        return new SelectionBuilderImpl(marketDescriptionProvider, config);
-        return null;
-    }
+    static SelectionBuilder create() { return null; }
 
     /**
      * Sets the Betradar event (match or outright) id

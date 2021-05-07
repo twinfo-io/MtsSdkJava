@@ -88,10 +88,10 @@ public class TicketMapperTest  extends TimeLimitedTestBase {
         TicketResponseSchema dto = GetTicketResponseSchema("json/ticket-response.json");
         Assert.assertNotNull(dto);
         Assert.assertNotNull(dto.getResult());
-        Assert.assertEquals(dto.getResult().getStatus(), Result.Status.ACCEPTED);
+        Assert.assertEquals(Result.Status.ACCEPTED, dto.getResult().getStatus());
         Assert.assertNotNull(dto.getResult().getReason());
-        Assert.assertEquals(dto.getResult().getReason().getCode(), Integer.valueOf(1024));
-        Assert.assertEquals(dto.getVersion(), SdkInfo.mtsTicketVersion());
+        Assert.assertEquals(Integer.valueOf(1024), dto.getResult().getReason().getCode());
+        Assert.assertEquals(SdkInfo.MTS_TICKET_VERSION, dto.getVersion());
     }
 
     @Test
@@ -103,7 +103,7 @@ public class TicketMapperTest  extends TimeLimitedTestBase {
         Assert.assertEquals(Result.Status.REJECTED, dto.getResult().getStatus());
         Assert.assertNotNull(dto.getResult().getReason());
         Assert.assertEquals(Integer.valueOf(-422), dto.getResult().getReason().getCode());
-        Assert.assertEquals(SdkInfo.mtsTicketVersion(), dto.getVersion());
+        Assert.assertEquals(SdkInfo.MTS_TICKET_VERSION, dto.getVersion());
     }
 
 //    @Test
@@ -123,7 +123,7 @@ public class TicketMapperTest  extends TimeLimitedTestBase {
         Assert.assertEquals(Result.Status.REJECTED, dto.getResult().getStatus());
         Assert.assertNotNull(dto.getResult().getReason());
         Assert.assertEquals(Integer.valueOf(-321), dto.getResult().getReason().getCode());
-        Assert.assertEquals(SdkInfo.mtsTicketVersion(), dto.getVersion());
+        Assert.assertEquals(SdkInfo.MTS_TICKET_VERSION, dto.getVersion());
         Assert.assertNotNull(dto.getResult().getBetDetails());
         Assert.assertNotNull(dto.getResult().getBetDetails().stream().findFirst().get().getSelectionDetails());
         Assert.assertEquals(0, dto.getResult().getBetDetails().stream().findFirst().get().getSelectionDetails().size());
@@ -149,7 +149,7 @@ public class TicketMapperTest  extends TimeLimitedTestBase {
         Assert.assertEquals(Result.Status.REJECTED, dto.getResult().getStatus());
         Assert.assertNotNull(dto.getResult().getReason());
         Assert.assertEquals(Integer.valueOf(-321), dto.getResult().getReason().getCode());
-        Assert.assertEquals(SdkInfo.mtsTicketVersion(), dto.getVersion());
+        Assert.assertEquals(SdkInfo.MTS_TICKET_VERSION, dto.getVersion());
         Assert.assertNotNull(dto.getResult().getBetDetails());
         Assert.assertNotNull(dto.getResult().getBetDetails().stream().findFirst().get().getSelectionDetails());
         Assert.assertEquals(0, dto.getResult().getBetDetails().stream().findFirst().get().getSelectionDetails().size());

@@ -50,11 +50,11 @@ public class TicketReofferCancelBuilderImpl implements TicketReofferCancelBuilde
 
     @Override
     public TicketReofferCancel build(String ticketId, int bookmakerId) {
-        return new TicketReofferCancelImpl(ticketId, bookmakerId, new Date(), SdkInfo.mtsTicketVersion());
+        return new TicketReofferCancelImpl(ticketId, bookmakerId, new Date(), SdkInfo.MTS_TICKET_VERSION);
     }
 
     @Override
     public TicketReofferCancel build() {
-        return new TicketReofferCancelImpl(ticketId, bookmakerId, new Date(), SdkInfo.mtsTicketVersion());
+        return new TicketReofferCancelImpl(ticketId, bookmakerId, new Date(), SdkInfo.MTS_TICKET_VERSION);
     }
 }

@@ -14,8 +14,13 @@ import com.sportradar.mts.sdk.api.utils.StringUtils;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
-public class PropertiesToSettingsMapper {
+public final class PropertiesToSettingsMapper {
 
+    private static final String MISSING_PROPERTY = "{} missing from properties";
+
+    private PropertiesToSettingsMapper() { throw new IllegalStateException("PropertiesToSettingsMapper class"); }
+
+    @SuppressWarnings("java:S3776") // Cognitive Complexity of methods should not be too high
     public static SdkConfiguration getSettings(Properties properties) {
         String username = properties.getProperty(SettingsKeys.USERNAME);
         String password = properties.getProperty(SettingsKeys.PASSWORD);
@@ -49,11 +54,11 @@ public class PropertiesToSettingsMapper {
         String keycloakSecret = properties.getProperty(SettingsKeys.KEYCLOAK_SECRET);
         String mtsClientApiHost = properties.getProperty(SettingsKeys.MTS_CLIENT_API_HOST);
 
-        Preconditions.checkNotNull(username, StringUtils.format("{} missing from properties", SettingsKeys.USERNAME));
+        Preconditions.checkNotNull(username, StringUtils.format(MISSING_PROPERTY, SettingsKeys.USERNAME));
         Preconditions.checkArgument(!username.isEmpty());
-        Preconditions.checkNotNull(password, StringUtils.format("{} missing from properties", SettingsKeys.PASSWORD));
+        Preconditions.checkNotNull(password, StringUtils.format(MISSING_PROPERTY, SettingsKeys.PASSWORD));
         Preconditions.checkArgument(!password.isEmpty());
-        Preconditions.checkNotNull(host, StringUtils.format("{} missing from properties", SettingsKeys.HOST));
+        Preconditions.checkNotNull(host, StringUtils.format(MISSING_PROPERTY, SettingsKeys.HOST));
         Preconditions.checkArgument(!host.contains(":"), StringUtils.format("{} can not contain port number. Only domain name or ip. E.g. mtsgate-ci.betradar.com", SettingsKeys.HOST));
         Preconditions.checkArgument(!host.isEmpty());
 
@@ -62,9 +67,6 @@ public class PropertiesToSettingsMapper {
             Preconditions.checkArgument(isBoolean(sslString), "ssl should be boolean");
             ssl = Boolean.valueOf(sslString);
         }
-//        if (host == null) {
-//            host = test ? "mtsgate-ci.betradar.com" : "mtsgate-t1.betradar.com";
-//        }
 
         if(StringUtils.isNullOrEmpty(vHost))
         {
@@ -87,22 +89,22 @@ public class PropertiesToSettingsMapper {
             nodeId = Integer.valueOf(nodeString);
         }
 
-        int ticketResponseTimeoutLive = SdkInfo.TicketResponseTimeoutLiveDefault;
+        int ticketResponseTimeoutLive = SdkInfo.TICKET_RESPONSE_TIMEOUT_LIVE_DEFAULT;
         if (ticketResponseTimeoutLiveString != null) {
             Preconditions.checkArgument(isDecimal(ticketResponseTimeoutLiveString), "ticketResponseTimeoutLive should be a number");
             ticketResponseTimeoutLive = Integer.valueOf(ticketResponseTimeoutLiveString);
 
-            Preconditions.checkArgument(ticketResponseTimeoutLive >= SdkInfo.TicketResponseTimeoutLiveMin, "ticketResponseTimeoutLive must be more than " + SdkInfo.TicketResponseTimeoutLiveMin + "ms");
-            Preconditions.checkArgument(ticketResponseTimeoutLive <= SdkInfo.TicketResponseTimeoutLiveMax, "ticketResponseTimeoutLive must be less than " + SdkInfo.TicketResponseTimeoutLiveMax + "ms");
+            Preconditions.checkArgument(ticketResponseTimeoutLive >= SdkInfo.TICKET_RESPONSE_TIMEOUT_LIVE_MIN, "ticketResponseTimeoutLive must be more than " + SdkInfo.TICKET_RESPONSE_TIMEOUT_LIVE_MIN + "ms");
+            Preconditions.checkArgument(ticketResponseTimeoutLive <= SdkInfo.TICKET_RESPONSE_TIMEOUT_LIVE_MAX, "ticketResponseTimeoutLive must be less than " + SdkInfo.TICKET_RESPONSE_TIMEOUT_LIVE_MAX + "ms");
         }
 
-        int ticketResponseTimeoutPrematch = SdkInfo.TicketResponseTimeoutPrematchDefault;
+        int ticketResponseTimeoutPrematch = SdkInfo.TICKET_RESPONSE_TIMEOUT_PREMATCH_DEFAULT;
         if (ticketResponseTimeoutPrematchString != null) {
             Preconditions.checkArgument(isDecimal(ticketResponseTimeoutPrematchString), "ticketResponseTimeoutPrematch should be a number");
             ticketResponseTimeoutPrematch = Integer.valueOf(ticketResponseTimeoutPrematchString);
 
-            Preconditions.checkArgument(ticketResponseTimeoutPrematch >= SdkInfo.TicketResponseTimeoutPrematchMin, "ticketResponseTimeoutPrematch must be more than " + SdkInfo.TicketResponseTimeoutPrematchMin + "ms");
-            Preconditions.checkArgument(ticketResponseTimeoutPrematch <= SdkInfo.TicketResponseTimeoutPrematchMax, "ticketResponseTimeoutPrematch must be less than " + SdkInfo.TicketResponseTimeoutPrematchMax + "ms");
+            Preconditions.checkArgument(ticketResponseTimeoutPrematch >= SdkInfo.TICKET_RESPONSE_TIMEOUT_PREMATCH_MIN, "ticketResponseTimeoutPrematch must be more than " + SdkInfo.TICKET_RESPONSE_TIMEOUT_PREMATCH_MIN + "ms");
+            Preconditions.checkArgument(ticketResponseTimeoutPrematch <= SdkInfo.TICKET_RESPONSE_TIMEOUT_PREMATCH_MAX, "ticketResponseTimeoutPrematch must be less than " + SdkInfo.TICKET_RESPONSE_TIMEOUT_PREMATCH_MAX + "ms");
         }
 
         int ticketCancellationResponseTimeout = 600000;
@@ -177,7 +179,7 @@ public class PropertiesToSettingsMapper {
         if(provideAdditionalMarketSpecifiersString != null)
         {
             Preconditions.checkArgument(isBoolean(provideAdditionalMarketSpecifiersString), "provideAdditionalMarketSpecifiers is not valid boolean value");
-            if(provideAdditionalMarketSpecifiersString.toLowerCase().equals("false"))
+            if(provideAdditionalMarketSpecifiersString.equalsIgnoreCase("false"))
             {
                 provideAdditionalMarketSpecifiers = false;
             }
@@ -187,7 +189,7 @@ public class PropertiesToSettingsMapper {
         if(ticketTimeoutCallbackEnabledString != null)
         {
             Preconditions.checkArgument(isBoolean(ticketTimeoutCallbackEnabledString), "ticketTimeoutCallbackEnabled is not valid boolean value");
-            if(ticketTimeoutCallbackEnabledString.toLowerCase().equals("true"))
+            if(ticketTimeoutCallbackEnabledString.equalsIgnoreCase("true"))
             {
                 ticketTimeoutCallbackEnabled = true;
             }
@@ -200,8 +202,8 @@ public class PropertiesToSettingsMapper {
         }
 
         if (mtsClientApiHost != null) {
-            Preconditions.checkNotNull(keycloakHost, StringUtils.format("{} missing from properties", SettingsKeys.KEYCLOAK_HOST));
-            Preconditions.checkNotNull(keycloakSecret, StringUtils.format("{} missing from properties", SettingsKeys.KEYCLOAK_SECRET));
+            Preconditions.checkNotNull(keycloakHost, StringUtils.format(MISSING_PROPERTY, SettingsKeys.KEYCLOAK_HOST));
+            Preconditions.checkNotNull(keycloakSecret, StringUtils.format(MISSING_PROPERTY, SettingsKeys.KEYCLOAK_SECRET));
         }
 
         return new SdkConfigurationImpl(username,

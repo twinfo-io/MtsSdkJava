@@ -33,7 +33,6 @@ public class MtsSdkRootTest{
         MtsSdkApi mtsSdk = new MtsSdk(config);
         mtsSdk.open();
         assertTrue(mtsSdk.isOpen());
-        Thread.sleep(500);
         mtsSdk.close();
         assertFalse(mtsSdk.isOpen());
     }

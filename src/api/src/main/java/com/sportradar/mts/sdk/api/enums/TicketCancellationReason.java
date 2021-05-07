@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Ticket cancellation reason. Used in {@link com.sportradar.mts.sdk.api.TicketCancel}
  */
+@SuppressWarnings("java:S115") // Constant names should comply with a naming convention
 public enum TicketCancellationReason {
 
     /**

@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.base.Preconditions;
 import com.sportradar.mts.sdk.api.TicketReofferCancel;
+import com.sportradar.mts.sdk.api.exceptions.MtsSdkProcessException;
 import com.sportradar.mts.sdk.api.utils.JsonUtils;
 import com.sportradar.mts.sdk.api.utils.MtsDtoMapper;
 import com.sportradar.mts.sdk.api.utils.MtsTicketHelper;
@@ -43,7 +44,7 @@ public class TicketReofferCancelImpl implements TicketReofferCancel {
         this.bookmakerId = bookmakerId;
         this.timestampUtc = timestampUtc;
         this.version = version;
-        this.correlationId = MtsTicketHelper.GenerateTicketCorrelationId();
+        this.correlationId = MtsTicketHelper.generateTicketCorrelationId();
     }
 
     @Override
@@ -83,7 +84,7 @@ public class TicketReofferCancelImpl implements TicketReofferCancel {
         }
         catch (JsonProcessingException ex)
         {
-            throw new RuntimeException("Exception during dto mapping: " + ex.getMessage(), ex.getCause());
+            throw new MtsSdkProcessException("Exception during dto mapping: " + ex.getMessage(), ex.getCause());
         }
     }
 

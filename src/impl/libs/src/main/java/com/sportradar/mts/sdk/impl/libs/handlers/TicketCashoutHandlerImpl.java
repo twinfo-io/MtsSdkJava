@@ -12,6 +12,7 @@ import com.sportradar.mts.sdk.api.TicketCashoutResponse;
 import com.sportradar.mts.sdk.api.exceptions.ResponseTimeoutException;
 import com.sportradar.mts.sdk.api.interfaces.TicketCashoutResponseListener;
 import com.sportradar.mts.sdk.api.utils.JsonUtils;
+import com.sportradar.mts.sdk.api.utils.SdkInfo;
 import com.sportradar.mts.sdk.impl.libs.adapters.amqp.AmqpPublisher;
 import com.sportradar.mts.sdk.impl.libs.logging.SdkLogger;
 import org.slf4j.Logger;
@@ -28,6 +29,7 @@ import static com.google.common.base.Preconditions.checkState;
  * An implementation of the {@link TicketCashoutHandler} used to handle {@link TicketCashout} messages
  */
 public class TicketCashoutHandlerImpl extends SenderBase<TicketCashout> implements TicketCashoutHandler {
+
     /**
      * The main class logger
      */
@@ -85,9 +87,15 @@ public class TicketCashoutHandlerImpl extends SenderBase<TicketCashout> implemen
      * @param messagesPerSecond - the max number of messages/second that should be sent
      * @param sdkLogger - the main SDK logging interface
      */
-    public TicketCashoutHandlerImpl(AmqpPublisher amqpPublisher, String routingKey, String replyRoutingKey,
-                                    ExecutorService executorService, ResponseTimeoutHandler<TicketCashout> timeoutHandler,
-                                    int responseTimeout, double messagesPerSecond, SdkLogger sdkLogger) {
+    @SuppressWarnings("java:S107") // Methods should not have too many parameters
+    public TicketCashoutHandlerImpl(AmqpPublisher amqpPublisher,
+                                    String routingKey,
+                                    String replyRoutingKey,
+                                    ExecutorService executorService,
+                                    ResponseTimeoutHandler<TicketCashout> timeoutHandler,
+                                    int responseTimeout,
+                                    double messagesPerSecond,
+                                    SdkLogger sdkLogger) {
         super(amqpPublisher, executorService, messagesPerSecond, sdkLogger);
 
         this.routingKey = routingKey == null ? "ticket.cashout" : routingKey;
@@ -111,8 +119,8 @@ public class TicketCashoutHandlerImpl extends SenderBase<TicketCashout> implemen
      */
     @Override
     public void send(TicketCashout ticketCashoutData) {
-        checkState(isOpen(), "sender is closed");
-        checkNotNull(ticketCashoutData, "ticketCashoutData can not be null");
+        checkState(isOpen(), SdkInfo.Literals.TICKET_HANDLER_SENDER_CLOSED);
+        checkNotNull(ticketCashoutData, SdkInfo.Literals.TICKET_HANDLER_TICKET_CASHOUT_NULL);
         checkNotNull(ticketCashoutResponseListener, "no response listener set");
 
         internalSend(ticketCashoutData);
@@ -129,8 +137,8 @@ public class TicketCashoutHandlerImpl extends SenderBase<TicketCashout> implemen
      */
     @Override
     public TicketCashoutResponse sendBlocking(TicketCashout ticketCashout) throws ResponseTimeoutException {
-        Preconditions.checkState(isOpen(), "sender is closed");
-        Preconditions.checkNotNull(ticketCashout, "ticketCashout cannot be null");
+        Preconditions.checkState(isOpen(), SdkInfo.Literals.TICKET_HANDLER_SENDER_CLOSED);
+        Preconditions.checkNotNull(ticketCashout, SdkInfo.Literals.TICKET_HANDLER_TICKET_CASHOUT_NULL);
 
         String ticketId = ticketCashout.getTicketId();
         Semaphore semaphore = new Semaphore(0);
@@ -142,17 +150,18 @@ public class TicketCashoutHandlerImpl extends SenderBase<TicketCashout> implemen
             acquire = semaphore.tryAcquire(responseTimeout, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             logger.warn("interrupted waiting for response, throwing timeout");
+            Thread.currentThread().interrupt();
         }
         if (!acquire) {
-            String error = String.format("Timeout reached. Missing response for ticketCashout %s with correlationId=", ticketCashout.getTicketId(), ticketCashout.getCorrelationId());
+            String error = String.format("Timeout reached. Missing response for ticketCashout %s with correlationId=%s", ticketCashout.getTicketId(), ticketCashout.getCorrelationId());
             throw new ResponseTimeoutException(error);
         }
         return ticketCashoutResponseCache.getIfPresent(ticketId);
     }
 
     private void internalSend(TicketCashout ticketCashout) {
-        checkState(isOpen(), "sender is closed");
-        checkNotNull(ticketCashout, "ticket cannot be null");
+        checkState(isOpen(), SdkInfo.Literals.TICKET_HANDLER_SENDER_CLOSED);
+        checkNotNull(ticketCashout, SdkInfo.Literals.TICKET_HANDLER_TICKET_CASHOUT_NULL);
 
         publishAsync(ticketCashout, routingKey, replyRoutingKey);
     }
@@ -188,7 +197,7 @@ public class TicketCashoutHandlerImpl extends SenderBase<TicketCashout> implemen
      */
     @Override
     public void ticketCashoutResponseReceived(TicketCashoutResponse ticketCashoutResponse) {
-        checkNotNull(ticketCashoutResponse, "ticketCashoutResponse cannot be null");
+        checkNotNull(ticketCashoutResponse, "TicketCashoutResponse cannot be null");
         getSdkLogger().logReceivedMessage(JsonUtils.serializeAsString(ticketCashoutResponse));
 
         timeoutHandler.onAsyncTicketResponseReceived(ticketCashoutResponse.getCorrelationId());

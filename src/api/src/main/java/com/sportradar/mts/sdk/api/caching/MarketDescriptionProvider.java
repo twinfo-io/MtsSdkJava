@@ -22,13 +22,13 @@ public class MarketDescriptionProvider {
                                      List<Locale> locales) {
         Preconditions.checkNotNull(marketDescriptionCache);
         Preconditions.checkNotNull(locales);
-        Preconditions.checkArgument(locales.size() > 0);
+        Preconditions.checkArgument(!locales.isEmpty());
 
         this.marketCache = marketDescriptionCache;
         this.locales = locales;
     }
 
-    public MarketDescriptionCI getMarketDescription(int marketId, String variant) {
+    public MarketDescriptionCI getMarketDescription(int marketId) {
         Preconditions.checkArgument(marketId > 0);
         Preconditions.checkNotNull(locales);
         Preconditions.checkArgument(!locales.isEmpty());
@@ -42,7 +42,7 @@ public class MarketDescriptionProvider {
 
         if(marketDescription == null)
         {
-            logger.warn("No market description found for marketId " + marketId);
+            logger.warn("No market description found for marketId {}", marketId);
         }
 
         return marketDescription;

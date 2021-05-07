@@ -46,6 +46,7 @@ public final class RabbitMqConsumer extends RabbitMqBase implements AmqpConsumer
     // indicates if the sdk should manually ack (on rabbit) each received ticket
     private boolean autoMessageAcknowledgmentEnabled = true;
 
+    @SuppressWarnings("java:S107") // Methods should not have too many parameters
     public RabbitMqConsumer(ChannelFactoryProvider channelFactoryProvider,
                             String routingKey,
                             String instanceName,
@@ -78,11 +79,6 @@ public final class RabbitMqConsumer extends RabbitMqBase implements AmqpConsumer
         this.deleteQueueOnClose = deleteQueueOnClose;
         this.amqpCluster = mqCluster;
         this.exclusiveConsumer = exclusiveConsumer;
-    }
-
-    @Override
-    public synchronized void close() {
-        super.close();
     }
 
     @Override
@@ -141,22 +137,24 @@ public final class RabbitMqConsumer extends RabbitMqBase implements AmqpConsumer
                     retryCount = tmp.retryCount;
                     retryQueueSize--;
                 } else {
-                    delivery = consumer.nextDelivery(this.waitForTaskMillis);
+                    delivery = consumer.nextDelivery(this.WAIT_FOR_TASK_MILLIS);
                 }
             }
             if (delivery == null) {
                 continue;
             }
 
-            logger.trace("CONSUME START: consumer={} tId={} received msg with routingKey={}, exchange={} and deliveryTag={}",
-                         consumerName,
-                         threadId,
-                         delivery.getEnvelope().getRoutingKey(),
-                         delivery.getEnvelope().getExchange(),
-                         delivery.getEnvelope().getDeliveryTag());
-            logger.trace("CONSUME Message: {}", new String(delivery.getBody()));
-            logger.trace("CONSUME Properties: {}", delivery.getProperties());
-
+            if(logger.isTraceEnabled()) {
+                logger.trace("CONSUME START: consumer={} tId={} received msg with routingKey={}, exchange={} and deliveryTag={}",
+                             consumerName,
+                             threadId,
+                             delivery.getEnvelope().getRoutingKey(),
+                             delivery.getEnvelope().getExchange(),
+                             delivery.getEnvelope().getDeliveryTag());
+                String msg = new String(delivery.getBody());
+                logger.trace("CONSUME Message: {}", msg);
+                logger.trace("CONSUME Properties: {}", delivery.getProperties());
+            }
             MessageStatus messageStatus;
             try {
                 messageStatus = this.msgHandler.consume(
@@ -337,13 +335,13 @@ public final class RabbitMqConsumer extends RabbitMqBase implements AmqpConsumer
                     Pattern parse = Pattern.compile("((\\d+) days,)? (\\d+):(\\d+)");
                     Matcher matcher = parse.matcher(line);
                     if (matcher.find()) {
-                        String _days = matcher.group(2);
-                        String _hours = matcher.group(3);
-                        String _minutes = matcher.group(4);
-                        int days = _days != null ? Integer.parseInt(_days) : 0;
-                        int hours = _hours != null ? Integer.parseInt(_hours) : 0;
-                        int minutes = _minutes != null ? Integer.parseInt(_minutes) : 0;
-                        uptime = (minutes * 60000) + (hours * 60000 * 60) + (days * 6000 * 60 * 24);
+                        String daysStr = matcher.group(2);
+                        String hoursStr = matcher.group(3);
+                        String minutesStr = matcher.group(4);
+                        int days = daysStr != null ? Integer.parseInt(daysStr) : 0;
+                        int hours = hoursStr != null ? Integer.parseInt(hoursStr) : 0;
+                        int minutes = minutesStr != null ? Integer.parseInt(minutesStr) : 0;
+                        uptime = (minutes * 60000L) + (hours * 60000 * 60L) + (days * 6000 * 60 * 24L);
                     }
                 }
             }

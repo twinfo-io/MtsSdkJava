@@ -133,7 +133,6 @@ public class URN {
                     Long.valueOf(matcher.group(ID_GROUP_NAME))
             );
         } catch (Exception e){
-            logger.warn("URN could not be parsed [{}] ", urnString, e);
             throw new IllegalArgumentException("URN could not be parsed [" + urnString + "] ", e);
         }
     }

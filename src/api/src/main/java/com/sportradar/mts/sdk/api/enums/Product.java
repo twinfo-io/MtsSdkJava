@@ -13,6 +13,7 @@ import java.util.Map;
 /**
  * Enumerates different products
  */
+ @SuppressWarnings("java:S115") // Constant names should comply with a naming convention
  public enum Product {
     /**
      * Live odds product
@@ -79,7 +80,7 @@ import java.util.Map;
         Product p = lookup.get(id);
         if (p == null) {
             if (!warnedForUnknownProducer) {
-                LoggerFactory.getLogger("sdk").warn("Received messages from Unknown producer: " + id);
+                LoggerFactory.getLogger("sdk").warn("Received messages from Unknown producer: {}", id);
                 warnedForUnknownProducer = true;
             }
             p = Unknown;

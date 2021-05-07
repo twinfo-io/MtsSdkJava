@@ -9,6 +9,7 @@ import com.google.common.cache.LoadingCache;
 import com.sportradar.mts.sdk.api.AccessToken;
 import com.sportradar.mts.sdk.api.Ccf;
 import com.sportradar.mts.sdk.api.Ticket;
+import com.sportradar.mts.sdk.api.exceptions.MtsApiException;
 import com.sportradar.mts.sdk.api.impl.mtsdto.clientapi.CcfResponseSchema;
 import com.sportradar.mts.sdk.api.impl.mtsdto.clientapi.MaxStakeResponseSchema;
 import com.sportradar.mts.sdk.api.interfaces.MtsClientApi;
@@ -40,12 +41,12 @@ public class MtsClientApiImpl implements MtsClientApi {
     }
 
     @Override
-    public long getMaxStake(Ticket ticket) throws Exception {
+    public long getMaxStake(Ticket ticket) throws MtsApiException {
         return getMaxStake(ticket, username, password);
     }
 
     @Override
-    public long getMaxStake(Ticket ticket, String username, String password) throws Exception {
+    public long getMaxStake(Ticket ticket, String username, String password) throws MtsApiException {
         Preconditions.checkNotNull(ticket);
         Preconditions.checkNotNull(username);
         Preconditions.checkNotNull(password);
@@ -56,22 +57,22 @@ public class MtsClientApiImpl implements MtsClientApi {
             HttpEntity content = new StringEntity(ticket.getJsonValue(), ContentType.APPLICATION_JSON);
             Long result = MtsDtoMapper.map(maxStakeDataProvider.postData(token, content));
             if (result == null) {
-                throw new Exception("Failed to get max stake result.");
+                throw new MtsApiException("Failed to get max stake result.");
             }
             return result;
         } catch (ExecutionException e) {
             logger.warn("Getting max stake for ticketId={} failed.", ticket.getTicketId());
-            throw new Exception(e.getCause().getMessage());
+            throw new MtsApiException(e.getCause().getMessage());
         }
     }
 
     @Override
-    public Ccf getCcf(String sourceId) throws Exception {
+    public Ccf getCcf(String sourceId) throws MtsApiException {
         return getCcf(sourceId, username, password);
     }
 
     @Override
-    public Ccf getCcf(String sourceId, String username, String password) throws Exception {
+    public Ccf getCcf(String sourceId, String username, String password) throws MtsApiException {
         Preconditions.checkNotNull(sourceId);
         Preconditions.checkNotNull(username);
         Preconditions.checkNotNull(password);
@@ -81,12 +82,12 @@ public class MtsClientApiImpl implements MtsClientApi {
             AccessToken token = accessTokenCache.get(getCacheKey(username, password));
             Ccf result = MtsDtoMapper.map(ccfDataProvider.getData(token, sourceId));
             if (result == null) {
-                throw new Exception("Failed to get ccf result.");
+                throw new MtsApiException("Failed to get ccf result.");
             }
             return result;
         } catch (ExecutionException e) {
             logger.warn("Getting ccf for sourceId={} failed.", sourceId);
-            throw new Exception(e.getCause().getMessage());
+            throw new MtsApiException(e.getCause().getMessage());
         }
     }
 

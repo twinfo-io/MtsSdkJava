@@ -10,6 +10,7 @@ import com.sportradar.mts.sdk.api.enums.TicketCancellationReason;
 import com.sportradar.mts.sdk.api.impl.builders.TicketCancelBuilderImpl;
 import com.sportradar.mts.sdk.api.interfaces.TicketCancelResponseListener;
 import com.sportradar.mts.sdk.api.utils.JsonUtils;
+import com.sportradar.mts.sdk.api.utils.SdkInfo;
 import com.sportradar.mts.sdk.impl.libs.SdkHelper;
 import com.sportradar.mts.sdk.impl.libs.TimeLimitedTestBase;
 import com.sportradar.mts.sdk.impl.libs.adapters.amqp.AmqpPublisher;
@@ -75,7 +76,7 @@ public class TicketCancelHandlerImplTest extends TimeLimitedTestBase {
     @Test
     public void send_OnTicketCancelNullTest() {
         thrown.expect(NullPointerException.class);
-        thrown.expectMessage("ticketCancel cannot be null");
+        thrown.expectMessage(SdkInfo.Literals.TICKET_HANDLER_TICKET_CANCEL_NULL);
 
         handler.open();
         handler.send(null);

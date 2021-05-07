@@ -15,6 +15,7 @@ import com.sportradar.mts.sdk.api.Selection;
 import com.sportradar.mts.sdk.api.Sender;
 import com.sportradar.mts.sdk.api.Ticket;
 import com.sportradar.mts.sdk.api.enums.OddsChangeType;
+import com.sportradar.mts.sdk.api.exceptions.MtsSdkProcessException;
 import com.sportradar.mts.sdk.api.utils.JsonUtils;
 import com.sportradar.mts.sdk.api.utils.MtsDtoMapper;
 import com.sportradar.mts.sdk.api.utils.MtsTicketHelper;
@@ -58,7 +59,7 @@ public class TicketImpl implements Ticket {
         Preconditions.checkNotNull(ticketId, "ticketId cannot be null");
         Preconditions.checkArgument(MtsTicketHelper.validateTicketId(ticketId), "ticketId is not valid");
         Preconditions.checkNotNull(bets, "bet cannot be null");
-        Preconditions.checkArgument(bets.size() > 0, "need at least one bet");
+        Preconditions.checkArgument(!bets.isEmpty(), "need at least one bet");
         Preconditions.checkArgument(bets.size() <= 50, "maximum 50 bets per ticket");
         Preconditions.checkNotNull(sender, "sender is missing");
         Preconditions.checkArgument(reofferId == null || (reofferId.length() > 0 && reofferId.length() <= 128), "reofferId is not valid");
@@ -84,13 +85,13 @@ public class TicketImpl implements Ticket {
             throw new IllegalArgumentException("Only ReofferId or AltStakeRefId can specified.");
         }
 
-        List<Selection> selections = Lists.newArrayList();
+        List<Selection> selectionList = Lists.newArrayList();
         for (Bet bet : bets)
         {
-            selections.addAll(bet.getSelections());
+            selectionList.addAll(bet.getSelections());
         }
-        this.selections = selections.stream().distinct().collect(Collectors.toList());
-        this.correlationId = MtsTicketHelper.GenerateTicketCorrelationId();
+        this.selections = selectionList.stream().distinct().collect(Collectors.toList());
+        this.correlationId = MtsTicketHelper.generateTicketCorrelationId();
         this.totalCombinations = totalCombinations;
     }
 
@@ -173,7 +174,7 @@ public class TicketImpl implements Ticket {
         }
         catch (JsonProcessingException ex)
         {
-            throw new RuntimeException("Exception during dto mapping: " + ex.getMessage(), ex.getCause());
+            throw new MtsSdkProcessException("Exception during dto mapping: " + ex.getMessage(), ex.getCause());
         }
     }
 

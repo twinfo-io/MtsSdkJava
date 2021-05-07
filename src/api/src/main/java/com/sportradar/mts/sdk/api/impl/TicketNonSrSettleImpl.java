@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.base.Preconditions;
 import com.sportradar.mts.sdk.api.TicketNonSrSettle;
+import com.sportradar.mts.sdk.api.exceptions.MtsSdkProcessException;
 import com.sportradar.mts.sdk.api.utils.JsonUtils;
 import com.sportradar.mts.sdk.api.utils.MtsDtoMapper;
 import com.sportradar.mts.sdk.api.utils.MtsTicketHelper;
@@ -77,7 +78,7 @@ public class TicketNonSrSettleImpl implements TicketNonSrSettle {
         this.ticketId = ticketId;
         this.nonSrSettleStake = nonSrSettleStake;
         this.version = version;
-        this.correlationId = MtsTicketHelper.GenerateTicketCorrelationId();
+        this.correlationId = MtsTicketHelper.generateTicketCorrelationId();
     }
 
     /**
@@ -133,7 +134,7 @@ public class TicketNonSrSettleImpl implements TicketNonSrSettle {
         try {
             return JsonUtils.OBJECT_MAPPER.writeValueAsString(dto);
         } catch (JsonProcessingException ex) {
-            throw new RuntimeException("Exception during dto mapping: " + ex.getMessage(), ex.getCause());
+            throw new MtsSdkProcessException("Exception during dto mapping: " + ex.getMessage(), ex.getCause());
         }
     }
 
@@ -152,7 +153,6 @@ public class TicketNonSrSettleImpl implements TicketNonSrSettle {
      */
     @Override
     public String toString() {
-
         return "TicketNonSrSettleImpl{" +
                 "bookmakerId=" + bookmakerId + ", " +
                 "ticketId='" + ticketId + "', " +

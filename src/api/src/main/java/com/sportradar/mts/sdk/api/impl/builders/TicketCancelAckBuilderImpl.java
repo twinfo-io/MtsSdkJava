@@ -34,14 +34,14 @@ public class TicketCancelAckBuilderImpl implements TicketCancelAckBuilder {
     @Override
     public TicketCancelAckBuilder setBookmakerId(Integer bookmakerId) {
         this.bookmakerId = bookmakerId;
-        ValidateData(false, false, true);
+        validateData(false, false, true);
         return this;
     }
 
     @Override
     public TicketCancelAckBuilder setTicketId(String ticketId) {
         this.extTicket = ticketId;
-        ValidateData(false, true, false);
+        validateData(false, true, false);
         return this;
     }
 
@@ -65,7 +65,7 @@ public class TicketCancelAckBuilderImpl implements TicketCancelAckBuilder {
 
     @Override
     public TicketCancelAck build() {
-        ValidateData(true, false, false);
+        validateData(true, false, false);
         return new TicketCancelAckImpl(
                 extTicket,
                 bookmakerId,
@@ -73,24 +73,16 @@ public class TicketCancelAckBuilderImpl implements TicketCancelAckBuilder {
                 sourceMessage,
                 ackStatus,
                 new Date(),
-                SdkInfo.mtsTicketVersion());
+                SdkInfo.MTS_TICKET_VERSION);
     }
 
-    private void ValidateData(boolean all, boolean ticketId, boolean bookmakerId)
+    private void validateData(boolean all, boolean ticketId, boolean bookmakerId)
     {
-        if (all || ticketId)
-        {
-            if (!MtsTicketHelper.validateTicketId(extTicket))
-            {
-                throw new IllegalArgumentException("TicketId not valid");
-            }
+        if ((all || ticketId) && !MtsTicketHelper.validateTicketId(extTicket)) {
+            throw new IllegalArgumentException("TicketId not valid");
         }
-        if (all || bookmakerId)
-        {
-            if (this.bookmakerId <= 0)
-            {
-                throw new IllegalArgumentException("BookmakerId not valid.");
-            }
+        if ((all || bookmakerId) && this.bookmakerId <= 0) {
+            throw new IllegalArgumentException("BookmakerId not valid.");
         }
     }
 }

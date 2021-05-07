@@ -20,7 +20,7 @@ public class CcfChangeImpl implements CcfChange {
     public CcfChangeImpl() {
     }
 
-    @SuppressWarnings("java:S107") // Methods should not have too many parameters
+    @SuppressWarnings({"java:S107", "java:S4165"}) // Methods should not have too many parameters
     public CcfChangeImpl(Date timestamp,
                          Integer bookmakerId,
                          Integer subBookmaker,

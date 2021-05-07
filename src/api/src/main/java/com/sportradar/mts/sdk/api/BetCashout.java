@@ -4,10 +4,12 @@
 
 package com.sportradar.mts.sdk.api;
 
+import java.io.Serializable;
+
 /**
  * Defines a contract for bet-level cashout
  */
-public interface BetCashout {
+public interface BetCashout extends Serializable {
 
     /**
      * Gets the id of the bet

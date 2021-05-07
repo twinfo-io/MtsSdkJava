@@ -5,9 +5,8 @@
 package com.sportradar.mts.sdk.impl.libs.adapters.amqp;
 
 import com.google.common.base.Preconditions;
+import com.sportradar.mts.sdk.api.exceptions.MtsSdkProcessException;
 import com.sportradar.mts.sdk.api.interfaces.ConnectionStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,8 +16,6 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public final class ChannelFactoryProviderImpl implements ChannelFactoryProvider {
-
-    private static final Logger logger = LoggerFactory.getLogger(ChannelFactoryProviderImpl.class);
 
     private final int mqWorkerThreadCount;
     private final Object factoriesLock = new Object();
@@ -76,8 +73,7 @@ public final class ChannelFactoryProviderImpl implements ChannelFactoryProvider 
                 return this.factories.get(mqCluster);
             }
         } catch (Exception exc) {
-            logger.error("Get channel factory error: ", exc);
-            throw new RuntimeException(exc);
+            throw new MtsSdkProcessException(exc.getMessage(), exc.getCause());
         }
     }
 
@@ -92,7 +88,7 @@ public final class ChannelFactoryProviderImpl implements ChannelFactoryProvider 
     ExecutorService getExecutorService() {
         final ExecutorService result = this.executorService;
         if (result == null) {
-            throw new RuntimeException("Pool 'executorService' is null");
+            throw new MtsSdkProcessException("Pool 'executorService' is null");
         }
         return result;
     }

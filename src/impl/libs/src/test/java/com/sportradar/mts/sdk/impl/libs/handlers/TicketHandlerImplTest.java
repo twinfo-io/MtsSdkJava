@@ -14,6 +14,7 @@ import com.sportradar.mts.sdk.api.impl.builders.TicketBuilderImpl;
 import com.sportradar.mts.sdk.api.interfaces.TicketResponseListener;
 import com.sportradar.mts.sdk.api.utils.JsonUtils;
 import com.sportradar.mts.sdk.api.utils.MtsDtoMapper;
+import com.sportradar.mts.sdk.api.utils.SdkInfo;
 import com.sportradar.mts.sdk.impl.libs.LoggerTestAppender;
 import com.sportradar.mts.sdk.impl.libs.SdkHelper;
 import com.sportradar.mts.sdk.impl.libs.TimeLimitedTestBase;
@@ -86,7 +87,7 @@ public class TicketHandlerImplTest extends TimeLimitedTestBase {
     @Test
     public void sendBlocking_OnTicketNullTest() throws ResponseTimeoutException {
         thrown.expect(NullPointerException.class);
-        thrown.expectMessage("ticket cannot be null");
+        thrown.expectMessage(SdkInfo.Literals.TICKET_HANDLER_TICKET_NULL);
 
         handler.open();
         handler.sendBlocking(null);
@@ -184,7 +185,7 @@ public class TicketHandlerImplTest extends TimeLimitedTestBase {
     @Test
     public void send_OnTicketNullTest() {
         thrown.expect(NullPointerException.class);
-        thrown.expectMessage("ticket cannot be null");
+        thrown.expectMessage(SdkInfo.Literals.TICKET_HANDLER_TICKET_NULL);
 
         handler.open();
         handler.send(null);

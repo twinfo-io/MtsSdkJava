@@ -32,6 +32,7 @@ public final class RabbitMqProducer extends RabbitMqBase implements AmqpProducer
     private final boolean isPublishMandatory;
     private ReturnListener returnListener;
 
+    @SuppressWarnings("java:S107") // Methods should not have too many parameters
     public RabbitMqProducer(ChannelFactoryProvider channelFactoryProvider,
                             String instanceName,
                             AmqpCluster mqCluster,
@@ -247,7 +248,7 @@ public final class RabbitMqProducer extends RabbitMqBase implements AmqpProducer
 
                 currentMsg = this.redeliveryQueue.poll();
                 if (currentMsg == null) {
-                    currentMsg = this.normalQueue.poll(this.waitForTaskMillis, TimeUnit.MILLISECONDS);
+                    currentMsg = this.normalQueue.poll(this.WAIT_FOR_TASK_MILLIS, TimeUnit.MILLISECONDS);
                 }
 
                 if (currentMsg == null) {
@@ -278,10 +279,8 @@ public final class RabbitMqProducer extends RabbitMqBase implements AmqpProducer
                     unconfirmedMsg.setResult(false);
                 }
             }
-            if (cancelCurrentMsg) {
-                if ((!this.isOpen()) || (!redeliveryQueue.offer(currentMsg))) {
-                    currentMsg.setResult(false);
-                }
+            if (cancelCurrentMsg && ((!this.isOpen()) || (!redeliveryQueue.offer(currentMsg)))) {
+                currentMsg.setResult(false);
             }
         }
     }
@@ -305,7 +304,7 @@ public final class RabbitMqProducer extends RabbitMqBase implements AmqpProducer
 
                 currentMsg = this.redeliveryQueue.poll();
                 if (currentMsg == null) {
-                    currentMsg = this.normalQueue.poll(this.waitForTaskMillis, TimeUnit.MILLISECONDS);
+                    currentMsg = this.normalQueue.poll(this.WAIT_FOR_TASK_MILLIS, TimeUnit.MILLISECONDS);
                 }
 
                 if (currentMsg == null) {
@@ -339,7 +338,7 @@ public final class RabbitMqProducer extends RabbitMqBase implements AmqpProducer
 
         AMQP.BasicProperties.Builder builder;
         if (this.msgProperties == null) {
-            builder = new AMQP.BasicProperties().builder();//.headers(messageHeaders).build();
+            builder = new AMQP.BasicProperties().builder();
 
         } else {
             builder = this.msgProperties.builder();
@@ -364,11 +363,13 @@ public final class RabbitMqProducer extends RabbitMqBase implements AmqpProducer
             try {
                 return Base64.getEncoder().encodeToString(body);
             } catch (Exception ignored) {
+                // ignored
             }
         } else {
             try {
                 return new String(body, StandardCharsets.UTF_8);
             } catch (Exception ignored) {
+                // ignored
             }
         }
 
@@ -574,21 +575,16 @@ public final class RabbitMqProducer extends RabbitMqBase implements AmqpProducer
         }
 
         @Override
-        public Boolean get(long l, TimeUnit timeUnit) throws
-                InterruptedException,
-                ExecutionException,
-                TimeoutException {
+        public Boolean get(long l, TimeUnit timeUnit) throws InterruptedException, ExecutionException, TimeoutException {
             if (!this.latch.await(l, timeUnit)) {
                 throw new TimeoutException();
             }
-            final Boolean result = this.result.get();
-            if (result == null) {
+            final Boolean isGet = this.result.get();
+            if (isGet == null) {
                 throw new TimeoutException();
             }
-            return result;
+            return isGet;
         }
-
-
     }
 
     private static final class DoneCallbackRunnable implements Runnable {

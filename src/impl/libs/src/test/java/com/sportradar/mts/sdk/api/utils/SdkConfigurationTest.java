@@ -710,7 +710,7 @@ public class SdkConfigurationTest extends TimeLimitedTestBase {
                 .setUsername("username")
                 .setPassword("password")
                 .setHost("host")
-                .setTicketResponseTimeout(SdkInfo.TicketResponseTimeoutLiveMin - 1)
+                .setTicketResponseTimeout(SdkInfo.TICKET_RESPONSE_TIMEOUT_LIVE_MIN - 1)
                 .build();
     }
 
@@ -722,7 +722,7 @@ public class SdkConfigurationTest extends TimeLimitedTestBase {
         properties.setProperty(SettingsKeys.USERNAME, "username");
         properties.setProperty(SettingsKeys.PASSWORD, "password");
         properties.setProperty(SettingsKeys.HOST, "host");
-        properties.setProperty(SettingsKeys.TICKET_RESPONSE_TIMEOUT_LIVE, String.valueOf(SdkInfo.TicketResponseTimeoutLiveMin - 1));
+        properties.setProperty(SettingsKeys.TICKET_RESPONSE_TIMEOUT_LIVE, String.valueOf(SdkInfo.TICKET_RESPONSE_TIMEOUT_LIVE_MIN - 1));
 
         SdkConfiguration config = SdkConfigurationImpl.getConfiguration(properties);
     }
@@ -735,7 +735,7 @@ public class SdkConfigurationTest extends TimeLimitedTestBase {
                 .setUsername("username")
                 .setPassword("password")
                 .setHost("host")
-                .setTicketResponseTimeout(SdkInfo.TicketResponseTimeoutLiveMax + 1)
+                .setTicketResponseTimeout(SdkInfo.TICKET_RESPONSE_TIMEOUT_LIVE_MAX + 1)
                 .build();
     }
 
@@ -747,7 +747,7 @@ public class SdkConfigurationTest extends TimeLimitedTestBase {
         properties.setProperty(SettingsKeys.USERNAME, "username");
         properties.setProperty(SettingsKeys.PASSWORD, "password");
         properties.setProperty(SettingsKeys.HOST, "host");
-        properties.setProperty(SettingsKeys.TICKET_RESPONSE_TIMEOUT_LIVE, String.valueOf(SdkInfo.TicketResponseTimeoutLiveMax + 1));
+        properties.setProperty(SettingsKeys.TICKET_RESPONSE_TIMEOUT_LIVE, String.valueOf(SdkInfo.TICKET_RESPONSE_TIMEOUT_LIVE_MAX + 1));
 
         SdkConfiguration config = SdkConfigurationImpl.getConfiguration(properties);
     }
@@ -760,7 +760,7 @@ public class SdkConfigurationTest extends TimeLimitedTestBase {
         properties.setProperty(SettingsKeys.USERNAME, "username");
         properties.setProperty(SettingsKeys.PASSWORD, "password");
         properties.setProperty(SettingsKeys.HOST, "host");
-        properties.setProperty(SettingsKeys.TICKET_RESPONSE_TIMEOUT_PREMATCH, String.valueOf(SdkInfo.TicketResponseTimeoutPrematchMax + 1));
+        properties.setProperty(SettingsKeys.TICKET_RESPONSE_TIMEOUT_PREMATCH, String.valueOf(SdkInfo.TICKET_RESPONSE_TIMEOUT_PREMATCH_MAX + 1));
 
         SdkConfiguration config = SdkConfigurationImpl.getConfiguration(properties);
     }
@@ -1018,11 +1018,11 @@ public class SdkConfigurationTest extends TimeLimitedTestBase {
                 null,
                 null,
                 null,
-                SdkInfo.TicketResponseTimeoutLiveDefault,
-                SdkInfo.TicketResponseTimeoutPrematchDefault,
-                SdkInfo.TicketCancellationResponseTimeoutDefault,
-                SdkInfo.TicketCashoutResponseTimeoutDefault,
-                SdkInfo.TicketNonSrResponseTimeoutDefault);
+                SdkInfo.TICKET_RESPONSE_TIMEOUT_LIVE_DEFAULT,
+                SdkInfo.TICKET_RESPONSE_TIMEOUT_PREMATCH_DEFAULT,
+                SdkInfo.TICKET_CANCELLATION_RESPONSE_TIMEOUT_DEFAULT,
+                SdkInfo.TICKET_CASHOUT_RESPONSE_TIMEOUT_DEFAULT,
+                SdkInfo.TICKET_NON_SR_RESPONSE_TIMEOUT_DEFAULT);
     }
 
     private static void checkAllSettings(
