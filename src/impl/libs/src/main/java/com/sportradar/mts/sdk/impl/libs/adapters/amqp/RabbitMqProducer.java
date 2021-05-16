@@ -9,8 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -127,6 +125,7 @@ public final class RabbitMqProducer extends RabbitMqBase implements AmqpProducer
             return this.sendAsyncInternal(correlationId, msg, routingKey, messageHeaders, null).get();
         } catch (Exception exc) {
             logger.error("error in sending data", exc);
+            Thread.currentThread().interrupt();
             return false;
         }
     }
@@ -248,7 +247,7 @@ public final class RabbitMqProducer extends RabbitMqBase implements AmqpProducer
 
                 currentMsg = this.redeliveryQueue.poll();
                 if (currentMsg == null) {
-                    currentMsg = this.normalQueue.poll(this.WAIT_FOR_TASK_MILLIS, TimeUnit.MILLISECONDS);
+                    currentMsg = this.normalQueue.poll(WAIT_FOR_TASK_MILLIS, TimeUnit.MILLISECONDS);
                 }
 
                 if (currentMsg == null) {
@@ -304,7 +303,7 @@ public final class RabbitMqProducer extends RabbitMqBase implements AmqpProducer
 
                 currentMsg = this.redeliveryQueue.poll();
                 if (currentMsg == null) {
-                    currentMsg = this.normalQueue.poll(this.WAIT_FOR_TASK_MILLIS, TimeUnit.MILLISECONDS);
+                    currentMsg = this.normalQueue.poll(WAIT_FOR_TASK_MILLIS, TimeUnit.MILLISECONDS);
                 }
 
                 if (currentMsg == null) {
@@ -352,33 +351,6 @@ public final class RabbitMqProducer extends RabbitMqBase implements AmqpProducer
         }
 
         return builder.build();
-    }
-
-    private static String decodeBody(final byte[] body, final boolean preferBase64) {
-        if (body == null) {
-            return "null";
-        }
-
-        if (preferBase64) {
-            try {
-                return Base64.getEncoder().encodeToString(body);
-            } catch (Exception ignored) {
-                // ignored
-            }
-        } else {
-            try {
-                return new String(body, StandardCharsets.UTF_8);
-            } catch (Exception ignored) {
-                // ignored
-            }
-        }
-
-        final StringBuilder sb = new StringBuilder(1024);
-        sb.append("bytes: ");
-        for (final byte singleByte : body) {
-            sb.append(singleByte).append(" ");
-        }
-        return sb.toString();
     }
 
     private static final class RejectedMessage implements AmqpSendResult {

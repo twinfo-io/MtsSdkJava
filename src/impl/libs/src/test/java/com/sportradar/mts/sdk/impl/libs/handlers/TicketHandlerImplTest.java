@@ -310,6 +310,7 @@ public class TicketHandlerImplTest extends TimeLimitedTestBase {
                 e.printStackTrace();
             }
         }).start();
+
         Thread.sleep(100);
         handler.close();
         boolean contains = appender.searchLoggingEventByFormattedMessage(

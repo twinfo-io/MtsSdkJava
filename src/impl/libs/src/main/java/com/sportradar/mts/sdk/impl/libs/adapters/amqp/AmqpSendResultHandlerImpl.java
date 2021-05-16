@@ -76,6 +76,7 @@ public class AmqpSendResultHandlerImpl implements AmqpSendResultHandler {
                         if (!closed) {
                             logger.error("interrupted while waiting for messages", e);
                         }
+                        Thread.currentThread().interrupt();
                         break;
                     }
                 }
@@ -92,6 +93,7 @@ public class AmqpSendResultHandlerImpl implements AmqpSendResultHandler {
                     if (!closed) {
                         logger.error("interrupted while sleeping");
                     }
+                    Thread.currentThread().interrupt();
                     break;
                 }
             }
@@ -135,14 +137,11 @@ public class AmqpSendResultHandlerImpl implements AmqpSendResultHandler {
                         amqpSendResultListener.publishSuccess(correlationId);
                     }
                 } catch (InterruptedException e) {
-                    logger.error("interrupted while getting sendBlocking result for {}",
-                                 correlationId,
-                                 e);
+                    logger.error("interrupted while getting sendBlocking result for {}", correlationId, e);
+                    Thread.currentThread().interrupt();
                     return false;
                 } catch (ExecutionException e) {
-                    logger.error("exception while getting sendBlocking result for {}",
-                                 correlationId,
-                                 e);
+                    logger.error("exception while getting sendBlocking result for {}", correlationId, e);
                     return false;
                 } catch (Exception e) {
                     logger.error("uncaught exception while processing completed sendBlocking result", e);

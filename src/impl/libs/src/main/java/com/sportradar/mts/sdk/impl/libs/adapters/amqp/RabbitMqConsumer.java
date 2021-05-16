@@ -33,7 +33,6 @@ public final class RabbitMqConsumer extends RabbitMqBase implements AmqpConsumer
     private final Set<String> routingKeys;
     private final int maxRetryCount;
     private final int prefetchCount;
-    private final boolean deleteQueueOnClose;
     private final AmqpCluster amqpCluster;
     // survive broker restart
     private boolean durable = true;
@@ -76,7 +75,6 @@ public final class RabbitMqConsumer extends RabbitMqBase implements AmqpConsumer
         this.routingKeys = getRoutingKeys(routingKey);
         this.maxRetryCount = maxRetryCount;
         this.prefetchCount = prefetchCount;
-        this.deleteQueueOnClose = deleteQueueOnClose;
         this.amqpCluster = mqCluster;
         this.exclusiveConsumer = exclusiveConsumer;
     }
@@ -137,7 +135,7 @@ public final class RabbitMqConsumer extends RabbitMqBase implements AmqpConsumer
                     retryCount = tmp.retryCount;
                     retryQueueSize--;
                 } else {
-                    delivery = consumer.nextDelivery(this.WAIT_FOR_TASK_MILLIS);
+                    delivery = consumer.nextDelivery(WAIT_FOR_TASK_MILLIS);
                 }
             }
             if (delivery == null) {

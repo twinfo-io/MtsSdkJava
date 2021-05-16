@@ -159,33 +159,6 @@ public abstract class RabbitMqBase implements Openable {
 
     protected abstract void doWork(Channel channel, int threadId) throws InterruptedException, IOException;
 
-    private static boolean isConnectionException(IOException e) {
-        if (e.getCause() == null) {
-            return e.getClass().equals(ShutdownSignalException.class)
-                    || e.getClass().equals(AlreadyClosedException.class)
-                    || e.getClass().equals(NoRouteToHostException.class);
-        }
-
-        return e.getCause().getClass().equals(ShutdownSignalException.class)
-                || e.getCause().getClass().equals(AlreadyClosedException.class)
-                || e.getCause().getClass().equals(NoRouteToHostException.class);
-    }
-
-    private static long getSleepMillis(boolean isConnectionException, long oldSleepMillis) {
-        if (!isConnectionException) {
-            return 1000L;
-        }
-
-        if (oldSleepMillis == 0L) {
-            return 1000L;
-        }
-
-        if (oldSleepMillis < 64000L) {
-            oldSleepMillis = oldSleepMillis << 1;
-        }
-        return oldSleepMillis;
-    }
-
     private static final class BackgroundWork implements Runnable {
 
         private final RabbitMqBase parent;
@@ -236,6 +209,31 @@ public abstract class RabbitMqBase implements Openable {
                     Thread.currentThread().interrupt();
                 }
             }
+        }
+
+        private static boolean isConnectionException(IOException e) {
+            if (e.getCause() == null) {
+                return e.getClass().equals(NoRouteToHostException.class);
+            }
+
+            return e.getCause().getClass().equals(ShutdownSignalException.class)
+                    || e.getCause().getClass().equals(AlreadyClosedException.class)
+                    || e.getCause().getClass().equals(NoRouteToHostException.class);
+        }
+
+        private static long getSleepMillis(boolean isConnectionException, long oldSleepMillis) {
+            if (!isConnectionException) {
+                return 1000L;
+            }
+
+            if (oldSleepMillis == 0L) {
+                return 1000L;
+            }
+
+            if (oldSleepMillis < 64000L) {
+                oldSleepMillis = oldSleepMillis << 1;
+            }
+            return oldSleepMillis;
         }
     }
 }

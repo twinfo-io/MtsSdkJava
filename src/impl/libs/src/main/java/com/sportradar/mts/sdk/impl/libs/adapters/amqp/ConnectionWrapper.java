@@ -70,6 +70,7 @@ final class ConnectionWrapper {
             this.removeClosedConnections();
         } finally {
             this.logConnections();
+            connectionIndex.remove();
         }
     }
 

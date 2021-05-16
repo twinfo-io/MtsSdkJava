@@ -41,10 +41,11 @@ public final class SdkInfo {
         public static final String TICKET_HANDLER_TICKET_NONSR_NULL = "ticketNonSrSettle cannot be null";
     }
 
+    private SdkInfo() { throw new IllegalStateException("SdkInfo class"); }
+
     public static String getVersion()
     {
         try {
-            String version = SdkConfiguration.class.getPackage().getSpecificationVersion();
             InputStream is = SdkConfiguration.class.getResourceAsStream("/version/sdk.properties");
             Properties props = new Properties();
             props.load(is);

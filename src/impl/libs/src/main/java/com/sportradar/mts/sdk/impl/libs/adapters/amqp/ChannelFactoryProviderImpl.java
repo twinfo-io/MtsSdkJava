@@ -26,10 +26,9 @@ public final class ChannelFactoryProviderImpl implements ChannelFactoryProvider 
     private ExecutorService executorService;
     private int executorRegistrationCount = 0;
     private boolean opened;
-    private ConnectionStatus connectionStatus;
+    private final ConnectionStatus connectionStatus;
 
     public ChannelFactoryProviderImpl(int mqWorkerThreadCount, ConnectionStatus connectionStatus) {
-
         this.mqWorkerThreadCount = mqWorkerThreadCount;
         this.connectionStatus = connectionStatus;
     }
@@ -110,18 +109,15 @@ public final class ChannelFactoryProviderImpl implements ChannelFactoryProvider 
 
     private static final class AmqpThreadFactory implements ThreadFactory {
 
-        private final ThreadGroup group;
         private final AtomicInteger threadNumber = new AtomicInteger(1);
         private final String namePrefix;
 
         public AmqpThreadFactory() {
-            final SecurityManager s = System.getSecurityManager();
-            this.group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
             this.namePrefix = "AMQP-client-thread-";
         }
 
         public Thread newThread(Runnable r) {
-            final Thread t = new Thread(this.group, r, this.namePrefix + this.threadNumber.getAndIncrement(), 0);
+            final Thread t = new Thread(null, r, this.namePrefix + this.threadNumber.getAndIncrement(), 0);
             if (!t.isDaemon()) {
                 t.setDaemon(true);
             }

@@ -23,6 +23,7 @@ public final class Reoffer {
 
     private Reoffer() { throw new IllegalStateException("Reoffer class"); }
 
+    @SuppressWarnings("java:S3776") // Cognitive Complexity of methods should not be too high
     public static void run()
     {
         SdkConfiguration config = MtsSdk.getConfiguration();

@@ -6,9 +6,7 @@ package com.sportradar.mts.sdk.impl.libs.threading;
 
 import com.sportradar.mts.sdk.impl.libs.LoggerTestAppender;
 import com.sportradar.mts.sdk.impl.libs.TimeLimitedTestBase;
-import junit.framework.TestCase;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 

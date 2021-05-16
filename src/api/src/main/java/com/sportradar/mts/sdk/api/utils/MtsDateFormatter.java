@@ -34,42 +34,57 @@ public final class MtsDateFormatter {
         return simpleDateFormat;
     });
 
-    public static String dateToString(Date input) {
-        if (input == null) {
-            return null;
-        }
-        return get().format(input);
-    }
-
-    public static String dateToReadableShort(Date input) {
-        if (input == null) {
-            return null;
-        }
-        return getReadableShortFormat().format(input);
-    }
-
     public static SimpleDateFormat get() {
         return formatter.get();
+    }
+
+    private static SimpleDateFormat getReadableShortFormat() {
+        return formatterReadableShort.get();
     }
 
     public static TimeZone getTimeZone() {
         return utcTimeZone;
     }
 
+    public static long dateTimeToUnixTime(Date input) { return input.toInstant().toEpochMilli(); }
+
+    public static String dateToString(Date input) {
+        if (input == null) {
+            return null;
+        }
+        String dateStr = get().format(input);
+        formatter.remove();
+        return dateStr;
+    }
+
+    public static String dateToReadableShort(Date input) {
+        if (input == null) {
+            return null;
+        }
+        String dateStr = getReadableShortFormat().format(input);
+        formatterReadableShort.remove();
+        return dateStr;
+    }
+
     public static Date stringToDate(String input) {
         try {
-            return get().parse(input);
+            Date date = get().parse(input);
+            formatter.remove();
+            return date;
         } catch (Exception e) {
             logger.error("invalid date format: {}; required format is: {}", input, DATE_FORMAT);
             return null;
         }
     }
 
-    public static Date stringToDateChecked(String input) throws ParseException { return get().parse(input); }
-
-    private static SimpleDateFormat getReadableShortFormat() {
-        return formatterReadableShort.get();
+    public static Date stringToDateChecked(String input) throws ParseException {
+        Date date = get().parse(input);
+        formatter.remove();
+        return date;
     }
 
-    public static long dateTimeToUnixTime(Date input) { return input.toInstant().toEpochMilli(); }
+    public static void unloadThreadLocal(){
+        formatter.remove();
+        formatterReadableShort.remove();
+    }
 }
