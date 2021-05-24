@@ -2,12 +2,13 @@ package com.sportradar.mts.sdk.api;
 
 import com.sportradar.mts.sdk.api.enums.SourceType;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Object containing CCF change data
  */
-public interface CcfChange {
+public interface CcfChange extends Serializable {
     /**
      * Gets the timestamp of the ccf value change
      *

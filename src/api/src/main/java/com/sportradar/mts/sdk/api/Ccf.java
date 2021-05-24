@@ -4,12 +4,13 @@
 
 package com.sportradar.mts.sdk.api;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Object containing CCF response data
  */
-public interface Ccf {
+public interface Ccf extends Serializable {
 
     /**
      * Gets the customer confidence factor (factor multiplied by 10000)

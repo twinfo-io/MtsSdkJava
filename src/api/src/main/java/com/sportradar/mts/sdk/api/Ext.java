@@ -4,10 +4,12 @@
 
 package com.sportradar.mts.sdk.api;
 
+import java.io.Serializable;
+
 /**
  * Ticket ext
  */
-public interface Ext {
+public interface Ext extends Serializable {
 
     /**
      * Gets ticket max win

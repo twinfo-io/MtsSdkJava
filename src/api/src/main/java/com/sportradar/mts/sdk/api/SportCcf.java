@@ -4,10 +4,12 @@
 
 package com.sportradar.mts.sdk.api;
 
+import java.io.Serializable;
+
 /**
  * Object containing CCF per sport response data
  */
-public interface SportCcf {
+public interface SportCcf extends Serializable {
 
     /**
      * Gets sport ID

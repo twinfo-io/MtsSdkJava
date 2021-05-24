@@ -7,10 +7,12 @@ package com.sportradar.mts.sdk.api;
 import com.sportradar.mts.sdk.api.enums.BetBonusMode;
 import com.sportradar.mts.sdk.api.enums.BetBonusType;
 
+import java.io.Serializable;
+
 /**
  * Bonus of the bet (optional, default null)
  */
-public interface BetBonus {
+public interface BetBonus extends Serializable {
 
     /**
      * Gets the value of the bet bonus
