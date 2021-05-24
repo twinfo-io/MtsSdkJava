@@ -9,6 +9,8 @@ import org.slf4j.helpers.MessageFormatter;
 
 public class StringUtils {
 
+    private StringUtils() { throw new IllegalStateException("StringUtils class"); }
+
     public static final String EMPTY = "";
 
     public static String format(String msg, Object... args) {

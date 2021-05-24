@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.base.Preconditions;
 import com.sportradar.mts.sdk.api.BetCashout;
 import com.sportradar.mts.sdk.api.TicketCashout;
+import com.sportradar.mts.sdk.api.exceptions.MtsSdkProcessException;
 import com.sportradar.mts.sdk.api.utils.JsonUtils;
 import com.sportradar.mts.sdk.api.utils.MtsDtoMapper;
 import com.sportradar.mts.sdk.api.utils.MtsTicketHelper;
@@ -99,7 +100,7 @@ public class TicketCashoutImpl implements TicketCashout {
         this.timestampUtc = timestampUtc;
         this.cashoutStake = cashoutStake;
         this.version = version;
-        this.correlationId = MtsTicketHelper.GenerateTicketCorrelationId();
+        this.correlationId = MtsTicketHelper.generateTicketCorrelationId();
         this.cashoutPercent = cashoutPercent;
         this.betCashouts = betCashouts;
     }
@@ -192,7 +193,7 @@ public class TicketCashoutImpl implements TicketCashout {
         try {
             return JsonUtils.OBJECT_MAPPER.writeValueAsString(MtsDtoMapper.map(this));
         } catch (JsonProcessingException ex) {
-            throw new RuntimeException("Exception during dto mapping: " + ex.getMessage(), ex.getCause());
+            throw new MtsSdkProcessException("Exception during dto mapping: " + ex.getMessage(), ex.getCause());
         }
     }
 

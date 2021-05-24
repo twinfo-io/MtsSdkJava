@@ -6,6 +6,7 @@ package com.sportradar.mts.sdk.impl.libs.adapters.amqp;
 
 public interface AmqpFactory {
 
+    @SuppressWarnings("java:S107") // Methods should not have too many parameters
     AmqpProducer createProducer(String instanceName,
                                 AmqpCluster mqCluster,
                                 String exchangeName,
@@ -17,6 +18,7 @@ public interface AmqpFactory {
                                 boolean waitForPublishConfirmations,
                                 boolean mandatory);
 
+    @SuppressWarnings("java:S107") // Methods should not have too many parameters
     AmqpConsumer createConsumer(String instanceName,
                                 AmqpCluster mqCluster,
                                 String exchangeName,

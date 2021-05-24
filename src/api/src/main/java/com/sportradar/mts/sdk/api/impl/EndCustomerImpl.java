@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Preconditions;
 import com.sportradar.mts.sdk.api.EndCustomer;
 import com.sportradar.mts.sdk.api.utils.MtsTicketHelper;
-import com.sportradar.mts.sdk.api.utils.StringUtils;
 
 /**
  * Implementation of EndCustomer interface
@@ -38,7 +37,7 @@ public class EndCustomerImpl implements EndCustomer {
 
         this.id = id;
         this.ip = ip;
-        if(!StringUtils.isNullOrEmpty(languageId)) {
+        if(languageId != null && !languageId.isEmpty()) {
             this.langId = languageId.toUpperCase();
         }
         else

@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  * Wrapper class for the {@link HttpDataFetcher} with the sole purpose of API request logging
  */
 public class LogHttpDataFetcher extends HttpDataFetcher{
-    private final static Logger logger = LoggerFactory.getLogger("com.sportradar.mts.rest");
+    private static final Logger logger = LoggerFactory.getLogger("com.sportradar.mts.rest");
 
     @Inject
     public LogHttpDataFetcher(SdkConfiguration config, CloseableHttpClient httpClient) {
@@ -28,11 +28,12 @@ public class LogHttpDataFetcher extends HttpDataFetcher{
     protected String send(AccessToken token, HttpUriRequest request) {
         String path = request.getURI().toString();
 
-        logger.info("Fetching data from: " + path);
+        logger.info("Fetching data from: {}", path);
 
         String result = super.send(token, request);
 
-        logger.info("Request: {}, response - {}: {}", path, !Strings.isNullOrEmpty(result) ? "OK" : "FAILED", result.replace("\n", ""));
+        String cleanResult = result.replace("\n", "");
+        logger.info("Request: {}, response - {}: {}", path, !Strings.isNullOrEmpty(result) ? "OK" : "FAILED", cleanResult);
 
         return result;
     }

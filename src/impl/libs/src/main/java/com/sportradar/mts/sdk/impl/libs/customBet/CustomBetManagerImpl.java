@@ -56,8 +56,9 @@ public class CustomBetManagerImpl implements CustomBetManager {
         try {
             logger.info("Called getAvailableSelections with eventId={}.", eventId);
             CAPIAvailableSelections availableSelections = availableSelectionsDataProvider.getData(eventId.toString());
-            if (availableSelections == null)
-                throw new Exception("Failed to fetch available selections result.");
+            if (availableSelections == null) {
+                throw new CustomBetException("Failed to fetch available selections result.");
+            }
             return new AvailableSelectionsImpl(availableSelections);
         } catch (Exception e) {
             logger.warn("Getting available selections for eventId={} failed.", eventId);
@@ -75,8 +76,9 @@ public class CustomBetManagerImpl implements CustomBetManager {
             String c = deserializer.serialize(content);
             StringEntity entity = new StringEntity(c, ContentType.APPLICATION_XML);
             CAPICalculationResponse calculationResponse = calculationResponseDataProvider.postData(entity);
-            if (calculationResponse == null)
-                throw new Exception("Failed to fetch calculation response.");
+            if (calculationResponse == null) {
+                throw new CustomBetException("Failed to fetch calculation response.");
+            }
             return new CalculationImpl(calculationResponse);
         } catch (Exception e) {
             logger.warn("Getting calculation response for selections={} failed.", selections);

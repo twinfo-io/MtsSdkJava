@@ -62,8 +62,6 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(20000).build())
                         .build())
                 .build();
-
-        Assert.assertNotNull(ticket);
     }
 
     @Test
@@ -72,7 +70,7 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Bet can not have selections");
 
-        Ticket ticket = builderFactory.createTicketBuilder()
+        builderFactory.createTicketBuilder()
                 .setTicketId("ticket-" + StaticRandom.I1000P)
                 .setOddsChange(OddsChangeType.ANY)
                 .setTestSource(false)
@@ -81,6 +79,21 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(18000).build())
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(20000).build())
                         .build())
+                .setLastMatchEndTime(new Date(new Date().getTime() + 10000))
+                .build();
+    }
+
+    @Test
+    public void buildReOfferForTicketWithSelectionRefWithDifferentOddsSelectionsTest()
+    {
+        Ticket ticket = builderFactory.createTicketBuilder()
+                .setTicketId("ticket-" + StaticRandom.I1000P)
+                .setOddsChange(OddsChangeType.ANY)
+                .setTestSource(false)
+                .setSender(getSender())
+                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
+                                .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(18000).build())
+                                .build())
                 .setLastMatchEndTime(new Date(new Date().getTime() + 10000))
                 .build();
 
@@ -96,13 +109,13 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
 
 
     @Test
-    public void buildSelectionRefWithDifferentOddsSelectionsWithLastMatchEndTimeTest()
+    public void buildSelectionRefWithSameOddsSelectionsWithLastMatchEndTimeTest()
     {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Bet can not have selections");
         Date date = new Date(new Date().getTime() + 10000);
         
-        Ticket ticket = builderFactory.createTicketBuilder()
+        builderFactory.createTicketBuilder()
                 .setTicketId("ticket-" + StaticRandom.I1000P)
                 .setOddsChange(OddsChangeType.ANY)
                 .setTestSource(false)
@@ -111,6 +124,23 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(18000).build())
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(20000).build())
                         .build())
+                .setLastMatchEndTime(date)
+                .build();
+    }
+
+    @Test
+    public void buildSelectionRefWithDifferentOddsSelectionsWithLastMatchEndTimeTest()
+    {
+        Date date = new Date(new Date().getTime() + 10000);
+
+        Ticket ticket = builderFactory.createTicketBuilder()
+                .setTicketId("ticket-" + StaticRandom.I1000P)
+                .setOddsChange(OddsChangeType.ANY)
+                .setTestSource(false)
+                .setSender(getSender())
+                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
+                                .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(18000).build())
+                                .build())
                 .setLastMatchEndTime(date)
                 .build();
 
@@ -125,7 +155,7 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Bet can not have selections");
 
-        Ticket ticket = builderFactory.createTicketBuilder()
+        builderFactory.createTicketBuilder()
                 .setTicketId("ticket-" + StaticRandom.I1000P)
                 .setOddsChange(OddsChangeType.ANY)
                 .setTestSource(false)
@@ -135,8 +165,6 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(20000).setBanker(false).build())
                         .build())
                 .build();
-
-        Assert.assertNotNull(ticket);
     }
 
     @Test
@@ -325,7 +353,7 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("selectedSystems contains invalid value");
 
-        Ticket ticket = builderFactory.createTicketBuilder()
+        builderFactory.createTicketBuilder()
                 .setTicketId("ticket-" + StaticRandom.I1000P)
                 .setOddsChange(OddsChangeType.ANY)
                 .setTestSource(false)
@@ -339,8 +367,6 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(20000).build())
                         .build())
                 .build();
-
-        Assert.assertNotNull(ticket);
     }
 
     @Test
@@ -349,7 +375,7 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("selectedSystems can not be repeated");
 
-        Ticket ticket = builderFactory.createTicketBuilder()
+        builderFactory.createTicketBuilder()
                 .setTicketId("ticket-" + StaticRandom.I1000P)
                 .setOddsChange(OddsChangeType.ANY)
                 .setTestSource(false)
@@ -363,8 +389,6 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(20000).build())
                         .build())
                 .build();
-
-        Assert.assertNotNull(ticket);
     }
 
     @Test
@@ -373,7 +397,7 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("selectedSystems - 0 is not valid value");
 
-        Ticket ticket = builderFactory.createTicketBuilder()
+        builderFactory.createTicketBuilder()
                 .setTicketId("ticket-" + StaticRandom.I1000P)
                 .setOddsChange(OddsChangeType.ANY)
                 .setTestSource(false)
@@ -387,8 +411,6 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(20000).build())
                         .build())
                 .build();
-
-        Assert.assertNotNull(ticket);
     }
 
     @Test
@@ -604,46 +626,42 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
     @Test
     public void cancelTicketIdNullFailBuildTest(){
         thrown.expect(IllegalArgumentException.class);
-        TicketCancel ticket = builderFactory.createTicketCancelBuilder()
+        builderFactory.createTicketCancelBuilder()
                 .setTicketId(null)
                 .setBookmakerId(1111)
                 .setCancelPercent(80)
                 .build();
-        Assert.assertNotNull(ticket);
     }
 
     @Test
     public void cancelWrongPercent01BuildTest(){
         thrown.expect(IllegalArgumentException.class);
-        TicketCancel ticket = builderFactory.createTicketCancelBuilder()
+        builderFactory.createTicketCancelBuilder()
                 .setTicketId("ticket-" + StaticRandom.S1000)
                 .setBookmakerId(1111)
                 .setCancelPercent(-80)
                 .build();
-        Assert.assertNotNull(ticket);
     }
 
     @Test
     public void cancelWrongPercent02BuildTest(){
         thrown.expect(IllegalArgumentException.class);
-        TicketCancel ticket = builderFactory.createTicketCancelBuilder()
+        builderFactory.createTicketCancelBuilder()
                 .setTicketId("ticket-" + StaticRandom.S1000)
                 .setBookmakerId(1111)
                 .setCancelPercent(0)
                 .build();
-        Assert.assertNotNull(ticket);
     }
 
     @Test
     public void cancelBothBetCancelAndPercentBuildTest(){
         thrown.expect(IllegalArgumentException.class);
-        TicketCancel ticket = builderFactory.createTicketCancelBuilder()
+        builderFactory.createTicketCancelBuilder()
                 .setTicketId("ticket-" + StaticRandom.S1000)
                 .setBookmakerId(1111)
                 .setCancelPercent(23493)
                 .addBetCancel("bet01", 848)
                 .build();
-        Assert.assertNotNull(ticket);
     }
 
     @Test
@@ -662,14 +680,13 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
     @Test
     public void cancelRepeatedBetCancelsBuildTest(){
         thrown.expect(IllegalArgumentException.class);
-        TicketCancel ticket = builderFactory.createTicketCancelBuilder()
+        builderFactory.createTicketCancelBuilder()
                 .setTicketId("ticket-" + StaticRandom.S1000)
                 .setBookmakerId(1111)
                 .addBetCancel("bet01", 848)
                 .addBetCancel("bet03", 234)
                 .addBetCancel("bet01", 653)
                 .build();
-        Assert.assertNotNull(ticket);
     }
 
     @Test
@@ -715,18 +732,19 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
     @Test
     public void betCancelWrong01Test(){
         BetCancel betCancel = new BetCancelImpl("bet-id:01", 0);
+        Assert.assertNotNull(betCancel);
     }
 
     @Test
     public void betCancelWrong02Test(){
         thrown.expect(IllegalArgumentException.class);
-        BetCancel betCancel = new BetCancelImpl("bet-id:01", -1010);
+        new BetCancelImpl("bet-id:01", -1010);
     }
 
     @Test
     public void betCancelWrong03Test(){
         thrown.expect(IllegalArgumentException.class);
-        BetCancel betCancel = new BetCancelImpl("", 234324);
+        new BetCancelImpl("", 234324);
     }
 
     private TicketSchema getTicketSchemaFromJson(String json)

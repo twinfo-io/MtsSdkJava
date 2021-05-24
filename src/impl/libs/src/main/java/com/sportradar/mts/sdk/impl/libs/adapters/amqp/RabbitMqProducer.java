@@ -9,8 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -32,6 +30,7 @@ public final class RabbitMqProducer extends RabbitMqBase implements AmqpProducer
     private final boolean isPublishMandatory;
     private ReturnListener returnListener;
 
+    @SuppressWarnings("java:S107") // Methods should not have too many parameters
     public RabbitMqProducer(ChannelFactoryProvider channelFactoryProvider,
                             String instanceName,
                             AmqpCluster mqCluster,
@@ -126,6 +125,7 @@ public final class RabbitMqProducer extends RabbitMqBase implements AmqpProducer
             return this.sendAsyncInternal(correlationId, msg, routingKey, messageHeaders, null).get();
         } catch (Exception exc) {
             logger.error("error in sending data", exc);
+            Thread.currentThread().interrupt();
             return false;
         }
     }
@@ -247,7 +247,7 @@ public final class RabbitMqProducer extends RabbitMqBase implements AmqpProducer
 
                 currentMsg = this.redeliveryQueue.poll();
                 if (currentMsg == null) {
-                    currentMsg = this.normalQueue.poll(this.waitForTaskMillis, TimeUnit.MILLISECONDS);
+                    currentMsg = this.normalQueue.poll(WAIT_FOR_TASK_MILLIS, TimeUnit.MILLISECONDS);
                 }
 
                 if (currentMsg == null) {
@@ -278,10 +278,8 @@ public final class RabbitMqProducer extends RabbitMqBase implements AmqpProducer
                     unconfirmedMsg.setResult(false);
                 }
             }
-            if (cancelCurrentMsg) {
-                if ((!this.isOpen()) || (!redeliveryQueue.offer(currentMsg))) {
-                    currentMsg.setResult(false);
-                }
+            if (cancelCurrentMsg && ((!this.isOpen()) || (!redeliveryQueue.offer(currentMsg)))) {
+                currentMsg.setResult(false);
             }
         }
     }
@@ -305,7 +303,7 @@ public final class RabbitMqProducer extends RabbitMqBase implements AmqpProducer
 
                 currentMsg = this.redeliveryQueue.poll();
                 if (currentMsg == null) {
-                    currentMsg = this.normalQueue.poll(this.waitForTaskMillis, TimeUnit.MILLISECONDS);
+                    currentMsg = this.normalQueue.poll(WAIT_FOR_TASK_MILLIS, TimeUnit.MILLISECONDS);
                 }
 
                 if (currentMsg == null) {
@@ -339,7 +337,7 @@ public final class RabbitMqProducer extends RabbitMqBase implements AmqpProducer
 
         AMQP.BasicProperties.Builder builder;
         if (this.msgProperties == null) {
-            builder = new AMQP.BasicProperties().builder();//.headers(messageHeaders).build();
+            builder = new AMQP.BasicProperties().builder();
 
         } else {
             builder = this.msgProperties.builder();
@@ -355,32 +353,7 @@ public final class RabbitMqProducer extends RabbitMqBase implements AmqpProducer
         return builder.build();
     }
 
-    private static String decodeBody(final byte[] body, final boolean preferBase64) {
-        if (body == null) {
-            return "null";
-        }
-
-        if (preferBase64) {
-            try {
-                return Base64.getEncoder().encodeToString(body);
-            } catch (Exception ignored) {
-            }
-        } else {
-            try {
-                return new String(body, StandardCharsets.UTF_8);
-            } catch (Exception ignored) {
-            }
-        }
-
-        final StringBuilder sb = new StringBuilder(1024);
-        sb.append("bytes: ");
-        for (final byte singleByte : body) {
-            sb.append(singleByte).append(" ");
-        }
-        return sb.toString();
-    }
-
-    private final static class RejectedMessage implements AmqpSendResult {
+    private static final class RejectedMessage implements AmqpSendResult {
 
         public final byte[] content;
         public final String routingKey;
@@ -461,7 +434,7 @@ public final class RabbitMqProducer extends RabbitMqBase implements AmqpProducer
         }
     }
 
-    private final static class AcceptedMessageNoConfirm extends AcceptedMessage {
+    private static final class AcceptedMessageNoConfirm extends AcceptedMessage {
 
         public AcceptedMessageNoConfirm(String correlationId,
                                         byte[] content,
@@ -574,24 +547,19 @@ public final class RabbitMqProducer extends RabbitMqBase implements AmqpProducer
         }
 
         @Override
-        public Boolean get(long l, TimeUnit timeUnit) throws
-                InterruptedException,
-                ExecutionException,
-                TimeoutException {
+        public Boolean get(long l, TimeUnit timeUnit) throws InterruptedException, ExecutionException, TimeoutException {
             if (!this.latch.await(l, timeUnit)) {
                 throw new TimeoutException();
             }
-            final Boolean result = this.result.get();
-            if (result == null) {
+            final Boolean isGet = this.result.get();
+            if (isGet == null) {
                 throw new TimeoutException();
             }
-            return result;
+            return isGet;
         }
-
-
     }
 
-    private final static class DoneCallbackRunnable implements Runnable {
+    private static final class DoneCallbackRunnable implements Runnable {
 
         private final Consumer<AmqpSendResult> doneCallback;
         private final AmqpSendResult result;

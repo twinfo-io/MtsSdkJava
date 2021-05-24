@@ -11,15 +11,13 @@ public abstract class MtsSdkRuntimeException extends RuntimeException {
 
     private static final long serialVersionUID = -3142173870688185122L;
 
-    public MtsSdkRuntimeException() {
-    }
+    protected MtsSdkRuntimeException() { }
 
-
-    public MtsSdkRuntimeException(String message) {
+    protected MtsSdkRuntimeException(String message) {
         super(message);
     }
 
-    public MtsSdkRuntimeException(String message, Throwable cause) {
+    protected MtsSdkRuntimeException(String message, Throwable cause) {
         super(message, cause);
     }
 }

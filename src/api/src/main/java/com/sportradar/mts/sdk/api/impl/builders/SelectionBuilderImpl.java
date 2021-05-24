@@ -27,6 +27,7 @@ import java.util.Map;
 public class SelectionBuilderImpl implements SelectionBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(SelectionBuilderImpl.class);
+    private static final String SPORT_ID_MISSING = "sportId is missing";
 
     private final MarketDescriptionProvider marketDescriptionProvider;
     private final SdkConfiguration config;
@@ -34,7 +35,7 @@ public class SelectionBuilderImpl implements SelectionBuilder {
     private String selectionId;
     private Integer odds;
     private boolean isBanker;
-    private boolean isCustomBet;
+    private final boolean isCustomBet;
 
     public SelectionBuilderImpl(MarketDescriptionProvider marketDescriptionProvider, SdkConfiguration config, boolean isCustomBet) {
         Preconditions.checkNotNull(marketDescriptionProvider);
@@ -48,14 +49,14 @@ public class SelectionBuilderImpl implements SelectionBuilder {
     @Override
     public SelectionBuilder setEventId(String eventId) {
         this.eventId = eventId;
-        ValidateData(false, true, false);
+        validateData(false, true, false);
         return this;
     }
 
     @Override
     public SelectionBuilder setId(String selectionId) {
         this.selectionId = selectionId;
-        ValidateData(true, false, false);
+        validateData(true, false, false);
         return this;
     }
 
@@ -75,14 +76,14 @@ public class SelectionBuilderImpl implements SelectionBuilder {
         {
             selectionId += "/" + selectionIds;
         }
-        ValidateData( true, false, false);
+        validateData(true, false, false);
         return this;
     }
 
     @Override
     public SelectionBuilder setIdLcoo(int type, int sportId, String sov, String selectionIds) {
         Preconditions.checkArgument(type > 0, "type is missing");
-        Preconditions.checkArgument(sportId > 0, "sportId is missing");
+        Preconditions.checkArgument(sportId > 0, SPORT_ID_MISSING);
 
         if (StringUtils.isNullOrEmpty(sov))
         {
@@ -93,13 +94,13 @@ public class SelectionBuilderImpl implements SelectionBuilder {
         {
             selectionId += "/" + selectionIds;
         }
-        ValidateData(true, false, false);
+        validateData(true, false, false);
         return this;
     }
 
     @Override
     public SelectionBuilder setIdUof(int product, String sportId, int marketId, String selectionIds, String specifiers, Map<String, Object> sportEventStatus) {
-        Preconditions.checkArgument(!StringUtils.isNullOrEmpty(sportId), "sportId is missing");
+        Preconditions.checkArgument(!StringUtils.isNullOrEmpty(sportId), SPORT_ID_MISSING);
         Preconditions.checkArgument(marketId > 0, "marketId is missing");
 
         Map<String, String> specs = new HashMap<>();
@@ -116,7 +117,7 @@ public class SelectionBuilderImpl implements SelectionBuilder {
 
     @Override
     public SelectionBuilder setIdUof(int product, String sportId, int marketId, String selectionIds, Map<String, String> specifiers, Map<String, Object> sportEventStatus) {
-        Preconditions.checkArgument(!StringUtils.isNullOrEmpty(sportId), "sportId is missing");
+        Preconditions.checkArgument(!StringUtils.isNullOrEmpty(sportId), SPORT_ID_MISSING);
         Preconditions.checkArgument(marketId > 0, "marketId is missing");
 
         if (!sportId.contains(":"))
@@ -133,24 +134,24 @@ public class SelectionBuilderImpl implements SelectionBuilder {
         {
             selectionId += "/" + selectionIds;
         }
-        Map<String, String> newSpecifiers = HandleMarketDescription(product, sportId, marketId, selectionIds, specifiers, sportEventStatus);
-        if (specifiers != null && !specifiers.isEmpty())
+        Map<String, String> newSpecifiers = handleMarketDescription(product, sportId, marketId, specifiers, sportEventStatus);
+        if (newSpecifiers != null && !newSpecifiers.isEmpty())
         {
             StringBuilder sb = new StringBuilder();
-            specifiers.forEach((key, value) -> sb.append("&")
+            newSpecifiers.forEach((key, value) -> sb.append("&")
                     .append(key)
                     .append("=")
                     .append(value));
-            selectionId += "?" + sb.toString().substring(1);
+            selectionId += "?" + sb.substring(1);
         }
-        ValidateData(true, false, false);
+        validateData(true, false, false);
         return this;
     }
 
     @Override
     public SelectionBuilder setOdds(int odds) {
         this.odds = odds;
-        ValidateData(false, false, true && !isCustomBet);
+        validateData(false, false, !isCustomBet);
         return this;
     }
 
@@ -166,42 +167,30 @@ public class SelectionBuilderImpl implements SelectionBuilder {
         this.selectionId = selectionId;
         this.odds = odds;
         this.isBanker = isBanker;
-        ValidateData(true, true, true && !isCustomBet);
+        validateData(true, true, !isCustomBet);
         return this;
     }
 
     @Override
     public Selection build() {
-        ValidateData(true, true, true && !isCustomBet);
+        validateData(true, true, !isCustomBet);
         return new SelectionImpl(eventId, selectionId, odds, isBanker);
     }
 
-    private void ValidateData(boolean id, boolean eventId, boolean odds)
+    private void validateData(boolean id, boolean eventId, boolean odds)
     {
-        if (id)
-        {
-            if (StringUtils.isNullOrEmpty(this.selectionId) || !MtsTicketHelper.validateId(this.selectionId, false, false, 1, 1000))
-            {
-                throw new IllegalArgumentException("Id not valid.");
-            }
+        if (id && (StringUtils.isNullOrEmpty(this.selectionId) || !MtsTicketHelper.validateId(this.selectionId, false, false, 1, 1000))) {
+            throw new IllegalArgumentException("Id not valid.");
         }
-        if (eventId)
-        {
-            if (StringUtils.isNullOrEmpty(this.eventId) || !MtsTicketHelper.validateId(this.eventId, false, false,1, 100))
-            {
-                throw new IllegalArgumentException("EventId not valid.");
-            }
+        if (eventId && (StringUtils.isNullOrEmpty(this.eventId) || !MtsTicketHelper.validateId(this.eventId, false, false, 1, 100))) {
+            throw new IllegalArgumentException("EventId not valid.");
         }
-        if (odds)
-        {
-            if (this.odds == null || !(this.odds >= 10000 && this.odds <= 1000000000))
-            {
-                throw new IllegalArgumentException("Odds not valid.");
-            }
+        if (odds && (this.odds == null || !(this.odds >= 10000 && this.odds <= 1000000000))) {
+            throw new IllegalArgumentException("Odds not valid.");
         }
     }
 
-    private Map<String, String> HandleMarketDescription(int productId, String sportId, int marketId, String selectionId, Map<String, String> specifiers, Map<String, Object> sportEventStatus)
+    private Map<String, String> handleMarketDescription(int productId, String sportId, int marketId, Map<String, String> specifiers, Map<String, Object> sportEventStatus)
     {
         if(!this.config.getProvideAdditionalMarketSpecifiers())
         {
@@ -211,7 +200,7 @@ public class SelectionBuilderImpl implements SelectionBuilder {
         MarketDescriptionCI marketDescriptionCI = null;
         try
         {
-            marketDescriptionCI = marketDescriptionProvider.getMarketDescription(marketId, null);
+            marketDescriptionCI = marketDescriptionProvider.getMarketDescription(marketId);
         }
         catch (Exception ignored)
         {
@@ -220,24 +209,14 @@ public class SelectionBuilderImpl implements SelectionBuilder {
 
         if(marketDescriptionCI == null)
         {
-            logger.info(String.format("No market description found for marketId={}, sportId={}, productId={}."), marketId, sportId, productId);
+            logger.info("No market description found for marketId={}, sportId={}, productId={}.", marketId, sportId, productId);
             return specifiers;
         }
 
         //handle market 215
         if(marketId == 215)
         {
-            Map<String, String> newSpecifiers = new HashMap<>();
-            if(specifiers != null && specifiers.size() > 0)
-            {
-                newSpecifiers = specifiers;
-            }
-            if(sportEventStatus == null)
-            {
-                throw new IllegalArgumentException("SportEventStatus is missing");
-            }
-            newSpecifiers.put("$server", sportEventStatus.get("CurrentServer").toString());
-            return newSpecifiers;
+            return handleMarket215(specifiers, sportEventStatus);
         }
 
         MarketMappingCI marketMapping = marketDescriptionCI.getMappings().stream()
@@ -249,36 +228,54 @@ public class SelectionBuilderImpl implements SelectionBuilder {
                 .orElse(null);
         if(marketMapping == null || marketMapping.getProducerId() == 0)
         {
-            logger.info(String.format("Market description {}, has no mapping."), marketDescriptionCI.getId(), sportId, productId);
+            logger.info("Market description {}, has no mapping.", marketDescriptionCI.getId());
             return specifiers;
         }
 
         //handle $score
         if(!StringUtils.isNullOrEmpty(marketMapping.getSovTemplate()) && marketMapping.getSovTemplate().equals("{$score}"))
         {
-            if(sportEventStatus == null)
-            {
-                throw new IllegalArgumentException("SportEventStatus is missing");
-            }
-            if(!sportEventStatus.containsKey("HomeScore"))
-            {
-                throw new IllegalArgumentException("SportEventStatus is missing HomeScore property");
-            }
-            if(!sportEventStatus.containsKey("AwayScore"))
-            {
-                throw new IllegalArgumentException("SportEventStatus is missing AwayScore property");
-            }
-
-            Map<String, String> newSpecifiers = new HashMap<>();
-            if(specifiers != null && specifiers.size() > 0)
-            {
-                newSpecifiers = specifiers;
-            }
-            newSpecifiers.put("$score", sportEventStatus.get("HomeScore") + ":" + sportEventStatus.get("AwayScore"));
-
-            return newSpecifiers;
+            return handleMarketScore(specifiers, sportEventStatus);
         }
 
         return specifiers;
+    }
+
+    private Map<String, String> handleMarket215(Map<String, String> specifiers, Map<String, Object> sportEventStatus){
+        Map<String, String> newSpecifiers = new HashMap<>();
+        if(specifiers != null && specifiers.size() > 0)
+        {
+            newSpecifiers = specifiers;
+        }
+        if(sportEventStatus == null || !sportEventStatus.containsKey("CurrentServer"))
+        {
+            throw new IllegalArgumentException("SportEventStatus or CurrentServer key is missing");
+        }
+        newSpecifiers.put("$server", sportEventStatus.get("CurrentServer").toString());
+        return newSpecifiers;
+    }
+
+    private Map<String, String> handleMarketScore(Map<String, String> specifiers, Map<String, Object> sportEventStatus){
+        if(sportEventStatus == null)
+        {
+            throw new IllegalArgumentException("SportEventStatus is missing");
+        }
+        if(!sportEventStatus.containsKey("HomeScore"))
+        {
+            throw new IllegalArgumentException("SportEventStatus is missing HomeScore property");
+        }
+        if(!sportEventStatus.containsKey("AwayScore"))
+        {
+            throw new IllegalArgumentException("SportEventStatus is missing AwayScore property");
+        }
+
+        Map<String, String> newSpecifiers = new HashMap<>();
+        if(specifiers != null && specifiers.size() > 0)
+        {
+            newSpecifiers = specifiers;
+        }
+        newSpecifiers.put("$score", sportEventStatus.get("HomeScore") + ":" + sportEventStatus.get("AwayScore"));
+
+        return newSpecifiers;
     }
 }

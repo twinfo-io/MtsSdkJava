@@ -12,6 +12,8 @@ import com.sportradar.mts.sdk.api.builders.TicketBuilder;
 import com.sportradar.mts.sdk.api.builders.TicketReofferBuilder;
 import com.sportradar.mts.sdk.api.utils.StringUtils;
 
+import java.util.Optional;
+
 /**
  * Implementation of {@link TicketReofferBuilder}
  */
@@ -53,8 +55,8 @@ public class TicketReofferBuilderImpl implements TicketReofferBuilder {
     @Override
     public Ticket build() {
         return ticketResponse != null
-                ? BuildReofferTicket(ticket, ticketResponse, newTicketId)
-                : BuildReofferTicket(ticket, newStake, newTicketId);
+                ? buildReofferTicket(ticket, ticketResponse, newTicketId)
+                : buildReofferTicket(ticket, newStake, newTicketId);
     }
 
     /**
@@ -65,24 +67,13 @@ public class TicketReofferBuilderImpl implements TicketReofferBuilder {
      * @return Returns the {@link Ticket} representing the reoffer
      * @exception IllegalArgumentException ticket and ticketResponse are mandatory
      */
-    private Ticket BuildReofferTicket(Ticket ticket, TicketResponse ticketResponse, String newTicketId)
+    private Ticket buildReofferTicket(Ticket ticket, TicketResponse ticketResponse, String newTicketId)
     {
-        if (ticket == null || ticketResponse == null)
-        {
-            throw new IllegalArgumentException("Ticket and TicketResponse must not be null.");
-        }
-        if (ticket.getBets().size() != 1)
-        {
-            throw new IllegalArgumentException("Only tickets with exactly 1 bet are supported.");
-        }
-        if (ticketResponse.getBetDetails().stream().anyMatch(a -> a.getReoffer() == null))
-        {
-            throw new IllegalArgumentException("Response bet details are missing Reoffer info.");
-        }
+        checkArgsForReofferTicket(ticket, ticketResponse);
 
         if (ticket.getBets().size() == 1)
         {
-            return BuildReofferTicket(ticket, ticketResponse.getBetDetails().get(0).getReoffer().getStake(), newTicketId);
+            return buildReofferTicket(ticket, ticketResponse.getBetDetails().get(0).getReoffer().getStake(), newTicketId);
         }
 
         TicketBuilder reofferTicketBuilder = builderFactory.createTicketBuilder()
@@ -98,8 +89,8 @@ public class TicketReofferBuilderImpl implements TicketReofferBuilder {
 
         for (Bet ticketBet : ticket.getBets())
         {
-            BetDetail responseBetDetail = ticketResponse.getBetDetails().stream().filter(f -> f.getBetId().equals(ticketBet.getId())).findFirst().get();
-            if (responseBetDetail == null || StringUtils.isNullOrEmpty(responseBetDetail.getBetId()))
+            Optional<BetDetail> responseBetDetail = ticketResponse.getBetDetails().stream().filter(f -> f.getBetId().equals(ticketBet.getId())).findFirst();
+            if (!responseBetDetail.isPresent() || StringUtils.isNullOrEmpty(responseBetDetail.get().getBetId()))
             {
                 throw new IllegalArgumentException("Ticket response is missing a bet details for the bet " + ticketBet.getId());
             }
@@ -107,7 +98,7 @@ public class TicketReofferBuilderImpl implements TicketReofferBuilder {
                     .setBetId(ticketBet.getId() + "R")
                     .setReofferId(ticketBet.getId())
                     .setSumOfWins(ticketBet.getSumOfWins())
-                    .setStake(responseBetDetail.getReoffer().getStake(), ticketBet.getStake().getType());
+                    .setStake(responseBetDetail.get().getReoffer().getStake(), ticketBet.getStake().getType());
 
             if (ticketBet.getBetBonus() != null)
             {
@@ -126,6 +117,21 @@ public class TicketReofferBuilderImpl implements TicketReofferBuilder {
         return reofferTicketBuilder.build();
     }
 
+    private void checkArgsForReofferTicket(Ticket ticket, TicketResponse ticketResponse){
+        if (ticket == null || ticketResponse == null)
+        {
+            throw new IllegalArgumentException("Ticket and TicketResponse must not be null.");
+        }
+        if (ticket.getBets().size() != 1)
+        {
+            throw new IllegalArgumentException("Only tickets with exactly 1 bet are supported.");
+        }
+        if (ticketResponse.getBetDetails().stream().anyMatch(a -> a.getReoffer() == null))
+        {
+            throw new IllegalArgumentException("Response bet details are missing Reoffer info.");
+        }
+    }
+
     /**
      * Builds the reoffer ticket based on the original ticket and the ticket response
      * @param ticket the original ticket
@@ -134,7 +140,7 @@ public class TicketReofferBuilderImpl implements TicketReofferBuilder {
      * @return Returns the {@link Ticket} representing the reoffer
      * @exception IllegalArgumentException ticket and newStake are mandatory
      */
-    private Ticket BuildReofferTicket(Ticket ticket, long newStake, String newTicketId)
+    private Ticket buildReofferTicket(Ticket ticket, long newStake, String newTicketId)
     {
         if (ticket == null)
         {

@@ -49,8 +49,6 @@ public class ChannelFactoryProviderImplTest extends TimeLimitedTestBase {
         channelFactoryProvider.unregisterInstance();
         Semaphore semaphore = new Semaphore(0);
         execute(semaphore, "this msg is redundant");
-
-        assertFalse(semaphore.tryAcquire(10, TimeUnit.MILLISECONDS));
     }
 
     @Test
@@ -86,8 +84,6 @@ public class ChannelFactoryProviderImplTest extends TimeLimitedTestBase {
         thrown.expectMessage("rabbitMqCluster");
 
         ChannelFactory channelFactory = channelFactoryProvider.getChannelFactory(amqpCluster);
-
-        assertNull(channelFactory);
     }
 
     private synchronized void execute(Semaphore semaphore, String msg) {

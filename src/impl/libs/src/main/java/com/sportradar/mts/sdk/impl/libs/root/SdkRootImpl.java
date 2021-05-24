@@ -35,8 +35,9 @@ public class SdkRootImpl implements SdkRoot {
     private final TicketCashoutHandler ticketCashoutHandler;
     private final AmqpMessageReceiver ticketCashoutAmqpMessageReceiver;
     private final TicketNonSrSettleHandler ticketNonSrSettleHandler;
-    private final AmqpMessageReceiver ticketNonSrSettleAmpqMessageReciver;
+    private final AmqpMessageReceiver ticketNonSrSettleAmpqMessageReceiver;
 
+    @SuppressWarnings("java:S107") // Methods should not have too many parameters
     public SdkRootImpl(SdkLogger sdkLogger,
                        ScheduledExecutorService executorService,
                        ChannelFactoryProvider channelFactoryProvider,
@@ -49,7 +50,8 @@ public class SdkRootImpl implements SdkRoot {
                        TicketReofferCancelHandler ticketReofferCancelHandler,
                        TicketCashoutHandler ticketCashoutHandler,
                        AmqpMessageReceiver ticketCashoutAmqpMessageReceiver,
-                       TicketNonSrSettleHandler ticketNonSrSettleHandler, AmqpMessageReceiver ticketNonSrSettleAmpqMessageReciver) {
+                       TicketNonSrSettleHandler ticketNonSrSettleHandler,
+                       AmqpMessageReceiver ticketNonSrSettleAmpqMessageReceiver) {
         this.sdkLogger = sdkLogger;
         this.executorService = executorService;
         this.channelFactoryProvider = channelFactoryProvider;
@@ -63,7 +65,7 @@ public class SdkRootImpl implements SdkRoot {
         this.ticketCashoutHandler = ticketCashoutHandler;
         this.ticketCashoutAmqpMessageReceiver = ticketCashoutAmqpMessageReceiver;
         this.ticketNonSrSettleHandler = ticketNonSrSettleHandler;
-        this.ticketNonSrSettleAmpqMessageReciver = ticketNonSrSettleAmpqMessageReciver;
+        this.ticketNonSrSettleAmpqMessageReceiver = ticketNonSrSettleAmpqMessageReceiver;
     }
 
     @Override
@@ -124,7 +126,7 @@ public class SdkRootImpl implements SdkRoot {
                 logger.error("failed to close ticket cashout sender", e);
             }
             try {
-                ticketNonSrSettleAmpqMessageReciver.close();
+                ticketNonSrSettleAmpqMessageReceiver.close();
             } catch (Exception e) {
                 logger.error("failed to close non-sr message receiver", e);
             }
@@ -144,6 +146,7 @@ public class SdkRootImpl implements SdkRoot {
                 terminated = executorService.awaitTermination(20, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 logger.info("interrupted while waiting for executor service to shutdown");
+                Thread.currentThread().interrupt();
             }
             if (!terminated) {
                 logger.error("failed to shutdown executor service in time, force stopping");
@@ -219,7 +222,7 @@ public class SdkRootImpl implements SdkRoot {
         checkOpened();
         ticketNonSrSettleHandler.setListener(responseListener);
         ticketNonSrSettleHandler.open();
-        ticketNonSrSettleAmpqMessageReciver.open();
+        ticketNonSrSettleAmpqMessageReceiver.open();
         return ticketNonSrSettleHandler;
     }
 

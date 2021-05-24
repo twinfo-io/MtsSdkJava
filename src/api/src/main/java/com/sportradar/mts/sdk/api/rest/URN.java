@@ -5,8 +5,6 @@
 package com.sportradar.mts.sdk.api.rest;
 
 import com.google.common.collect.ImmutableMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,11 +16,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Represents a Uniform Resource Name
  */
 public class URN {
-    /**
-     * A {@link Logger} instance used to log data
-     */
-    private static final Logger logger = LoggerFactory.getLogger(URN.class);
-
     /**
      * The name of the regex group used to store the prefix
      */
@@ -133,7 +126,6 @@ public class URN {
                     Long.valueOf(matcher.group(ID_GROUP_NAME))
             );
         } catch (Exception e){
-            logger.warn("URN could not be parsed [{}] ", urnString, e);
             throw new IllegalArgumentException("URN could not be parsed [" + urnString + "] ", e);
         }
     }

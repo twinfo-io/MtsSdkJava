@@ -4,9 +4,6 @@
 
 package com.sportradar.mts.sdk.impl.libs.adapters.amqp;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public final class NetworkAddress {
 
     private final String host;
@@ -32,17 +29,9 @@ public final class NetworkAddress {
 
     public static NetworkAddress parseAddress(final String addressString) {
         final int idx = addressString.indexOf(58);
-        return ((idx == -1) ? new NetworkAddress(addressString.trim())
+        return ((idx == -1)
+                ? new NetworkAddress(addressString.trim())
                 : new NetworkAddress(addressString.substring(0, idx).trim(), Integer.parseInt(addressString.substring(idx + 1))));
-    }
-
-    public static Set<NetworkAddress> parseAddresses(final String addresses) {
-        final String[] addressesArray = addresses.split(" *, *");
-        final Set<NetworkAddress> result = new HashSet<>();
-        for (String address : addressesArray) {
-            result.add(parseAddress(address));
-        }
-        return result;
     }
 
     public int hashCode() {

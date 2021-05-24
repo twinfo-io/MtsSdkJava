@@ -29,10 +29,10 @@ public class SelectionBuilderTest extends TimeLimitedTestBase {
                 .setBanker(false)
                 .build();
         Assert.assertNotNull(selection);
-        Assert.assertEquals(selection.getEventId(), "sr:match:12345");
-        Assert.assertEquals(selection.getId(), "live:2/0/*/1");
-        Assert.assertEquals(selection.getOdds(), (Integer) 10400);
-        Assert.assertEquals(selection.getIsBanker(), false);
+        Assert.assertEquals("sr:match:12345", selection.getEventId());
+        Assert.assertEquals("live:2/0/*/1", selection.getId());
+        Assert.assertEquals((Integer) 10400, selection.getOdds());
+        Assert.assertEquals(false, selection.getIsBanker());
     }
 
     @Test
@@ -61,10 +61,10 @@ public class SelectionBuilderTest extends TimeLimitedTestBase {
                 .setBanker(true)
                 .build();
         Assert.assertNotNull(selection);
-        Assert.assertEquals(selection.getEventId(), "sr:match:12345");
-        Assert.assertEquals(selection.getId(), "live:2/0/*/1");
-        Assert.assertEquals(selection.getOdds(), (Integer) 10400);
-        Assert.assertEquals(selection.getIsBanker(), true);
+        Assert.assertEquals("sr:match:12345", selection.getEventId());
+        Assert.assertEquals("live:2/0/*/1", selection.getId());
+        Assert.assertEquals((Integer) 10400, selection.getOdds());
+        Assert.assertEquals(true, selection.getIsBanker());
     }
 
     @Test
@@ -77,10 +77,10 @@ public class SelectionBuilderTest extends TimeLimitedTestBase {
                 .setBanker(true)
                 .build();
         Assert.assertNotNull(selection);
-        Assert.assertEquals(selection.getEventId(), "TR:0192_234_934");
-        Assert.assertEquals(selection.getId(), "live:2/0/*/1");
-        Assert.assertEquals(selection.getOdds(), (Integer) 10400);
-        Assert.assertEquals(selection.getIsBanker(), true);
+        Assert.assertEquals("TR:0192_234_934", selection.getEventId());
+        Assert.assertEquals("live:2/0/*/1", selection.getId());
+        Assert.assertEquals((Integer) 10400, selection.getOdds());
+        Assert.assertEquals(true, selection.getIsBanker());
     }
 
     @Test
@@ -93,10 +93,10 @@ public class SelectionBuilderTest extends TimeLimitedTestBase {
                 .setBanker(true)
                 .build();
         Assert.assertNotNull(selection);
-        Assert.assertEquals(selection.getEventId(), "TR:0192_234_934");
-        Assert.assertEquals(selection.getId(), "cust:2/0/*/1");
-        Assert.assertEquals(selection.getOdds(), (Integer) 10400);
-        Assert.assertEquals(selection.getIsBanker(), true);
+        Assert.assertEquals("TR:0192_234_934", selection.getEventId());
+        Assert.assertEquals("cust:2/0/*/1", selection.getId());
+        Assert.assertEquals((Integer) 10400, selection.getOdds());
+        Assert.assertEquals(true, selection.getIsBanker());
     }
 
     @Test
@@ -108,10 +108,10 @@ public class SelectionBuilderTest extends TimeLimitedTestBase {
                 .setBanker(true)
                 .build();
         Assert.assertNotNull(selection);
-        Assert.assertEquals(selection.getEventId(), "TR:0192_234_934");
-        Assert.assertEquals(selection.getId(), "tree:2/0/*/1");
+        Assert.assertEquals("TR:0192_234_934", selection.getEventId());
+        Assert.assertEquals("tree:2/0/*/1", selection.getId());
         Assert.assertNull(selection.getOdds());
-        Assert.assertEquals(selection.getIsBanker(), true);
+        Assert.assertEquals(true, selection.getIsBanker());
     }
 
     @Test
@@ -121,10 +121,10 @@ public class SelectionBuilderTest extends TimeLimitedTestBase {
                 .set("TR:0192_234_934", "tree:2/0/*/1", null, true)
                 .build();
         Assert.assertNotNull(selection);
-        Assert.assertEquals(selection.getEventId(), "TR:0192_234_934");
-        Assert.assertEquals(selection.getId(), "tree:2/0/*/1");
+        Assert.assertEquals("TR:0192_234_934", selection.getEventId());
+        Assert.assertEquals("tree:2/0/*/1", selection.getId());
         Assert.assertNull(selection.getOdds());
-        Assert.assertEquals(selection.getIsBanker(), true);
+        Assert.assertEquals(true, selection.getIsBanker());
     }
 
     @Test

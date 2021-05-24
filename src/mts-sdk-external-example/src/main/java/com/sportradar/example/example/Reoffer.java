@@ -18,10 +18,13 @@ import org.slf4j.LoggerFactory;
 /**
  * Example of creating and sending reoffer ticket
  */
-public class Reoffer {
+public final class Reoffer {
     private static final Logger logger = LoggerFactory.getLogger(Reoffer.class);
 
-    public static void Run()
+    private Reoffer() { throw new IllegalStateException("Reoffer class"); }
+
+    @SuppressWarnings("java:S3776") // Cognitive Complexity of methods should not be too high
+    public static void run()
     {
         SdkConfiguration config = MtsSdk.getConfiguration();
         MtsSdkApi mtsSdk = new MtsSdk(config);
@@ -61,7 +64,7 @@ public class Reoffer {
                 }
             }
             else {
-                logger.info(String.format("ticket %1s was %2s. Reason: %3s.", ticketResponse.getTicketId(), ticketResponse.getStatus(), ticketResponse.getReason().getMessage()));
+                logger.info("ticket {} was {}. Reason: {}.", ticketResponse.getTicketId(), ticketResponse.getStatus(), ticketResponse.getReason().getMessage());
                 if(ticketResponse.getBetDetails().stream().anyMatch(f->f.getReoffer() != null))
                 {
                     Ticket ticketReoffer = mtsSdk.getBuilderFactory().createTicketReofferBuilder().set(ticket, ticketResponse, null).build();
@@ -74,19 +77,21 @@ public class Reoffer {
                         }
                     }
                     else{
-                        logger.info(String.format("ticket %1s was %2s. Reason: %3s.", reofferResponse.getTicketId(), reofferResponse.getStatus(), reofferResponse.getReason().getMessage()));
+                        logger.info("ticket {} was {}. Reason: {}.", reofferResponse.getTicketId(), reofferResponse.getStatus(), reofferResponse.getReason().getMessage());
                     }
                 }
             }
         } catch (ResponseTimeoutException e) {
-            e.printStackTrace();
+            logger.warn("Response timeout: {}", e.getMessage());
         }
 
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
             logger.info("interrupted while sleeping");
+            Thread.currentThread().interrupt();
+        } finally {
+            mtsSdk.close();
         }
-        mtsSdk.close();
     }
 }

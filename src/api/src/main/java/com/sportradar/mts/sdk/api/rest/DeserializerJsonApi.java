@@ -17,7 +17,7 @@ import java.io.InputStream;
  * endpoint request
  */
 public class DeserializerJsonApi implements Deserializer {
-    private final static Logger logger = LoggerFactory.getLogger(DeserializerJsonApi.class);
+    private static final Logger logger = LoggerFactory.getLogger(DeserializerJsonApi.class);
 
     @SuppressWarnings("UnstableApiUsage")
     @Override

@@ -6,6 +6,7 @@ package com.sportradar.mts.sdk.impl.libs.handlers;
 
 import com.sportradar.mts.sdk.api.TicketAck;
 import com.sportradar.mts.sdk.api.interfaces.TicketAckResponseListener;
+import com.sportradar.mts.sdk.api.utils.SdkInfo;
 import com.sportradar.mts.sdk.impl.libs.adapters.amqp.AmqpPublisher;
 import com.sportradar.mts.sdk.impl.libs.logging.SdkLogger;
 
@@ -29,8 +30,8 @@ public class TicketAckHandlerImpl extends SenderBase<TicketAck> implements Ticke
 
     @Override
     public void send(TicketAck ticketAcknowledgment) {
-        checkState(isOpen(), "sender is closed");
-        checkNotNull(ticketAcknowledgment, "ticketAcknowledgment cannot be null");
+        checkState(isOpen(), SdkInfo.Literals.TICKET_HANDLER_SENDER_CLOSED);
+        checkNotNull(ticketAcknowledgment, "TicketAcknowledgment cannot be null");
         publishAsync(ticketAcknowledgment, routingKey);
     }
 

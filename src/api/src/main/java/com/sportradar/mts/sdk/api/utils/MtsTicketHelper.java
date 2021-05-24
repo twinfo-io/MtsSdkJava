@@ -16,11 +16,14 @@ import java.util.UUID;
 /**
  * Implements methods for converting between DTOs
  */
-public class MtsTicketHelper {
+public final class MtsTicketHelper {
     private static final String BET_ID_PATTERN = "^[0-9A-Za-z:_-]*";
     private static final String USER_ID_PATTERN = "^[0-9A-Za-z#_-]*";
+    private static final String INVALID_STATUS = "Invalid response Status value: %s";
 
-    public static String GenerateTicketCorrelationId()
+    private MtsTicketHelper() { throw new IllegalStateException("MtsTicketHelper class"); }
+
+    public static String generateTicketCorrelationId()
     {
         return "j" + UUID.randomUUID().toString();
     }
@@ -122,7 +125,7 @@ public class MtsTicketHelper {
         {
             return TicketAcceptance.REJECTED;
         }
-        throw new IllegalArgumentException(String.format("Invalid response Status value: %s", status.toString())) ;
+        throw new IllegalArgumentException(String.format(INVALID_STATUS, status.toString())) ;
     }
 
     public static TicketCancelAcceptance convert(com.sportradar.mts.sdk.api.impl.mtsdto.ticketcancelresponse.Result.Status status)
@@ -135,7 +138,7 @@ public class MtsTicketHelper {
         {
             return TicketCancelAcceptance.NotCancelled;
         }
-        throw new IllegalArgumentException(String.format("Invalid response Status value: %s", status.toString())) ;
+        throw new IllegalArgumentException(String.format(INVALID_STATUS, status.toString())) ;
     }
 
     public static TicketAcceptance convert(com.sportradar.mts.sdk.api.impl.mtsdto.ticketcashoutresponse.Result.Status status) {
@@ -147,7 +150,7 @@ public class MtsTicketHelper {
         {
             return TicketAcceptance.REJECTED;
         }
-        throw new IllegalArgumentException(String.format("Invalid response Status value: %s", status.toString())) ;
+        throw new IllegalArgumentException(String.format(INVALID_STATUS, status.toString())) ;
     }
 
     public static BetReofferType convert(Reoffer.Type type)
@@ -172,7 +175,7 @@ public class MtsTicketHelper {
         {
             return TicketAcceptance.REJECTED;
         }
-        throw new IllegalArgumentException(String.format("Invalid response Status value: %s", status.toString())) ;
+        throw new IllegalArgumentException(String.format(INVALID_STATUS, status.toString())) ;
     }
 
     /**

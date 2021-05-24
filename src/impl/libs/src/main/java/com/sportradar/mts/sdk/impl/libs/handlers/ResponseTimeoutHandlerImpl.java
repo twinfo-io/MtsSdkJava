@@ -72,11 +72,9 @@ public class ResponseTimeoutHandlerImpl<T extends SdkTicket> implements RemovalL
             return;
         }
 
-        if(ticket instanceof Ticket){
-            if(((Ticket) ticket).getSelections().stream().anyMatch(a->a.getId().contains("lcoo"))){
-                responseTimeoutMonitoringCache2.put(ticket.getCorrelationId(), ticket);
-                return;
-            }
+        if(ticket instanceof Ticket && ((Ticket) ticket).getSelections().stream().anyMatch(a->a.getId().contains("lcoo"))){
+            responseTimeoutMonitoringCache2.put(ticket.getCorrelationId(), ticket);
+            return;
         }
         responseTimeoutMonitoringCache1.put(ticket.getCorrelationId(), ticket);
     }

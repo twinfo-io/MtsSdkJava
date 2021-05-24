@@ -16,18 +16,16 @@ import org.slf4j.LoggerFactory;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class MarketDescriptionCacheImpl implements MarketDescriptionCache {
-    private static final Logger logger = LoggerFactory.getLogger(MarketDescriptionCache.class);
+    private static final Logger logger = LoggerFactory.getLogger(MarketDescriptionCacheImpl.class);
 
     private final Cache<String, MarketDescriptionCI> cache;
     private final DataProvider<MarketDescriptions> dataProvider;
     private final List<Locale> prefetchLocales;
-//    private final List<Locale> fetchedLocales;
     private final Object lock = new Object();
     private final boolean accessTokenProvided;
-    private static Duration duration;
+    private final Duration duration;
     private Date timeOfLastFetch;
     private static final Duration minIntervalTimeout = Duration.ofSeconds(30);
 
@@ -38,33 +36,13 @@ public class MarketDescriptionCacheImpl implements MarketDescriptionCache {
         this.cache = cache;
         this.dataProvider = dataProvider;
         this.prefetchLocales = prefetchLocales;
-//        this.fetchedLocales = new ArrayList<>();
 
         duration = Duration.ofHours(4);
         timeOfLastFetch = new Date(0);
 
         accessTokenProvided = !StringUtils.isNullOrEmpty(accessToken);
 
-        logger.debug("AccessToken for API is provided: " + accessTokenProvided + ". It is required only when creating selections for UF markets via method ISelectionBuilder.SetIdUof(). There is no need for it when legacy feeds are used.");
-    }
-
-    private MarketDescriptionCI GetItemFromCache(int id)
-    {
-        return cache.getIfPresent(Integer.toString(id));
-    }
-
-    /**
-     * Calculates and returns the missing locales within the provided {@link List}
-     *
-     * @param have - a {@link List} that contains all the available locales
-     * @param want - a {@link List} of locales that are required
-     * @return - returns a {@link List} of missing locales
-     */
-    private static List<Locale> findMissingLocales(List<Locale> have, List<Locale> want) {
-        Preconditions.checkNotNull(have);
-        Preconditions.checkNotNull(want);
-
-        return want.stream().filter(locale -> !have.contains(locale)).collect(Collectors.toList());
+        logger.debug("AccessToken for API is provided: {}. It is required only when creating selections for UF markets via method ISelectionBuilder.SetIdUof(). There is no need for it when legacy feeds are used.", accessTokenProvided);
     }
 
     private void getAllMarketDescriptions(List<Locale> locales) {
@@ -79,11 +57,11 @@ public class MarketDescriptionCacheImpl implements MarketDescriptionCache {
         try {
             synchronized (lock) {
                 for (Locale locale : locales) {
-                    logger.debug("Fetching market descriptions from API for locale: " + locale);
+                    logger.debug("Fetching market descriptions from API for locale: {}", locale);
                     MarketDescriptions marketDescriptions = dataProvider.getData(locale);
                     if(marketDescriptions == null)
                     {
-                        logger.warn("No market descriptions fetched from API for locale: " + locale);
+                        logger.warn("No market descriptions fetched from API for locale: {}", locale);
                         pauseFetching();
                         return;
                     }
@@ -94,13 +72,11 @@ public class MarketDescriptionCacheImpl implements MarketDescriptionCache {
                     for(MarketDescriptionDTO dto : marketDescriptionDTOs) {
                         merge(locale, dto);
                     }
-//                    fetchedLocales.add(locale);
                 }
             }
             timeOfLastFetch = new Date();
         } catch (Exception ex) {
             pauseFetching();
-            logger.error("An error occurred while fetching market descriptions data", ex);
             throw new IllegalStateException("An error occurred while fetching market descriptions data", ex);
         }
     }
@@ -111,7 +87,7 @@ public class MarketDescriptionCacheImpl implements MarketDescriptionCache {
         cal.add(Calendar.SECOND, -(int)duration.getSeconds());
         cal.add(Calendar.SECOND, (int)minIntervalTimeout.getSeconds());
         timeOfLastFetch = cal.getTime();
-        logger.debug("Fetching paused for " + minIntervalTimeout.getSeconds() + "s.");
+        logger.debug("Fetching paused for {}s.", minIntervalTimeout.getSeconds());
     }
 
     private void merge(Locale locale, MarketDescriptionDTO dto) {
@@ -135,7 +111,7 @@ public class MarketDescriptionCacheImpl implements MarketDescriptionCache {
         }
     }
 
-    private MarketDescriptionCI getMarketDescription(int marketId, List<Locale> locales) {
+    private MarketDescriptionCI getMarketDescriptionInternal(int marketId) {
         Preconditions.checkArgument(marketId > 0);
 
         MarketDescriptionCI cachedItem = cache.getIfPresent(String.valueOf(marketId));
@@ -151,9 +127,8 @@ public class MarketDescriptionCacheImpl implements MarketDescriptionCache {
     public MarketDescriptionCI getMarketDescription(int marketId) {
         if (Duration.between(timeOfLastFetch.toInstant(), Instant.now()).toMillis() > duration.toMillis())
         {
-//            fetchedLocales.clear();
             getAllMarketDescriptions(prefetchLocales);
         }
-        return getMarketDescription(marketId, prefetchLocales);
+        return getMarketDescriptionInternal(marketId);
     }
 }

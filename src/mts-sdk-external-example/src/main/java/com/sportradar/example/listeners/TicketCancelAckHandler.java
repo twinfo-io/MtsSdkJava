@@ -8,5 +8,4 @@ import com.sportradar.mts.sdk.api.TicketCancelAck;
 import com.sportradar.mts.sdk.api.interfaces.TicketCancelAckResponseListener;
 
 public class TicketCancelAckHandler extends PublishResultHandler<TicketCancelAck> implements TicketCancelAckResponseListener {
-
 }

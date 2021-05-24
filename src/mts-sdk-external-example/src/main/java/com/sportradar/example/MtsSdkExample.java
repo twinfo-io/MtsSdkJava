@@ -10,12 +10,13 @@ import java.io.IOException;
 
 public class MtsSdkExample {
 
+    @SuppressWarnings("java:S106") // Standard outputs should not be used directly to log anything
     public static void main(String[] args) throws IOException {
 
         char key = 'y';
         while (key == 'y')
         {
-            DoExampleSelection();
+            doExampleSelection();
 
             System.out.println();
             System.out.println("Want to run another example? (y|n): ");
@@ -25,7 +26,8 @@ public class MtsSdkExample {
         }
     }
 
-    private static void DoExampleSelection() throws IOException {
+    @SuppressWarnings({"java:S106", "java:S1199"}) // Standard outputs should not be used directly to log anything, Nested code blocks should not be used
+    private static void doExampleSelection() throws IOException {
         System.out.println();
         System.out.println(" Select which example you want to run:");
         System.out.println(" 1 - Basic \t\t\t\t(normal sending ticket and receiving response via event handler)");
@@ -45,32 +47,32 @@ public class MtsSdkExample {
         {
             case '1':
             {
-                Basic.Run();
+                Basic.run();
                 break;
             }
             case '2':
             {
-                Blocking.Run();
+                Blocking.run();
                 break;
             }
             case '3':
             {
-                Reoffer.Run();
+                Reoffer.run();
                 break;
             }
             case '4':
             {
-                Cashout.Run();
+                Cashout.run();
                 break;
             }
             case '5':
             {
-                Examples.Run();
+                Examples.run();
                 break;
             }
             default:
             {
-                DoExampleSelection();
+                doExampleSelection();
                 break;
             }
         }

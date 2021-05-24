@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.deser.DeserializationProblemHandler;
 import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.sportradar.mts.sdk.api.*;
+import com.sportradar.mts.sdk.api.exceptions.MtsSdkProcessException;
 import com.sportradar.mts.sdk.api.impl.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,9 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class JsonUtils {
+public final class JsonUtils {
+
+    private JsonUtils() { throw new IllegalStateException("JsonUtils class"); }
 
     private static final Logger logger = LoggerFactory.getLogger(JsonUtils.class);
     public static final ObjectMapper OBJECT_MAPPER;
@@ -38,7 +41,6 @@ public class JsonUtils {
                                             .withIsGetterVisibility(JsonAutoDetect.Visibility.ANY)
                                             .withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
         OBJECT_MAPPER.addHandler(new JacksonProblemHandler());
-        //objectMapper.registerModule(new TicketDeserializerModule());
         OBJECT_MAPPER.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
         SimpleModule module = new SimpleModule("MtsSdk");
@@ -77,7 +79,7 @@ public class JsonUtils {
             OBJECT_MAPPER.writeValue(byteArrayOutputStream, item);
             return byteArrayOutputStream.toByteArray();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new MtsSdkProcessException("Error during serialization", e);
         } finally {
             try {
                 byteArrayOutputStream.close();
@@ -94,7 +96,7 @@ public class JsonUtils {
         try {
             return OBJECT_MAPPER.writeValueAsString(item);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new MtsSdkProcessException("Error during serializing as string", e);
         }
     }
 
@@ -112,7 +114,7 @@ public class JsonUtils {
         return OBJECT_MAPPER.readValue(item, clazz);
     }
 
-    private final static class JacksonProblemHandler extends DeserializationProblemHandler {
+    private static final class JacksonProblemHandler extends DeserializationProblemHandler {
 
         @Override
         public boolean handleUnknownProperty(DeserializationContext deserializationContext,

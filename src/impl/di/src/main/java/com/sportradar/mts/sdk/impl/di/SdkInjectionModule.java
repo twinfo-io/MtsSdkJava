@@ -24,6 +24,7 @@ import com.sportradar.mts.sdk.api.caching.MarketDescriptionCache;
 import com.sportradar.mts.sdk.api.caching.MarketDescriptionCacheImpl;
 import com.sportradar.mts.sdk.api.caching.MarketDescriptionProvider;
 import com.sportradar.mts.sdk.api.enums.UfEnvironment;
+import com.sportradar.mts.sdk.api.exceptions.MtsSdkProcessException;
 import com.sportradar.mts.sdk.api.impl.ConnectionStatusImpl;
 import com.sportradar.mts.sdk.api.impl.builders.BuilderFactoryImpl;
 import com.sportradar.mts.sdk.api.impl.mtsdto.clientapi.AccessTokenSchema;
@@ -70,6 +71,10 @@ import java.util.concurrent.TimeUnit;
 public class SdkInjectionModule extends AbstractModule {
 
     private static final Logger logger = LoggerFactory.getLogger(SdkInjectionModule.class);
+
+    private static final String EXCHANGE_CONTROL = "-Control";
+    private static final String EXCHANGE_REPLY = "-Reply";
+
     private final SdkConfiguration sdkConfiguration;
     /**
      * The {@link JAXBContext} used to unmarshall API responses
@@ -78,13 +83,7 @@ public class SdkInjectionModule extends AbstractModule {
     private final JAXBContext customBetJaxbContext;
 
     private final List<Locale> locales;
-    private static final int rabbitPrefetchCount = 10;
-    private UfEnvironment ufEnvironment;// = UfEnvironment.PRODUCTION;
-
-//    public SdkInjectionModule(Properties properties) {
-//        sdkConfiguration = PropertiesToSettingsMapper.getSettings(properties);
-//        logger.info("passed MTS SDK settings : {}", sdkConfiguration);
-//    }
+    private UfEnvironment ufEnvironment;
 
     public SdkInjectionModule(SdkConfiguration config) {
         sdkConfiguration = config;
@@ -103,6 +102,7 @@ public class SdkInjectionModule extends AbstractModule {
 
     @Singleton
     @Provides
+    @SuppressWarnings("java:S107") // Methods should not have too many parameters
     public SdkRoot provideSdkRoot(SdkLogger sdkLogger,
                                   ScheduledExecutorService executorService,
                                   ChannelFactoryProvider channelFactoryProvider,
@@ -146,7 +146,7 @@ public class SdkInjectionModule extends AbstractModule {
                                               ScheduledExecutorService executorService,
                                               SdkLogger sdkLogger
     ) {
-        String routingKey = "node" + sdkConfiguration.getNode() + ".ticket.confirm"; // ticketRoutingKey(node);
+        String routingKey = "node" + sdkConfiguration.getNode() + ".ticket.confirm";
         return new TicketHandlerImpl(amqpPublisher,
                 routingKey,
                 executorService,
@@ -181,7 +181,6 @@ public class SdkInjectionModule extends AbstractModule {
                                                                  ExecutorService executorService,
                                                                  SdkLogger sdkLogger
     ) {
-//        String routingKey = "node" + sdkConfiguration.getNode() + ".cancel.confirm";
         String routingKey = "cancel.reoffer";
         return new TicketReofferCancelHandlerImpl(amqpPublisher,
                 routingKey,
@@ -258,7 +257,6 @@ public class SdkInjectionModule extends AbstractModule {
     public AmqpProducer provideTicketAmqpProducer(ChannelFactoryProvider channelFactoryProvider,
                                                   AmqpCluster amqpCluster
     ) {
-//        String exchangeName = sdkConfiguration.getVirtualHost() + "-Submit";
         String exchangeName = sdkConfiguration.getVirtualHost().replace("/", "") + "-Submit";
         return new RabbitMqProducer(channelFactoryProvider,
                 "ticket-producer",
@@ -279,7 +277,7 @@ public class SdkInjectionModule extends AbstractModule {
     public AmqpProducer provideTicketCancelAmqpProducer(ChannelFactoryProvider channelFactoryProvider,
                                                         AmqpCluster amqpCluster
     ) {
-        String exchangeName = sdkConfiguration.getVirtualHost().replace("/", "") + "-Control";
+        String exchangeName = sdkConfiguration.getVirtualHost().replace("/", "") + EXCHANGE_CONTROL;
         return new RabbitMqProducer(channelFactoryProvider,
                 "ticket-cancel-producer",
                 amqpCluster,
@@ -299,7 +297,7 @@ public class SdkInjectionModule extends AbstractModule {
     public AmqpProducer provideTicketReofferCancelAmqpProducer(ChannelFactoryProvider channelFactoryProvider,
                                                                AmqpCluster amqpCluster
     ) {
-        String exchangeName = sdkConfiguration.getVirtualHost().replace("/", "") + "-Control";
+        String exchangeName = sdkConfiguration.getVirtualHost().replace("/", "") + EXCHANGE_CONTROL;
         return new RabbitMqProducer(channelFactoryProvider,
                 "ticket--reoffer-cancel-producer",
                 amqpCluster,
@@ -319,7 +317,7 @@ public class SdkInjectionModule extends AbstractModule {
     public AmqpProducer provideTicketCashoutAmqpProducer(ChannelFactoryProvider channelFactoryProvider,
                                                          AmqpCluster amqpCluster
     ) {
-        String exchangeName = sdkConfiguration.getVirtualHost().replace("/", "") + "-Control";
+        String exchangeName = sdkConfiguration.getVirtualHost().replace("/", "") + EXCHANGE_CONTROL;
         return new RabbitMqProducer(channelFactoryProvider,
                 "ticket-cashout-producer",
                 amqpCluster,
@@ -339,7 +337,7 @@ public class SdkInjectionModule extends AbstractModule {
     public AmqpProducer provideTicketNonSrSettleAmqpProducer(ChannelFactoryProvider channelFactoryProvider,
                                                              AmqpCluster amqpCluster
     ) {
-        String exchangeName = sdkConfiguration.getVirtualHost().replace("/", "") + "-Control";
+        String exchangeName = sdkConfiguration.getVirtualHost().replace("/", "") + EXCHANGE_CONTROL;
         return new RabbitMqProducer(channelFactoryProvider,
                 "ticket-non-sr-settle-producer",
                 amqpCluster,
@@ -390,7 +388,7 @@ public class SdkInjectionModule extends AbstractModule {
                 ExchangeType.TOPIC,
                 queueName,
                 1,
-                rabbitPrefetchCount,
+                                    SdkInfo.RABBIT_PREFETCH_COUNT,
                 1,
                 false,
                 sdkConfiguration.getExclusiveConsumer());
@@ -403,7 +401,7 @@ public class SdkInjectionModule extends AbstractModule {
     public AmqpConsumer provideTicketCancelResponseConsumer(ChannelFactoryProvider channelFactoryProvider,
                                                             AmqpCluster amqpCluster
     ) {
-        String exchangeName = sdkConfiguration.getVirtualHost().replace("/", "") + "-Reply";
+        String exchangeName = sdkConfiguration.getVirtualHost().replace("/", "") + EXCHANGE_REPLY;
         String routingKey = "node" + sdkConfiguration.getNode() + ".cancel.confirm";
         String queueName = sdkConfiguration.getUsername() + "-Reply-node" + sdkConfiguration.getNode();
         return new RabbitMqConsumer(channelFactoryProvider,
@@ -414,7 +412,7 @@ public class SdkInjectionModule extends AbstractModule {
                 ExchangeType.TOPIC,
                 queueName,
                 1,
-                rabbitPrefetchCount,
+                                    SdkInfo.RABBIT_PREFETCH_COUNT,
                 1,
                 false,
                 sdkConfiguration.getExclusiveConsumer());
@@ -426,7 +424,7 @@ public class SdkInjectionModule extends AbstractModule {
     public AmqpConsumer provideTicketCashoutResponseConsumer(ChannelFactoryProvider channelFactoryProvider,
                                                              AmqpCluster amqpCluster
     ) {
-        String exchangeName = sdkConfiguration.getVirtualHost().replace("/", "") + "-Reply";
+        String exchangeName = sdkConfiguration.getVirtualHost().replace("/", "") + EXCHANGE_REPLY;
         String routingKey = "node" + sdkConfiguration.getNode() + ".ticket.cashout";
         String queueName = sdkConfiguration.getUsername() + "-Reply-cashout-node" + sdkConfiguration.getNode();
         return new RabbitMqConsumer(channelFactoryProvider,
@@ -437,7 +435,7 @@ public class SdkInjectionModule extends AbstractModule {
                 ExchangeType.TOPIC,
                 queueName,
                 1,
-                rabbitPrefetchCount,
+                                    SdkInfo.RABBIT_PREFETCH_COUNT,
                 1,
                 false,
                 sdkConfiguration.getExclusiveConsumer());
@@ -449,7 +447,7 @@ public class SdkInjectionModule extends AbstractModule {
     public AmqpConsumer provideTicketNonSrSettleResponseConsumer(ChannelFactoryProvider channelFactoryProvider,
                                                                  AmqpCluster amqpCluster
     ) {
-        String exchangeName = sdkConfiguration.getVirtualHost().replace("/", "") + "-Reply";
+        String exchangeName = sdkConfiguration.getVirtualHost().replace("/", "") + EXCHANGE_REPLY;
         String routingKey = "node" + sdkConfiguration.getNode() + ".ticket.nonsrsettle";
         String queueName = sdkConfiguration.getUsername() + "-Reply-nonsrsettle-node" + sdkConfiguration.getNode();
         return new RabbitMqConsumer(channelFactoryProvider,
@@ -460,7 +458,7 @@ public class SdkInjectionModule extends AbstractModule {
                 ExchangeType.TOPIC,
                 queueName,
                 1,
-                rabbitPrefetchCount,
+                                    SdkInfo.RABBIT_PREFETCH_COUNT,
                 1,
                 false,
                 sdkConfiguration.getExclusiveConsumer());
@@ -671,7 +669,6 @@ public class SdkInjectionModule extends AbstractModule {
         bind(ConnectionStatus.class).to(ConnectionStatusImpl.class).in(com.google.inject.Singleton.class);
 
         bind(SdkConfiguration.class).toInstance(sdkConfiguration);
-//        bind(BuilderFactory.class).to();
 
         this.binder().bindConstant().annotatedWith(Names.named("version")).to(SdkInfo.getVersion());
     }
@@ -741,13 +738,14 @@ public class SdkInjectionModule extends AbstractModule {
     @Singleton
     @Provides
     @Named("MarketDescriptionCache")
-    private MarketDescriptionCache provideMarketDescriptionCache(LogHttpDataFetcher logHttpDataFetcher, SdkConfiguration cfg,
+    private MarketDescriptionCache provideMarketDescriptionCache(LogHttpDataFetcher logHttpDataFetcher,
+                                                                 SdkConfiguration cfg,
                                                                  UfEnvironment ufEnvironment,
                                                                  @Named("ApiJaxbDeserializer") Deserializer deserializer) {
 
         String uriFormat = ufEnvironment.getHost() + "/v1/descriptions/%s/markets.xml?include_mappings=true";
 
-        DataProvider<MarketDescriptions> dataProvider = new DataProvider<>(uriFormat, sdkConfiguration, logHttpDataFetcher, deserializer, MarketDescriptions.class);
+        DataProvider<MarketDescriptions> dataProvider = new DataProvider<>(uriFormat, logHttpDataFetcher, deserializer, MarketDescriptions.class);
 
         Cache<String, MarketDescriptionCI> invariantMarketCache = CacheBuilder.newBuilder().build();
         return new MarketDescriptionCacheImpl(invariantMarketCache, dataProvider, locales, sdkConfiguration.getAccessToken());
@@ -778,9 +776,9 @@ public class SdkInjectionModule extends AbstractModule {
         String maxStakeUriFormat = sdkConfiguration.getMtsClientApiHost() + "/ClientApi/api/maxStake/v1";
         String ccfUriFormat = sdkConfiguration.getMtsClientApiHost() + "/ClientApi/api/ccf/v1?sourceId=%2$s";
 
-        DataProvider<AccessTokenSchema> accessTokenDataProvider = new DataProvider<>(keycloakHostFormat, null, nonLogHttpDataFetcher, deserializer, AccessTokenSchema.class); //do not log access tokens!
-        DataProvider<MaxStakeResponseSchema> maxStakeDataProvider = new DataProvider<>(maxStakeUriFormat, null, logHttpDataFetcher, deserializer, MaxStakeResponseSchema.class);
-        DataProvider<CcfResponseSchema> ccfDataProvider = new DataProvider<>(ccfUriFormat, null, logHttpDataFetcher, deserializer, CcfResponseSchema.class);
+        DataProvider<AccessTokenSchema> accessTokenDataProvider = new DataProvider<>(keycloakHostFormat, nonLogHttpDataFetcher, deserializer, AccessTokenSchema.class); //do not log access tokens!
+        DataProvider<MaxStakeResponseSchema> maxStakeDataProvider = new DataProvider<>(maxStakeUriFormat, logHttpDataFetcher, deserializer, MaxStakeResponseSchema.class);
+        DataProvider<CcfResponseSchema> ccfDataProvider = new DataProvider<>(ccfUriFormat, logHttpDataFetcher, deserializer, CcfResponseSchema.class);
 
         return new MtsClientApiImpl(createAccessTokenCache(accessTokenDataProvider), maxStakeDataProvider, ccfDataProvider, sdkConfiguration.getKeycloakUsername(), sdkConfiguration.getKeycloakPassword());
     }
@@ -794,8 +792,8 @@ public class SdkInjectionModule extends AbstractModule {
         String keycloakHostFormat = sdkConfiguration.getKeycloakHost() + "/auth/realms/mts/protocol/openid-connect/token";
         String ccHistoryExportUriFormat = sdkConfiguration.getMtsClientApiHost() + "/ReportingCcf/external/api/report/export/history/ccf/changes/client/api?startDatetime=%2$s&endDatetime=%3$s&bookmakerId=%4$s&subBookmakerId=%5$s&sourceType=%6$s&sourceId=%7$s";
 
-        DataProvider<AccessTokenSchema> accessTokenDataProvider = new DataProvider<>(keycloakHostFormat, null, nonLogHttpDataFetcher, deserializer, AccessTokenSchema.class); //do not log access tokens!
-        DataProvider<InputStream> ccfHistoryChangeExportCsvDataProvider = new DataProvider<>(ccHistoryExportUriFormat, null, logHttpDataFetcher, streamDeserializer, InputStream.class);
+        DataProvider<AccessTokenSchema> accessTokenDataProvider = new DataProvider<>(keycloakHostFormat, nonLogHttpDataFetcher, deserializer, AccessTokenSchema.class); //do not log access tokens!
+        DataProvider<InputStream> ccfHistoryChangeExportCsvDataProvider = new DataProvider<>(ccHistoryExportUriFormat, logHttpDataFetcher, streamDeserializer, InputStream.class);
 
         return new MtsReportManagerImpl(sdkConfiguration.getBookmakerId(), createAccessTokenCache(accessTokenDataProvider), ccfHistoryChangeExportCsvDataProvider, sdkConfiguration.getKeycloakUsername(), sdkConfiguration.getKeycloakPassword());
     }
@@ -806,7 +804,6 @@ public class SdkInjectionModule extends AbstractModule {
                                                                                           @Named("CustomBetApiJaxbDeserializer") Deserializer deserializer) {
         return new DataProvider<>(
                 ufEnvironment.getHost() + "/v1/custombet/%2$s/available_selections",
-                cfg,
                 httpDataFetcher,
                 deserializer,
                 CAPIAvailableSelections.class);
@@ -818,7 +815,6 @@ public class SdkInjectionModule extends AbstractModule {
                                                                                            @Named("CustomBetApiJaxbDeserializer") Deserializer deserializer) {
         return new DataProvider<>(
                 ufEnvironment.getHost() + "/v1/custombet/calculate",
-                cfg,
                 httpDataFetcher,
                 deserializer,
                 CAPICalculationResponse.class);
@@ -876,7 +872,7 @@ public class SdkInjectionModule extends AbstractModule {
                         AccessTokenSchema token = accessTokenDataProvider.postData(content);
                         if (token == null) {
                             logger.warn("Failed to authenticate.");
-                            throw new Exception("Failed to authenticate.");
+                            throw new MtsSdkProcessException("Failed to authenticate.");
                         }
                         return MtsDtoMapper.map(token);
                     }

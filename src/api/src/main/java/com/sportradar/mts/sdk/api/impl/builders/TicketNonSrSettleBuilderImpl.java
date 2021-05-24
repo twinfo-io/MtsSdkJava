@@ -91,6 +91,6 @@ public class TicketNonSrSettleBuilderImpl implements TicketNonSrSettleBuilder {
      */
     @Override
     public TicketNonSrSettle build() {
-        return new TicketNonSrSettleImpl(ticketId, bookmakerId, new Date(), nonSrSettleStake, SdkInfo.mtsTicketVersion());
+        return new TicketNonSrSettleImpl(ticketId, bookmakerId, new Date(), nonSrSettleStake, SdkInfo.MTS_TICKET_VERSION);
     }
 }

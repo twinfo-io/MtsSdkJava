@@ -15,8 +15,7 @@ import java.util.Optional;
 import java.util.Properties;
 
 /**
- * Created on 13/04/2018.
- * // TODO @eti: Javadoc
+ * Sdk yaml configuration reader
  */
 class SdkYamlConfigurationReader {
     private static final String ROOT_SPORTRADAR_TAG = "sportradar";
@@ -158,7 +157,7 @@ class SdkYamlConfigurationReader {
     private static void isYamlReaderDependencyPresent() {
         try {
             Class.forName("org.yaml.snakeyaml.Yaml");
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             throw new MtsYamlException("Yaml configuration reader dependency missing", ex);
         }
     }

@@ -5,7 +5,7 @@ import com.sportradar.mts.sdk.api.enums.SourceType;
 
 import java.util.Date;
 
-public class CcChangeImpl implements CcfChange {
+public class CcfChangeImpl implements CcfChange {
     private Date timestamp;
     private Integer bookmakerId;
     private Integer subBookmakerId;
@@ -17,10 +17,20 @@ public class CcChangeImpl implements CcfChange {
     private String sportName;
     private Boolean live;
 
-    public CcChangeImpl() {
+    public CcfChangeImpl() {
     }
 
-    public CcChangeImpl(Date timestamp, Integer bookmakerId, Integer subBookmaker, String sourceId, SourceType sourceType, Double ccf, Double previousCcf, String sportId, String sportName, Boolean live) {
+    @SuppressWarnings({"java:S107", "java:S4165"}) // Methods should not have too many parameters
+    public CcfChangeImpl(Date timestamp,
+                         Integer bookmakerId,
+                         Integer subBookmaker,
+                         String sourceId,
+                         SourceType sourceType,
+                         Double ccf,
+                         Double previousCcf,
+                         String sportId,
+                         String sportName,
+                         Boolean live) {
         this.timestamp = timestamp;
         this.bookmakerId = bookmakerId;
         this.subBookmakerId = subBookmakerId;

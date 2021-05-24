@@ -20,8 +20,8 @@ public class TicketCancelResponseWrapper extends TicketCancelResponseImpl {
     private String message;
     private String reasonMessage;
 
-    public TicketCancelResponseWrapper() {
-        super(null, null, null, "123", new Date(), "2.0", StaticRandom.S1000, null,"{response-payload}");
+    public TicketCancelResponseWrapper(String ticketId) {
+        super(ticketId, null, null, "123", new Date(), "2.0", StaticRandom.S1000, null,"{response-payload}");
     }
 
     /**
@@ -78,9 +78,7 @@ public class TicketCancelResponseWrapper extends TicketCancelResponseImpl {
         this.code = code;
     }
 
-    public void setExtTicket(String extTicket) {
-        this.extTicket = extTicket;
-    }
+    public void setExtTicket(String extTicket) { this.extTicket = extTicket; }
 
     public void setMessage(String message) {
         this.message = message;

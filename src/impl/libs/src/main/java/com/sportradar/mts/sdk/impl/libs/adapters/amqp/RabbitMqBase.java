@@ -8,6 +8,7 @@ import com.google.common.base.Preconditions;
 import com.rabbitmq.client.AlreadyClosedException;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.ShutdownSignalException;
+import com.sportradar.mts.sdk.api.exceptions.MtsSdkProcessException;
 import com.sportradar.mts.sdk.api.interfaces.Openable;
 import com.sportradar.mts.sdk.api.utils.StringUtils;
 import com.sportradar.mts.sdk.impl.libs.threading.RecoverableThread;
@@ -23,7 +24,11 @@ public abstract class RabbitMqBase implements Openable {
 
     private static final Logger logger = LoggerFactory.getLogger(RabbitMqBase.class);
 
-    protected final long waitForTaskMillis = 3000L;
+    protected static final long WAIT_FOR_TASK_MILLIS = 3000L;
+
+    private static final boolean DURABLE = true; // survive broker restart
+    private static final boolean AUTO_DELETE = false; // the exchange will get deleted as soon as there are no more queues bound to it
+
     protected final ChannelFactory channelFactory;
     protected final String exchangeName;
 
@@ -37,18 +42,17 @@ public abstract class RabbitMqBase implements Openable {
 
     private boolean isRegistered = false;
 
-    public RabbitMqBase(final ChannelFactoryProvider channelFactoryProvider,
-                        String instanceName,
-                        AmqpCluster mqCluster,
-                        String exchangeName,
-                        ExchangeType exchangeType,
-                        int concurrencyLevel) {
+    @SuppressWarnings("java:S1199") // Nested code blocks should not be used
+    protected RabbitMqBase(final ChannelFactoryProvider channelFactoryProvider,
+                           String instanceName,
+                           AmqpCluster mqCluster,
+                           String exchangeName,
+                           ExchangeType exchangeType,
+                           int concurrencyLevel) {
 
         Preconditions.checkNotNull(channelFactoryProvider, "parameter 'channelFactoryProvider' is null");
         Preconditions.checkNotNull(mqCluster, "parameter 'mqCluster' is null");
         Preconditions.checkNotNull(exchangeName, "parameter 'exchangeName' is null");
-        // Live time delayer publishes to the default (unnamed) exchange
-        //Preconditions.checkArgument(exchangeName.trim().length() != 0, "parameter 'exchangeName' is empty");
         Preconditions.checkNotNull(exchangeType, "parameter 'exchangeType' is null");
         checkArgument(concurrencyLevel > 0, "parameter 'concurrencyLevel' is zero or less");
 
@@ -80,32 +84,12 @@ public abstract class RabbitMqBase implements Openable {
             }
 
             try (final ChannelWrapper channelWrapper = this.channelFactory.getChannel()) {
-                // survive broker restart
-                boolean durable = true;
-                // the exchange will get deleted as soon as there are no more queues bound to it
-                boolean autoDelete = false;
-
                 // try to declare the exchange if it is not the default one
                 if (!this.exchangeName.equals("")) {
-                    try {
-                        channelWrapper.getChannel().exchangeDeclare(this.exchangeName,
-                                                                    this.exchangeType,
-                                                                    durable,
-                                                                    autoDelete,
-                                                                    null);
-                    } catch (IOException ioe) {
-                        logger.warn("Exchange {} creation failed, will try to recreate it", this.exchangeName);
-                        channelWrapper.getChannel().exchangeDelete(this.exchangeName);
-                        channelWrapper.getChannel().exchangeDeclare(this.exchangeName,
-                                                                    this.exchangeType,
-                                                                    durable,
-                                                                    autoDelete,
-                                                                    null);
-                    }
+                    tryCreateExchange(channelWrapper);
                 }
             } catch (Exception exc) {
-                logger.error("Init failed...", exc);
-                throw new RuntimeException(exc);
+                throw new MtsSdkProcessException(exc.getMessage(), exc);
             }
 
             final String threadPrefix = "rabbitmq-" + this.instanceName + "-thread-";
@@ -127,6 +111,24 @@ public abstract class RabbitMqBase implements Openable {
             for (int i = 0; i < this.concurrencyLevel; i++) {
                 this.threads[i].open();
             }
+        }
+    }
+
+    private void tryCreateExchange(ChannelWrapper channelWrapper) throws IOException {
+        try {
+            channelWrapper.getChannel().exchangeDeclare(this.exchangeName,
+                                                        this.exchangeType,
+                                                        DURABLE,
+                                                        AUTO_DELETE,
+                                                        null);
+        } catch (IOException ioe) {
+            logger.warn("Exchange {} creation failed, will try to recreate it", this.exchangeName);
+            channelWrapper.getChannel().exchangeDelete(this.exchangeName);
+            channelWrapper.getChannel().exchangeDeclare(this.exchangeName,
+                                                        this.exchangeType,
+                                                        DURABLE,
+                                                        AUTO_DELETE,
+                                                        null);
         }
     }
 
@@ -157,34 +159,7 @@ public abstract class RabbitMqBase implements Openable {
 
     protected abstract void doWork(Channel channel, int threadId) throws InterruptedException, IOException;
 
-    private static boolean isConnectionException(IOException e) {
-        if (e.getCause() == null) {
-            return e.getClass().equals(ShutdownSignalException.class)
-                    || e.getClass().equals(AlreadyClosedException.class)
-                    || e.getClass().equals(NoRouteToHostException.class);
-        }
-
-        return e.getCause().getClass().equals(ShutdownSignalException.class)
-                || e.getCause().getClass().equals(AlreadyClosedException.class)
-                || e.getCause().getClass().equals(NoRouteToHostException.class);
-    }
-
-    private static long getSleepMillis(boolean isConnectionException, long oldSleepMillis) {
-        if (!isConnectionException) {
-            return 1000L;
-        }
-
-        if (oldSleepMillis == 0L) {
-            return 1000L;
-        }
-
-        if (oldSleepMillis < 64000L) {
-            oldSleepMillis = oldSleepMillis << 1;
-        }
-        return oldSleepMillis;
-    }
-
-    private final static class BackgroundWork implements Runnable {
+    private static final class BackgroundWork implements Runnable {
 
         private final RabbitMqBase parent;
         private final int threadId;
@@ -207,7 +182,8 @@ public abstract class RabbitMqBase implements Openable {
                         logger.warn("sleepMillis={}", this.sleepMillis);
                         Thread.sleep(this.sleepMillis);
                     } catch (InterruptedException exc) {
-                        throw new RuntimeException(exc);
+                        Thread.currentThread().interrupt();
+                        throw new MtsSdkProcessException(exc.getMessage(), exc);
                     }
                 }
 
@@ -230,8 +206,34 @@ public abstract class RabbitMqBase implements Openable {
                 } catch (Exception e) {
                     logger.warn("unknown exception; unchanged sleepMillis={}", sleepMillis);
                     this.sleepMillis = 1000L;
+                    Thread.currentThread().interrupt();
                 }
             }
+        }
+
+        private static boolean isConnectionException(IOException e) {
+            if (e.getCause() == null) {
+                return e.getClass().equals(NoRouteToHostException.class);
+            }
+
+            return e.getCause().getClass().equals(ShutdownSignalException.class)
+                    || e.getCause().getClass().equals(AlreadyClosedException.class)
+                    || e.getCause().getClass().equals(NoRouteToHostException.class);
+        }
+
+        private static long getSleepMillis(boolean isConnectionException, long oldSleepMillis) {
+            if (!isConnectionException) {
+                return 1000L;
+            }
+
+            if (oldSleepMillis == 0L) {
+                return 1000L;
+            }
+
+            if (oldSleepMillis < 64000L) {
+                oldSleepMillis = oldSleepMillis << 1;
+            }
+            return oldSleepMillis;
         }
     }
 }

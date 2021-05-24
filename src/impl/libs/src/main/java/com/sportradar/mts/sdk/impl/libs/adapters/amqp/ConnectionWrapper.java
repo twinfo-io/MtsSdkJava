@@ -27,7 +27,7 @@ final class ConnectionWrapper {
     private final DummyAddressResolver addressResolver;
     private final TreeMap<Long, ConnectionHolder> connections = new TreeMap<>();
     private long lastIndex = 0;
-    private ConnectionStatusImpl connectionStatus;
+    private final ConnectionStatusImpl connectionStatus;
 
     ConnectionWrapper(final ChannelFactoryProviderImpl channelFactoryProvider,
                       final ConnectionFactory connectionFactory,
@@ -70,6 +70,7 @@ final class ConnectionWrapper {
             this.removeClosedConnections();
         } finally {
             this.logConnections();
+            connectionIndex.remove();
         }
     }
 
@@ -124,7 +125,8 @@ final class ConnectionWrapper {
                     "}").append('\n');
         }
         sb.append("]");
-        logger.debug(sb.toString());
+        String msg = sb.toString();
+        logger.debug(msg);
     }
 
     private void removeClosedConnections() {
@@ -198,7 +200,6 @@ final class ConnectionWrapper {
         @Override
         public void handleBlocked(String s) throws IOException {
             logger.warn("Connection blocked invoked.");
-//            connectionStatus.disconnect("Connection blocked invoked. Message: " + s);
         }
 
         @Override

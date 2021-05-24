@@ -145,23 +145,21 @@ public class TicketCashoutBuilderTest extends TimeLimitedTestBase {
     @Test
     public void cashoutTicketIdNullFailBuildTest(){
         thrown.expect(IllegalArgumentException.class);
-        TicketCashout ticket = builderFactory.createTicketCashoutBuilder()
+        builderFactory.createTicketCashoutBuilder()
                 .setTicketId(null)
                 .setBookmakerId(1111)
                 .setCashoutStake(80)
                 .build();
-        Assert.assertNotNull(ticket);
     }
 
     @Test
     public void cashoutWrongStakeBuildTest(){
         thrown.expect(IllegalArgumentException.class);
-        TicketCashout ticket = builderFactory.createTicketCashoutBuilder()
+        builderFactory.createTicketCashoutBuilder()
                 .setTicketId("ticket-" + StaticRandom.S1000)
                 .setBookmakerId(1111)
                 .setCashoutStake(-80)
                 .build();
-        Assert.assertNotNull(ticket);
     }
 
     @Test
@@ -194,46 +192,42 @@ public class TicketCashoutBuilderTest extends TimeLimitedTestBase {
     @Test
     public void cashoutMissingStakeOrPercentBuildTest(){
         thrown.expect(IllegalArgumentException.class);
-        TicketCashout ticket = builderFactory.createTicketCashoutBuilder()
+        builderFactory.createTicketCashoutBuilder()
                 .setTicketId("ticket-" + StaticRandom.S1000)
                 .setBookmakerId(1111)
                 .build();
-        Assert.assertNotNull(ticket);
     }
 
     @Test
     public void cashoutOnlyPercentBuildTest(){
         thrown.expect(IllegalArgumentException.class);
-        TicketCashout ticket = builderFactory.createTicketCashoutBuilder()
+        builderFactory.createTicketCashoutBuilder()
                 .setTicketId("ticket-" + StaticRandom.S1000)
                 .setBookmakerId(1111)
                 .setCashoutPercent(239)
                 .build();
-        Assert.assertNotNull(ticket);
     }
 
     @Test
     public void cashoutStakeAndBetCashoutBuildTest(){
         thrown.expect(IllegalArgumentException.class);
-        TicketCashout ticket = builderFactory.createTicketCashoutBuilder()
+        builderFactory.createTicketCashoutBuilder()
                 .setTicketId("ticket-" + StaticRandom.S1000)
                 .setBookmakerId(1111)
                 .setCashoutStake(239)
                 .addBetCashout("bet-id:01", 2939, null)
                 .build();
-        Assert.assertNotNull(ticket);
     }
 
     @Test
     public void cashoutPercentAndBetCashoutBuildTest(){
         thrown.expect(IllegalArgumentException.class);
-        TicketCashout ticket = builderFactory.createTicketCashoutBuilder()
+        builderFactory.createTicketCashoutBuilder()
                 .setTicketId("ticket-" + StaticRandom.S1000)
                 .setBookmakerId(1111)
                 .setCashoutPercent(239)
                 .addBetCashout("bet-id:01", 2939, null)
                 .build();
-        Assert.assertNotNull(ticket);
     }
 
     @Test
@@ -250,14 +244,13 @@ public class TicketCashoutBuilderTest extends TimeLimitedTestBase {
     @Test
     public void cashoutBetCashoutRepeatBuildTest(){
         thrown.expect(IllegalArgumentException.class);
-        TicketCashout ticket = builderFactory.createTicketCashoutBuilder()
+        builderFactory.createTicketCashoutBuilder()
                 .setTicketId("ticket-" + StaticRandom.S1000)
                 .setBookmakerId(1111)
                 .addBetCashout("bet-id:01", 10101, null)
                 .addBetCashout("bet-id:02", 87866, null)
                 .addBetCashout("bet-id:01", 42342, null)
                 .build();
-        Assert.assertNotNull(ticket);
     }
 
     @Test
@@ -272,61 +265,58 @@ public class TicketCashoutBuilderTest extends TimeLimitedTestBase {
     @Test
     public void betCashoutWrong01Test(){
         thrown.expect(IllegalArgumentException.class);
-        BetCashout betCashout = new BetCashoutImpl("bet-id:01", 0, null);
+        new BetCashoutImpl("bet-id:01", 0, null);
     }
 
     @Test
     public void betCashoutWrong02Test(){
         thrown.expect(IllegalArgumentException.class);
         int value = 10101;
-        BetCashout betCashout = new BetCashoutImpl("bet-id:01", 0, value);
+        new BetCashoutImpl("bet-id:01", 0, value);
     }
 
     @Test
     public void betCashoutWrong03Test(){
         thrown.expect(IllegalArgumentException.class);
         long value = 10101;
-        BetCashout betCashout = new BetCashoutImpl("", value, null);
+        new BetCashoutImpl("", value, null);
     }
 
     @Test
     public void betCashoutWrong04Test(){
         thrown.expect(IllegalArgumentException.class);
         long value = -10101;
-        BetCashout betCashout = new BetCashoutImpl("bet-id:01", value, null);
+        new BetCashoutImpl("bet-id:01", value, null);
     }
 
     @Test
     public void cashoutTicketIdCorruptedFailBuildTest(){
         thrown.expect(IllegalArgumentException.class);
-        TicketCashout ticket = builderFactory.createTicketCashoutBuilder()
+        builderFactory.createTicketCashoutBuilder()
                 .setTicketId("ticket-***123456")
                 .setBookmakerId(1111)
                 .setCashoutStake(80)
                 .build();
-        Assert.assertNotNull(ticket);
     }
 
     @Test
     public void cashoutInvalidBookmakerIdFailBuildTest(){
         thrown.expect(IllegalArgumentException.class);
-        TicketCashout ticket = builderFactory.createTicketCashoutBuilder()
+        builderFactory.createTicketCashoutBuilder()
                 .setTicketId("ticket-" + StaticRandom.I1000P)
                 .setBookmakerId(-1)
                 .setCashoutStake(80)
                 .build();
-        Assert.assertNotNull(ticket);
     }
 
     @Test
     public void cashoutInvalidCashoutStakeFailBuildTest(){
         thrown.expect(IllegalArgumentException.class);
-        TicketCashout ticket = builderFactory.createTicketCashoutBuilder()
+        builderFactory.createTicketCashoutBuilder()
                 .setTicketId("ticket-" + StaticRandom.I1000P)
                 .setBookmakerId(1111)
                 .setCashoutStake(-1)
                 .build();
-        Assert.assertNotNull(ticket);
     }
 
     @Test
@@ -335,7 +325,7 @@ public class TicketCashoutBuilderTest extends TimeLimitedTestBase {
         Result.Status status = Result.Status.ACCEPTED;
         Reason reason = new Reason(500, "Invalid request");
         Result result = new Result(ticketId, status, reason);
-        TicketCashoutResponseSchema responseSchema = new TicketCashoutResponseSchema(result, "someSignature", SdkInfo.mtsTicketVersion());
+        TicketCashoutResponseSchema responseSchema = new TicketCashoutResponseSchema(result, "someSignature", SdkInfo.MTS_TICKET_VERSION);
         TicketCashoutResponse cashoutResponse = MtsDtoMapper.map(responseSchema, StaticRandom.S1000, null,"raw message");
         Assert.assertNotNull(cashoutResponse);
         Assert.assertFalse(StringUtils.isNullOrEmpty(cashoutResponse.getCorrelationId()));
@@ -344,24 +334,22 @@ public class TicketCashoutBuilderTest extends TimeLimitedTestBase {
     @Test
     public void cashoutWrongCombination01Test(){
         thrown.expect(IllegalArgumentException.class);
-        TicketCashout ticket = builderFactory.createTicketCashoutBuilder()
+        builderFactory.createTicketCashoutBuilder()
                 .setTicketId("ticket-" + StaticRandom.I1000P)
                 .setBookmakerId(1111)
                 .setCashoutStake(123)
                 .addBetCashout("bet01", 101, null)
                 .build();
-        Assert.assertNotNull(ticket);
     }
 
     @Test
     public void cashoutWrongCombination02Test(){
         thrown.expect(IllegalArgumentException.class);
-        TicketCashout ticket = builderFactory.createTicketCashoutBuilder()
+        builderFactory.createTicketCashoutBuilder()
                 .setTicketId("ticket-" + StaticRandom.I1000P)
                 .setBookmakerId(1111)
                 .setCashoutPercent(123)
                 .addBetCashout("bet01", 101, null)
                 .build();
-        Assert.assertNotNull(ticket);
     }
 }

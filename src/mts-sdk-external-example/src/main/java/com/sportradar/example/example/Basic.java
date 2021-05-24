@@ -18,14 +18,18 @@ import org.slf4j.LoggerFactory;
 /**
  * Basic example of creating and sending ticket
  */
-public class Basic {
+public final class Basic {
     private static final Logger logger = LoggerFactory.getLogger(Basic.class);
 
-    public static void Run()
+    private Basic() { throw new IllegalStateException("Basic class"); }
+
+    public static void run()
     {
         SdkConfiguration config = MtsSdk.getConfiguration();
+        logger.info("Configuration set");
         MtsSdkApi mtsSdk = new MtsSdk(config);
         mtsSdk.open();
+        logger.info("Connection opened");
         TicketAckSender ticketAckSender = mtsSdk.getTicketAckSender(new TicketAckHandler());
         TicketCancelAckSender ticketCancelAckSender = mtsSdk.getTicketCancelAckSender(new TicketCancelAckHandler());
         TicketCancelSender ticketCancelSender = mtsSdk.getTicketCancelSender(new TicketCancelResponseHandler(ticketCancelAckSender, mtsSdk.getBuilderFactory()));
@@ -33,16 +37,18 @@ public class Basic {
         TicketSender ticketSender = mtsSdk.getTicketSender(ticketResponseHandler);
 
         Ticket ticket = new TicketBuilderHelper(mtsSdk.getBuilderFactory()).getTicket();
+        logger.info("Ticket created");
         //Notice: there are two ways of sending tickets to MTS (non-blocking is recommended)
-
-        //send non-blocking (the TicketResult will we handled in TicketResponseHandler)
+        //send non-blocking (the TicketResult will be handled in TicketResponseHandler)
         ticketSender.send(ticket);
-
+        logger.info("Ticket sent");
         try {
             Thread.sleep(30000);
         } catch (InterruptedException e) {
             e.printStackTrace();
+            Thread.currentThread().interrupt();
+        } finally {
+            mtsSdk.close();
         }
-        mtsSdk.close();
     }
 }

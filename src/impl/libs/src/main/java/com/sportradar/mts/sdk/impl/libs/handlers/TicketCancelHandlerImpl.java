@@ -12,6 +12,7 @@ import com.sportradar.mts.sdk.api.TicketCancelResponse;
 import com.sportradar.mts.sdk.api.exceptions.ResponseTimeoutException;
 import com.sportradar.mts.sdk.api.interfaces.TicketCancelResponseListener;
 import com.sportradar.mts.sdk.api.utils.JsonUtils;
+import com.sportradar.mts.sdk.api.utils.SdkInfo;
 import com.sportradar.mts.sdk.impl.libs.adapters.amqp.AmqpPublisher;
 import com.sportradar.mts.sdk.impl.libs.logging.SdkLogger;
 import org.slf4j.Logger;
@@ -36,6 +37,7 @@ public class TicketCancelHandlerImpl extends SenderBase<TicketCancel> implements
     private final int responseTimeout;
     private final String replyRoutingKey;
 
+    @SuppressWarnings("java:S107") // Methods should not have too many parameters
     public TicketCancelHandlerImpl(AmqpPublisher amqpPublisher,
                                    String routingKey,
                                    String replyRoutingKey,
@@ -65,8 +67,8 @@ public class TicketCancelHandlerImpl extends SenderBase<TicketCancel> implements
 
     @Override
     public void send(TicketCancel ticketCancel) {
-        checkState(isOpen(), "sender is closed");
-        checkNotNull(ticketCancel, "ticketCancel cannot be null");
+        checkState(isOpen(), SdkInfo.Literals.TICKET_HANDLER_SENDER_CLOSED);
+        checkNotNull(ticketCancel, SdkInfo.Literals.TICKET_HANDLER_TICKET_CANCEL_NULL);
         checkNotNull(ticketCancelResponseListener, "no response listener set");
 
         internalSend(ticketCancel, null);
@@ -75,8 +77,8 @@ public class TicketCancelHandlerImpl extends SenderBase<TicketCancel> implements
     }
 
     private void internalSend(TicketCancel ticketCancel, TicketCancelResponseListener responseListener) {
-        checkState(isOpen(), "sender is closed");
-        checkNotNull(ticketCancel, "ticket cannot be null");
+        checkState(isOpen(), SdkInfo.Literals.TICKET_HANDLER_SENDER_CLOSED);
+        checkNotNull(ticketCancel, SdkInfo.Literals.TICKET_HANDLER_TICKET_CANCEL_NULL);
         String ticketId = ticketCancel.getTicketId();
         if (responseListener != null) {
             ticketCancelSendEntries.put(ticketId, new TicketCancelSendEntry(ticketCancel, responseListener, null));
@@ -86,8 +88,8 @@ public class TicketCancelHandlerImpl extends SenderBase<TicketCancel> implements
 
     @Override
     public TicketCancelResponse sendBlocking(TicketCancel ticketCancel) throws ResponseTimeoutException {
-        checkState(isOpen(), "sender is closed");
-        checkNotNull(ticketCancel, "ticketCancel cannot be null");
+        checkState(isOpen(), SdkInfo.Literals.TICKET_HANDLER_SENDER_CLOSED);
+        checkNotNull(ticketCancel, SdkInfo.Literals.TICKET_HANDLER_TICKET_CANCEL_NULL);
         String ticketId = ticketCancel.getTicketId();
         Semaphore semaphore = new Semaphore(0);
         ticketCancelSendEntries.put(ticketId, new TicketCancelSendEntry(ticketCancel, null, semaphore));
@@ -98,9 +100,10 @@ public class TicketCancelHandlerImpl extends SenderBase<TicketCancel> implements
             acquire = semaphore.tryAcquire(responseTimeout, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             logger.warn("interrupted waiting for response, throwing timeout");
+            Thread.currentThread().interrupt();
         }
         if (!acquire) {
-            String error = String.format("Timeout reached. Missing response for ticketCancel %s with correlationId=", ticketCancel.getTicketId(), ticketCancel.getCorrelationId());
+            String error = String.format("Timeout reached. Missing response for ticketCancel %s with correlationId= %s", ticketCancel.getTicketId(), ticketCancel.getCorrelationId());
             throw new ResponseTimeoutException(error);
         }
         return cancelResponseCache.getIfPresent(ticketId);
@@ -160,6 +163,7 @@ public class TicketCancelHandlerImpl extends SenderBase<TicketCancel> implements
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
                     logger.error("interrupted waiting to get/timeout all ticket cancel responses");
+                    Thread.currentThread().interrupt();
                 }
             }
         }

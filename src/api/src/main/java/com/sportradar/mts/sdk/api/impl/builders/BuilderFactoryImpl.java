@@ -13,7 +13,7 @@ import com.sportradar.mts.sdk.api.interfaces.SdkConfiguration;
 public class BuilderFactoryImpl extends SimpleBuilderFactoryImpl implements BuilderFactory {
 
     private final SdkConfiguration config;
-    private volatile MarketDescriptionProvider marketDescriptionProvider;
+    private MarketDescriptionProvider marketDescriptionProvider;
 
     public BuilderFactoryImpl(SdkConfiguration config, MarketDescriptionProvider marketDescriptionProvider)
     {

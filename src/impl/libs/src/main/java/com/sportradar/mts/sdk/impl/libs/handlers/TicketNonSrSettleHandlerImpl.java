@@ -12,6 +12,7 @@ import com.sportradar.mts.sdk.api.TicketNonSrSettleResponse;
 import com.sportradar.mts.sdk.api.exceptions.ResponseTimeoutException;
 import com.sportradar.mts.sdk.api.interfaces.TicketNonSrSettleResponseListener;
 import com.sportradar.mts.sdk.api.utils.JsonUtils;
+import com.sportradar.mts.sdk.api.utils.SdkInfo;
 import com.sportradar.mts.sdk.impl.libs.adapters.amqp.AmqpPublisher;
 import com.sportradar.mts.sdk.impl.libs.logging.SdkLogger;
 import org.slf4j.Logger;
@@ -25,12 +26,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 public class TicketNonSrSettleHandlerImpl extends SenderBase<TicketNonSrSettle> implements TicketNonSrSettleHandler {
-
-
     /**
      * The main class logger
      */
-    private static final Logger logger = LoggerFactory.getLogger(TicketCashoutHandlerImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(TicketNonSrSettleHandlerImpl.class);
 
     /**
      * The routing key used for {@link TicketNonSrSettle} messages
@@ -45,7 +44,7 @@ public class TicketNonSrSettleHandlerImpl extends SenderBase<TicketNonSrSettle> 
     /**
      * The listener that will be used to dispatch received messages
      */
-    private TicketNonSrSettleResponseListener ticketNonSrSettleResponseListner;
+    private TicketNonSrSettleResponseListener ticketNonSrSettleResponseListener;
 
     /**
      * The executor for dispatching received messages
@@ -72,9 +71,7 @@ public class TicketNonSrSettleHandlerImpl extends SenderBase<TicketNonSrSettle> 
      */
     private final Cache<String, TicketNonSrSettleResponse> ticketNonSrSettleResponseCache;
 
-
-
-
+    @SuppressWarnings("java:S107") // Methods should not have too many parameters
     public TicketNonSrSettleHandlerImpl(AmqpPublisher amqpPublisher,
                                         String routingKey,
                                         String replyRoutingKey,
@@ -105,9 +102,9 @@ public class TicketNonSrSettleHandlerImpl extends SenderBase<TicketNonSrSettle> 
      */
     @Override
     public void send(TicketNonSrSettle ticketData) {
-        checkState(isOpen(), "sender is closed");
-        checkNotNull(ticketData, "ticketData can not be null");
-        checkNotNull(ticketNonSrSettleResponseListner, "no response listener set");
+        checkState(isOpen(), SdkInfo.Literals.TICKET_HANDLER_SENDER_CLOSED);
+        checkNotNull(ticketData, SdkInfo.Literals.TICKET_HANDLER_TICKET_NONSR_NULL);
+        checkNotNull(ticketNonSrSettleResponseListener, "no response listener set");
 
         internalSend(ticketData);
 
@@ -123,8 +120,8 @@ public class TicketNonSrSettleHandlerImpl extends SenderBase<TicketNonSrSettle> 
      */
     @Override
     public TicketNonSrSettleResponse sendBlocking(TicketNonSrSettle ticketNonSrSettle) throws ResponseTimeoutException {
-        Preconditions.checkState(isOpen(), "sender is closed");
-        Preconditions.checkNotNull(ticketNonSrSettle, "ticketNonSrSettle cannot be null");
+        Preconditions.checkState(isOpen(), SdkInfo.Literals.TICKET_HANDLER_SENDER_CLOSED);
+        Preconditions.checkNotNull(ticketNonSrSettle, SdkInfo.Literals.TICKET_HANDLER_TICKET_NONSR_NULL);
 
         String ticketId = ticketNonSrSettle.getTicketId();
         Semaphore semaphore = new Semaphore(0);
@@ -136,6 +133,7 @@ public class TicketNonSrSettleHandlerImpl extends SenderBase<TicketNonSrSettle> 
             acquire = semaphore.tryAcquire(responseTimeout, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             logger.warn("interrupted waiting for response, throwing timeout");
+            Thread.currentThread().interrupt();
         }
         if (!acquire) {
             throw new ResponseTimeoutException("timeout reached");
@@ -164,13 +162,12 @@ public class TicketNonSrSettleHandlerImpl extends SenderBase<TicketNonSrSettle> 
         checkNotNull(responseListener, "response listener cannot be null");
         setPublishListener(responseListener);
         timeoutHandler.setResponseTimeoutListener(responseListener);
-        this.ticketNonSrSettleResponseListner = responseListener;
-
+        this.ticketNonSrSettleResponseListener = responseListener;
     }
 
     @Override
     public void setTicketNonSrSettleResponse(TicketNonSrSettleResponse ticketNonSrSettleResponse) {
-        checkNotNull(ticketNonSrSettleResponse, "ticketCashoutResponse cannot be null");
+        checkNotNull(ticketNonSrSettleResponse, "TicketNonSrSettleResponse cannot be null");
         getSdkLogger().logReceivedMessage(JsonUtils.serializeAsString(ticketNonSrSettleResponse));
 
         timeoutHandler.onAsyncTicketResponseReceived(ticketNonSrSettleResponse.getCorrelationId());
@@ -186,9 +183,8 @@ public class TicketNonSrSettleHandlerImpl extends SenderBase<TicketNonSrSettle> 
             }
             ticketNonSrSettleSendEntryCache.invalidate(ticketId);
         } else {
-            executorService.submit(() -> ticketNonSrSettleResponseListner.responseReceived(ticketNonSrSettleResponse));
+            executorService.submit(() -> ticketNonSrSettleResponseListener.responseReceived(ticketNonSrSettleResponse));
         }
-
     }
 
     @Override
@@ -200,18 +196,17 @@ public class TicketNonSrSettleHandlerImpl extends SenderBase<TicketNonSrSettle> 
 
 
     private void internalSend(TicketNonSrSettle ticketNonSrSettle) {
-        checkState(isOpen(), "sender is closed");
-        checkNotNull(ticketNonSrSettle, "ticket cannot be null");
+        checkState(isOpen(), SdkInfo.Literals.TICKET_HANDLER_SENDER_CLOSED);
+        checkNotNull(ticketNonSrSettle, SdkInfo.Literals.TICKET_HANDLER_TICKET_NONSR_NULL);
 
         publishAsync(ticketNonSrSettle, routingKey, replyRoutingKey);
     }
 
-    private class TicketNonSrSettleSendEntry {
+    private static class TicketNonSrSettleSendEntry {
         private final TicketNonSrSettle ticket;
         private final Semaphore semaphore;
 
-        TicketNonSrSettleSendEntry(TicketNonSrSettle ticket,
-                               Semaphore semaphore) {
+        TicketNonSrSettleSendEntry(TicketNonSrSettle ticket, Semaphore semaphore) {
             this.ticket = ticket;
             this.semaphore = semaphore;
         }

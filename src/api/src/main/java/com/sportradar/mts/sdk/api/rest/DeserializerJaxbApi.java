@@ -19,7 +19,7 @@ import java.io.StringWriter;
  * endpoint request
  */
 public class DeserializerJaxbApi implements Deserializer {
-    private final static Logger logger = LoggerFactory.getLogger(DeserializerJaxbApi.class);
+    private static final Logger logger = LoggerFactory.getLogger(DeserializerJaxbApi.class);
     private final Unmarshaller unmarshaller;
     private final Marshaller marshaller;
 

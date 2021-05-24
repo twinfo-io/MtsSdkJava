@@ -47,6 +47,7 @@ public class SdkConfigurationImpl implements SdkConfiguration {
     private final String mtsClientApiHost;
     private final UfEnvironment ufEnvironment;
 
+    @SuppressWarnings("java:S107") // Methods should not have too many parameters
     protected SdkConfigurationImpl(String username,
                                    String password,
                                    String host,

@@ -9,7 +9,6 @@ package com.sportradar.mts.sdk.api.exceptions;
  */
 public class ResponseTimeoutException extends MtsSdkException {
 
-
     private static final long serialVersionUID = 6234498842378859869L;
 
     public ResponseTimeoutException(String message) {

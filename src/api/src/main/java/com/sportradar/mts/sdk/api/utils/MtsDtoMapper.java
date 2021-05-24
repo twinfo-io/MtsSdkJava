@@ -41,7 +41,10 @@ import java.util.stream.Collectors;
  * Mapper for DTOs
  */
 public class MtsDtoMapper {
-    private static Set<String> TICKET_RESPONSE_INTERESTING_HEADERS = ImmutableSet.<String>builder()
+
+    private MtsDtoMapper() { throw new IllegalStateException("MtsDtoMapper class"); }
+
+    private static final Set<String> TICKET_RESPONSE_INTERESTING_HEADERS = ImmutableSet.<String>builder()
             .add("validatedUtcTimestamp")
             .add("receivedUtcTimestamp")
             .add("respondedUtcTimestamp")
@@ -55,7 +58,7 @@ public class MtsDtoMapper {
         dtoTicket.setSender(map(ticket.getSender()));
         dtoTicket.setOddsChange(MtsTicketHelper.convert(ticket.getOddsChange()));
         dtoTicket.setTestSource(ticket.getTestSource());
-        dtoTicket.setTimestampUtc(MtsDateFormatter.DateTimeToUnixTime(ticket.getTimestampUtc()));
+        dtoTicket.setTimestampUtc(MtsDateFormatter.dateTimeToUnixTime(ticket.getTimestampUtc()));
         dtoTicket.setVersion(ticket.getVersion());
         dtoTicket.setAltStakeRefId(ticket.getAltStakeRefId());
         dtoTicket.setReofferRefId(ticket.getReofferId());
@@ -67,11 +70,7 @@ public class MtsDtoMapper {
         List<Selection> selections = Lists.newArrayList();
         for(com.sportradar.mts.sdk.api.Selection selection : ticket.getSelections())
         {
-            hasBanker = false;
-            if(!hasBanker && selection.getIsBanker())
-            {
-                hasBanker = true;
-            }
+            hasBanker = selection.getIsBanker();
             if(selections.stream().noneMatch(s -> s.getEventId().equals(selection.getEventId())
                                          && s.getId().equals(selection.getId())
                                          && s.getOdds().equals(selection.getOdds())))
@@ -124,8 +123,8 @@ public class MtsDtoMapper {
         }
 
         dtoBet.setSelectionRefs(null);
-        List<SelectionRef> refs = GetBetSelectionRefs(bet, selections, hasBanker);
-        if(refs != null) {
+        List<SelectionRef> refs = getBetSelectionRefs(bet, selections, hasBanker);
+        if(refs != null && !refs.isEmpty()) {
             dtoBet.setSelectionRefs(ImmutableList.copyOf(refs));
         }
 
@@ -134,7 +133,7 @@ public class MtsDtoMapper {
         return dtoBet;
     }
 
-    private static List<SelectionRef> GetBetSelectionRefs(com.sportradar.mts.sdk.api.Bet bet, List<Selection> allSelections, boolean hasBanker)
+    private static List<SelectionRef> getBetSelectionRefs(com.sportradar.mts.sdk.api.Bet bet, List<Selection> allSelections, boolean hasBanker)
     {
         if (bet.getSelections().size() != allSelections.size()
             || bet.getSelections().stream().anyMatch(com.sportradar.mts.sdk.api.Selection::getIsBanker)
@@ -144,16 +143,16 @@ public class MtsDtoMapper {
             for (com.sportradar.mts.sdk.api.Selection betSelection : bet.getSelections())
             {
                 SelectionRef ref = new SelectionRef();
-                ref.setSelectionIndex(FindSelectionIndex(allSelections, betSelection));
+                ref.setSelectionIndex(findSelectionIndex(allSelections, betSelection));
                 ref.setBanker(betSelection.getIsBanker());
                 refs.add(ref);
             }
             return refs;
         }
-        return null;
+        return new ArrayList<>();
     }
 
-    private static int FindSelectionIndex(List<Selection> allSelections, com.sportradar.mts.sdk.api.Selection specific)
+    private static int findSelectionIndex(List<Selection> allSelections, com.sportradar.mts.sdk.api.Selection specific)
     {
         for (int i = 0; i < allSelections.size(); i++)
         {
@@ -208,7 +207,7 @@ public class MtsDtoMapper {
         com.sportradar.mts.sdk.api.impl.mtsdto.ticketcancel.Sender sender = new com.sportradar.mts.sdk.api.impl.mtsdto.ticketcancel.Sender();
         sender.setBookmakerId(ticketCancel.getBookmakerId());
         dtoCancel.setSender(sender);
-        dtoCancel.setTimestampUtc(MtsDateFormatter.DateTimeToUnixTime(ticketCancel.getTimestampUtc()));
+        dtoCancel.setTimestampUtc(MtsDateFormatter.dateTimeToUnixTime(ticketCancel.getTimestampUtc()));
         dtoCancel.setVersion(ticketCancel.getVersion());
         dtoCancel.setCancelPercent(ticketCancel.getCancelPercent());
         List<com.sportradar.mts.sdk.api.impl.mtsdto.ticketcancel.BetCancel> betCancels = Lists.newArrayList();
@@ -238,7 +237,7 @@ public class MtsDtoMapper {
         com.sportradar.mts.sdk.api.impl.mtsdto.ticketack.Sender sender = new com.sportradar.mts.sdk.api.impl.mtsdto.ticketack.Sender();
         sender.setBookmakerId(ticketAck.getBookmakerId());
         dto.setSender(sender);
-        dto.setTimestampUtc(MtsDateFormatter.DateTimeToUnixTime(ticketAck.getTimestampUtc()));
+        dto.setTimestampUtc(MtsDateFormatter.dateTimeToUnixTime(ticketAck.getTimestampUtc()));
         dto.setVersion(ticketAck.getVersion());
         return dto;
     }
@@ -255,7 +254,7 @@ public class MtsDtoMapper {
         com.sportradar.mts.sdk.api.impl.mtsdto.ticketcancelack.Sender sender = new com.sportradar.mts.sdk.api.impl.mtsdto.ticketcancelack.Sender();
         sender.setBookmakerId(ticketCancelAck.getBookmakerId());
         dto.setSender(sender);
-        dto.setTimestampUtc(MtsDateFormatter.DateTimeToUnixTime(ticketCancelAck.getTimestampUtc()));
+        dto.setTimestampUtc(MtsDateFormatter.dateTimeToUnixTime(ticketCancelAck.getTimestampUtc()));
         dto.setVersion(ticketCancelAck.getVersion());
         return dto;
     }
@@ -272,7 +271,7 @@ public class MtsDtoMapper {
             betCashouts = null;
         }
         return new TicketCashoutSchema(
-                MtsDateFormatter.DateTimeToUnixTime(ticketCashout.getTimestampUtc()),
+                MtsDateFormatter.dateTimeToUnixTime(ticketCashout.getTimestampUtc()),
                 ticketCashout.getTicketId(),
                 new com.sportradar.mts.sdk.api.impl.mtsdto.ticketcashout.Sender(ticketCashout.getBookmakerId()),
                 ticketCashout.getCashoutStake(),
@@ -283,7 +282,7 @@ public class MtsDtoMapper {
     }
 
     public static TicketNonSrSettleSchema map(TicketNonSrSettle ticketNonSrSettle) {
-        return new TicketNonSrSettleSchema(MtsDateFormatter.DateTimeToUnixTime(ticketNonSrSettle.getTimestampUtc()),
+        return new TicketNonSrSettleSchema(MtsDateFormatter.dateTimeToUnixTime(ticketNonSrSettle.getTimestampUtc()),
                 ticketNonSrSettle.getTicketId(),
                 new com.sportradar.mts.sdk.api.impl.mtsdto.ticketnonsrsettle.Sender(ticketNonSrSettle.getBookmakerId()),
                 ticketNonSrSettle.getNonSrSettleStake(),
@@ -296,15 +295,15 @@ public class MtsDtoMapper {
         return new TicketResponseImpl(response.getResult().getTicketId(),
                                       map(response.getResult().getReason()),
                                       MtsTicketHelper.convert(response.getResult().getStatus()),
-                                    response.getResult().getBetDetails(),
-                                    response.getSignature(),
-                                    response.getExchangeRate(),
-                                    new Date(),
-                                    response.getVersion(),
-                                    correlationId,
-                                    parseAdditionalInfo(messageHeaders),
-                                    response.getAutoAcceptedOdds(),
-                                    msgBody);
+                                      response.getResult().getBetDetails(),
+                                      response.getSignature(),
+                                      response.getExchangeRate(),
+                                      new Date(),
+                                      response.getVersion(),
+                                      correlationId,
+                                      parseAdditionalInfo(messageHeaders),
+                                      response.getAutoAcceptedOdds(),
+                                      msgBody);
     }
 
     public static ResponseReason map(Reason reason)
@@ -394,7 +393,7 @@ public class MtsDtoMapper {
         com.sportradar.mts.sdk.api.impl.mtsdto.reoffercancel.Sender sender = new com.sportradar.mts.sdk.api.impl.mtsdto.reoffercancel.Sender();
         sender.setBookmakerId(ticketReofferCancel.getBookmakerId());
         dto.setSender(sender);
-        dto.setTimestampUtc(MtsDateFormatter.DateTimeToUnixTime(ticketReofferCancel.getTimestampUtc()));
+        dto.setTimestampUtc(MtsDateFormatter.dateTimeToUnixTime(ticketReofferCancel.getTimestampUtc()));
         dto.setVersion(ticketReofferCancel.getVersion());
         return dto;
     }
@@ -435,7 +434,7 @@ public class MtsDtoMapper {
 
     private static Map<String, String> parseAdditionalInfo(Map<String, Object> messageHeaders)
     {
-        Map<String, String> additionalInfo = messageHeaders == null
+        return messageHeaders == null
                 ? Collections.emptyMap()
                 : messageHeaders.entrySet().stream()
                         .filter(e -> TICKET_RESPONSE_INTERESTING_HEADERS.contains(e.getKey()))
@@ -443,6 +442,5 @@ public class MtsDtoMapper {
                                 Map.Entry::getKey,
                                 e-> e.getValue().toString()
                         ));
-        return additionalInfo;
     }
 }

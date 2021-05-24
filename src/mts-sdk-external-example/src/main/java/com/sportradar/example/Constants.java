@@ -4,8 +4,9 @@
 
 package com.sportradar.example;
 
-public class Constants {
+public final class Constants {
+    public static final int BOOKMAKER_ID = 1;
+    public static final int LIMIT_ID = 2;
 
-    public static int BOOKMAKER_ID = 1;
-    public static int LIMIT_ID = 2;
+    private Constants() { throw new IllegalStateException("Constants class"); }
 }

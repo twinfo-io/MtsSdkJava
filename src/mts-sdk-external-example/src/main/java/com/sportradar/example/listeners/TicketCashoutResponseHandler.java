@@ -17,7 +17,6 @@ public class TicketCashoutResponseHandler extends PublishResultHandler<TicketCas
     @Override
     public void responseReceived(TicketCashoutResponse ticketCashoutResponse) {
         String reason = ticketCashoutResponse.getReason() != null ? ticketCashoutResponse.getReason().getMessage() : "No reason";
-        logger.info("Ticket cashout response received: {}, with status {}, reason: {}",
-                ticketCashoutResponse.getTicketId(), ticketCashoutResponse.getStatus().toString(), reason);
+        logger.info("Ticket cashout response received: {}, with status {}, reason: {}", ticketCashoutResponse.getTicketId(), ticketCashoutResponse.getStatus(), reason);
     }
 }

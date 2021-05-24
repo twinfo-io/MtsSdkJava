@@ -79,7 +79,6 @@ public class TicketBuilderTest extends TimeLimitedTestBase {
                 .setDeviceId("device-" + StaticRandom.I1000P)
                 .setConfidence(StaticRandom.L1000P)
                 .build();
-        Assert.assertNotNull(item);
     }
 
     @Test
@@ -95,7 +94,6 @@ public class TicketBuilderTest extends TimeLimitedTestBase {
                 .setDeviceId("device-" + StaticRandom.I1000P)
                 .setConfidence(StaticRandom.L1000P)
                 .build();
-        Assert.assertNotNull(item);
     }
 
     @Test
@@ -111,7 +109,6 @@ public class TicketBuilderTest extends TimeLimitedTestBase {
                 .setDeviceId("device-" + StaticRandom.I1000P)
                 .setConfidence(StaticRandom.L1000P)
                 .build();
-        Assert.assertNotNull(item);
     }
 
     @Test
@@ -140,7 +137,6 @@ public class TicketBuilderTest extends TimeLimitedTestBase {
                 .setDeviceId("")
                 .setConfidence(StaticRandom.L1000P)
                 .build();
-        Assert.assertNotNull(item);
     }
 
     @Test
@@ -169,7 +165,6 @@ public class TicketBuilderTest extends TimeLimitedTestBase {
                 .setDeviceId("device-" + StaticRandom.I1000P)
                 .setConfidence(-1L)
                 .build();
-        Assert.assertNotNull(item);
     }
 
     @Test
@@ -238,8 +233,6 @@ public class TicketBuilderTest extends TimeLimitedTestBase {
                         .addSelection(ticketBuilderHelper.builderFactory.createSelectionBuilder().setEventId("9691139").setIdLcoo(324, 1, "", "1").setOdds(26000).setBanker(false).build())
                         .build())
                 .build();
-
-        Assert.assertNull(ticket);
     }
 
     @Test
@@ -256,8 +249,6 @@ public class TicketBuilderTest extends TimeLimitedTestBase {
                         .addSelection(ticketBuilderHelper.builderFactory.createSelectionBuilder().setEventId("9691139").setIdLcoo(324, 1, "", "1").setOdds(16000).setBanker(false).build())
                         .build())
                 .build();
-
-        Assert.assertNull(ticket);
     }
 
     @Test

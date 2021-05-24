@@ -4,6 +4,7 @@
 
 package com.sportradar.mts.sdk.impl.libs.threading;
 
+import com.sportradar.mts.sdk.api.exceptions.MtsSdkProcessException;
 import com.sportradar.mts.sdk.api.interfaces.Openable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,6 @@ public class RecoverableThread implements Openable {
     private static final AtomicLong threadCounter = new AtomicLong(0L);
 
     private final boolean daemon;
-    private final ThreadGroup threadGroup;
     private final String name;
     private final Runnable runnable;
     private final Thread.UncaughtExceptionHandler uncaughtExceptionHandler;
@@ -26,44 +26,37 @@ public class RecoverableThread implements Openable {
     private volatile boolean isRunning = false;
 
     public RecoverableThread() {
-        this(null, null, true, null);
+        this(null, true, null);
     }
 
     public RecoverableThread(Runnable runnable) {
-        this(null, null, true, runnable);
+        this(null, true, runnable);
     }
 
     public RecoverableThread(String name) {
-        this(null, name, true, null);
+        this(name, true, null);
     }
 
     public RecoverableThread(String name, Runnable runnable) {
-        this(null, name, true, runnable);
+        this(name, true, runnable);
     }
 
     public RecoverableThread(String name, boolean daemon) {
-        this(null, name, daemon, null);
+        this(name, daemon, null);
     }
 
     public RecoverableThread(String name, boolean daemon, Runnable runnable) {
-        this(null, name, daemon, runnable);
-    }
-
-    public RecoverableThread(ThreadGroup group, String name, boolean daemon) {
-        this(group, name, daemon, null);
-    }
-
-    public RecoverableThread(ThreadGroup group, String name, boolean daemon, Runnable runnable) {
-        this.threadGroup = ((group == null) ? Thread.currentThread().getThreadGroup() : group);
-        this.name = ((name == null) ? "RecoverableThread" : name);
+        this.name = name == null ? "RecoverableThread" : name;
         this.daemon = daemon;
         this.runnable = new DefaultRunnable(this, runnable);
         this.uncaughtExceptionHandler = new NewThreadCreator(this);
     }
 
     protected void run() {
+        if(runnable != null){
+            runnable.run();
+        }
     }
-
 
     @Override
     public boolean isOpen() {
@@ -86,6 +79,7 @@ public class RecoverableThread implements Openable {
             this.join(false);
         } catch (InterruptedException e) {
             logger.warn("close(): caught InterruptedException: ", e);
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -94,6 +88,7 @@ public class RecoverableThread implements Openable {
             this.join(true);
         } catch (InterruptedException e) {
             logger.warn("closeNow(): caught InterruptedException: ", e);
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -127,8 +122,8 @@ public class RecoverableThread implements Openable {
             logger.debug("Skipping starting new thread...");
             return;
         }
-        Thread result = new Thread(this.threadGroup, this.runnable);
-        result.setName(this.name + "-" + String.valueOf(threadCounter.incrementAndGet()));
+        Thread result = new Thread(this.runnable);
+        result.setName(this.name + "-" + threadCounter.incrementAndGet());
         result.setDaemon(this.daemon);
         result.setUncaughtExceptionHandler(this.uncaughtExceptionHandler);
         if (this.actualThread.compareAndSet(thread, result)) {
@@ -137,7 +132,7 @@ public class RecoverableThread implements Openable {
         }
     }
 
-    private final static class DefaultRunnable implements Runnable {
+    private static final class DefaultRunnable implements Runnable {
 
         private final RecoverableThread parent;
         private final Runnable runnable;
@@ -149,7 +144,6 @@ public class RecoverableThread implements Openable {
 
         @Override
         public void run() {
-
             try {
                 Thread t = Thread.currentThread();
 
@@ -163,14 +157,14 @@ public class RecoverableThread implements Openable {
                 this.parent.actualThread.set(null);
                 this.parent.isRunning = false;
             } catch (Exception exc) {
-                logger.error("Unexpected exc while executing runnable: ", exc);
+                logger.error("Unexpected exc while executing runnable: " + exc.getMessage(), exc);
                 logger.error("Killing thread [id: {}, name: {}]: ", Thread.currentThread().getId(), Thread.currentThread().getName());
-                throw new RuntimeException(exc);
+                throw new MtsSdkProcessException("Unexpected exc while executing runnable: " + exc.getMessage(), exc);
             }
         }
     }
 
-    private final static class NewThreadCreator implements Thread.UncaughtExceptionHandler {
+    private static final class NewThreadCreator implements Thread.UncaughtExceptionHandler {
 
         private final RecoverableThread parent;
 
@@ -182,7 +176,7 @@ public class RecoverableThread implements Openable {
         public void uncaughtException(Thread thread, Throwable throwable) {
             logger.error("Recoverable thread died: ", throwable);
             if (throwable instanceof Exception) {
-                logger.error("Recovering thread: ", thread.getName());
+                logger.error("Recovering thread: {}", thread.getName());
                 this.parent.createAndStartActualThread(thread);
             }
         }

@@ -112,11 +112,11 @@ public class TicketCancelBuilderImpl implements TicketCancelBuilder {
 
     @Override
     public TicketCancel build(String ticketId, int bookmakerId, TicketCancellationReason reason) {
-        return new TicketCancelImpl(ticketId, bookmakerId, reason, new Date(), null, null, SdkInfo.mtsTicketVersion());
+        return new TicketCancelImpl(ticketId, bookmakerId, reason, new Date(), null, null, SdkInfo.MTS_TICKET_VERSION);
     }
 
     @Override
     public TicketCancel build() {
-        return new TicketCancelImpl(ticketId, bookmakerId, reason, new Date(), cancelPercent, betCancels, SdkInfo.mtsTicketVersion());
+        return new TicketCancelImpl(ticketId, bookmakerId, reason, new Date(), cancelPercent, betCancels, SdkInfo.MTS_TICKET_VERSION);
     }
 }

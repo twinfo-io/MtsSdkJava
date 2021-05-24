@@ -8,6 +8,7 @@ import com.sportradar.mts.sdk.api.TicketCashout;
 import com.sportradar.mts.sdk.api.builders.BuilderFactory;
 import com.sportradar.mts.sdk.api.builders.TicketCashoutBuilder;
 import com.sportradar.mts.sdk.api.interfaces.TicketCashoutResponseListener;
+import com.sportradar.mts.sdk.api.utils.SdkInfo;
 import com.sportradar.mts.sdk.api.utils.StaticRandom;
 import com.sportradar.mts.sdk.impl.libs.SdkHelper;
 import com.sportradar.mts.sdk.impl.libs.TimeLimitedTestBase;
@@ -66,7 +67,7 @@ public class TicketCashoutHandlerImplTest extends TimeLimitedTestBase {
     @Test
     public void send_OnTicketCashoutNullTest() {
         thrown.expect(NullPointerException.class);
-        thrown.expectMessage("ticketCashoutData can not be null");
+        thrown.expectMessage(SdkInfo.Literals.TICKET_HANDLER_TICKET_CASHOUT_NULL);
 
         handler.open();
         handler.send(null);
@@ -95,7 +96,7 @@ public class TicketCashoutHandlerImplTest extends TimeLimitedTestBase {
     @Test
     public void ticketCashoutResponseReceived_ResponseNullTest() {
         thrown.expect(NullPointerException.class);
-        thrown.expectMessage("ticketCashoutResponse cannot be null");
+        thrown.expectMessage("TicketCashoutResponse cannot be null");
 
         handler.setListener(listener);
 

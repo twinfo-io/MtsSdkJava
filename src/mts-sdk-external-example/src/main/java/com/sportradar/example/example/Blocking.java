@@ -20,10 +20,12 @@ import org.slf4j.LoggerFactory;
 /**
  * Blocking example of creating and sending ticket
  */
-public class Blocking {
+public final class Blocking {
     private static final Logger logger = LoggerFactory.getLogger(Blocking.class);
 
-    public static void Run()
+    private Blocking() { throw new IllegalStateException("Blocking class"); }
+
+    public static void run()
     {
         SdkConfiguration config = MtsSdk.getConfiguration();
         MtsSdkApi mtsSdk = new MtsSdk(config);
@@ -61,14 +63,16 @@ public class Blocking {
                 }
             }
         } catch (ResponseTimeoutException e) {
-            e.printStackTrace();
+            logger.warn("Response timeout: {}", e.getMessage());
         }
 
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
             logger.info("interrupted while sleeping");
+            Thread.currentThread().interrupt();
+        } finally {
+            mtsSdk.close();
         }
-        mtsSdk.close();
     }
 }

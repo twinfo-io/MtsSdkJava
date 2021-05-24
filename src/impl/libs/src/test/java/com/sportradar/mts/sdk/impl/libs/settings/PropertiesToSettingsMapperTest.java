@@ -9,6 +9,7 @@ import com.sportradar.mts.sdk.api.interfaces.SdkConfiguration;
 import com.sportradar.mts.sdk.api.settings.PropertiesToSettingsMapper;
 import com.sportradar.mts.sdk.api.settings.SettingsKeys;
 import com.sportradar.mts.sdk.impl.libs.TimeLimitedTestBase;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -154,12 +155,15 @@ public class PropertiesToSettingsMapperTest extends TimeLimitedTestBase {
     public void getSettings_CurrencyCorrectTest() {
         properties.setProperty(SettingsKeys.CURRENCY, "EUR");
         retrieveMtsSdkSettings();
+        Assert.assertEquals("EUR", config.getCurrency());
 
         properties.setProperty(SettingsKeys.CURRENCY, "eur");
         retrieveMtsSdkSettings();
+        Assert.assertEquals("eur", config.getCurrency());
 
         properties.setProperty(SettingsKeys.CURRENCY, "mBTC");
         retrieveMtsSdkSettings();
+        Assert.assertEquals("mBTC", config.getCurrency());
     }
 
     @Test (expected = IllegalArgumentException.class)
@@ -172,6 +176,7 @@ public class PropertiesToSettingsMapperTest extends TimeLimitedTestBase {
     public void getSettings_SenderCorrectTest() {
         properties.setProperty(SettingsKeys.CHANNEL, "INTERNET");
         retrieveMtsSdkSettings();
+        Assert.assertEquals(SenderChannel.INTERNET, config.getSenderChannel());
     }
 
     private void setPropertiesToValidTestValues() {

@@ -10,7 +10,9 @@ import com.sportradar.mts.sdk.api.interfaces.TicketSender;
 /**
  * Settings keys used in mapping properties object to SDK settings
  */
-public class SettingsKeys {
+public final class SettingsKeys {
+
+    private SettingsKeys() { throw new IllegalStateException("SettingsKeys class"); }
 
     private static final String PREFIX = "mts.sdk.";
     /**
@@ -65,10 +67,6 @@ public class SettingsKeys {
      * Max messages allowed to be send to the MTS for each sender. Default 40
      */
     public static final String MESSAGES_PER_SECOND = PREFIX + "messages_per_second";
-//    /**
-//     * Connect to client integration environment if true, else production. Default false
-//     */
-//    public static final String TEST = PREFIX + "test";
     /**
      * Gets the default sender bookmakerId
      */

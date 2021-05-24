@@ -5,9 +5,8 @@
 package com.sportradar.mts.sdk.impl.libs.adapters.amqp;
 
 import com.google.common.base.Preconditions;
+import com.sportradar.mts.sdk.api.exceptions.MtsSdkProcessException;
 import com.sportradar.mts.sdk.api.interfaces.ConnectionStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,21 +17,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public final class ChannelFactoryProviderImpl implements ChannelFactoryProvider {
 
-    private static final Logger logger = LoggerFactory.getLogger(ChannelFactory.class);
-
     private final int mqWorkerThreadCount;
     private final Object factoriesLock = new Object();
     private final Map<AmqpCluster, ChannelFactory> factories = new HashMap<>();
     private final ThreadFactory amqpThreadFactory = new AmqpThreadFactory();
 
     private final Object executorServiceLock = new Object();
-    private volatile ExecutorService executorService;
+    private ExecutorService executorService;
     private int executorRegistrationCount = 0;
     private boolean opened;
-    private ConnectionStatus connectionStatus;
+    private final ConnectionStatus connectionStatus;
 
     public ChannelFactoryProviderImpl(int mqWorkerThreadCount, ConnectionStatus connectionStatus) {
-
         this.mqWorkerThreadCount = mqWorkerThreadCount;
         this.connectionStatus = connectionStatus;
     }
@@ -76,8 +72,7 @@ public final class ChannelFactoryProviderImpl implements ChannelFactoryProvider 
                 return this.factories.get(mqCluster);
             }
         } catch (Exception exc) {
-            logger.error("Get channel factory error: ", exc);
-            throw new RuntimeException(exc);
+            throw new MtsSdkProcessException(exc.getMessage(), exc.getCause());
         }
     }
 
@@ -92,7 +87,7 @@ public final class ChannelFactoryProviderImpl implements ChannelFactoryProvider 
     ExecutorService getExecutorService() {
         final ExecutorService result = this.executorService;
         if (result == null) {
-            throw new RuntimeException("Pool 'executorService' is null");
+            throw new MtsSdkProcessException("Pool 'executorService' is null");
         }
         return result;
     }
@@ -112,20 +107,17 @@ public final class ChannelFactoryProviderImpl implements ChannelFactoryProvider 
         opened = false;
     }
 
-    private final static class AmqpThreadFactory implements ThreadFactory {
+    private static final class AmqpThreadFactory implements ThreadFactory {
 
-        private final ThreadGroup group;
         private final AtomicInteger threadNumber = new AtomicInteger(1);
         private final String namePrefix;
 
         public AmqpThreadFactory() {
-            final SecurityManager s = System.getSecurityManager();
-            this.group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
             this.namePrefix = "AMQP-client-thread-";
         }
 
         public Thread newThread(Runnable r) {
-            final Thread t = new Thread(this.group, r, this.namePrefix + this.threadNumber.getAndIncrement(), 0);
+            final Thread t = new Thread(null, r, this.namePrefix + this.threadNumber.getAndIncrement(), 0);
             if (!t.isDaemon()) {
                 t.setDaemon(true);
             }

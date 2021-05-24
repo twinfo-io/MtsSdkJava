@@ -13,8 +13,10 @@ import java.util.concurrent.Future;
 
 public final class AmqpSendResultHelper {
 
+    private AmqpSendResultHelper() { throw new IllegalStateException("AmqpSendResultHelper class"); }
+
     public static void removeDone(List<AmqpSendResult> input) {
-        if ((input == null) || (input.size() == 0)) {
+        if (input == null || input.isEmpty()) {
             return;
         }
 
@@ -22,7 +24,7 @@ public final class AmqpSendResultHelper {
     }
 
     public static List<AmqpSendResult> waitForAll(List<AmqpSendResult> input, boolean returnOnlyFailed) {
-        if ((input == null) || (input.size() == 0)) {
+        if (input == null || input.isEmpty()) {
             return input;
         }
 
@@ -70,11 +72,15 @@ public final class AmqpSendResultHelper {
         }
 
         for (AmqpSendResult item : tmp) {
-            if (!item.isDone()) {
-                try {
-                    item.get();
-                } catch (InterruptedException | ExecutionException ignored) {
-                }
+            if (item.isDone()) {
+                continue;
+            }
+            try {
+                item.get();
+            } catch (InterruptedException ignored) {
+                Thread.currentThread().interrupt();
+            } catch (ExecutionException ignored) {
+                // ignored
             }
         }
 
@@ -98,7 +104,10 @@ public final class AmqpSendResultHelper {
                         if (!Boolean.TRUE.equals(item.get())) {
                             result.add(item);
                         }
-                    } catch (InterruptedException | ExecutionException ignored) {
+                    } catch (InterruptedException ignored) {
+                        result.add(item);
+                        Thread.currentThread().interrupt();
+                    } catch (ExecutionException ignored) {
                         result.add(item);
                     }
                     numOfChanges++;
@@ -112,7 +121,10 @@ public final class AmqpSendResultHelper {
                 if (!Boolean.TRUE.equals(item.get())) {
                     result.add(item);
                 }
-            } catch (InterruptedException | ExecutionException ignored) {
+            } catch (InterruptedException ignored) {
+                result.add(item);
+                Thread.currentThread().interrupt();
+            } catch (ExecutionException ignored) {
                 result.add(item);
             }
         }

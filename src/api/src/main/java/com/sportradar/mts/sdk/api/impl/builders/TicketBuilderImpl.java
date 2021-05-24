@@ -127,6 +127,6 @@ public class TicketBuilderImpl implements TicketBuilder {
 
     @Override
     public Ticket build() {
-        return new TicketImpl(ticketId, bets, sender, reofferId, altStakeRefId, isTest, oddsChangeType, totalCombinations, lastMatchEndTime, new Date(), SdkInfo.mtsTicketVersion());
+        return new TicketImpl(ticketId, bets, sender, reofferId, altStakeRefId, isTest, oddsChangeType, totalCombinations, lastMatchEndTime, new Date(), SdkInfo.MTS_TICKET_VERSION);
     }
 }
