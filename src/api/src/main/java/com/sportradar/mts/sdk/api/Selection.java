@@ -4,10 +4,12 @@
 
 package com.sportradar.mts.sdk.api;
 
+import java.io.Serializable;
+
 /**
  * Ticket selection
  */
-public interface Selection {
+public interface Selection extends Serializable {
 
     /**
      * Gets betradar event (match or outright) id

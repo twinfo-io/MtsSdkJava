@@ -1,6 +1,10 @@
 A MTS SDK Java library
 
 CHANGE LOG:
+2021-05-27 2.3.6.1
+Fixed dto Ticket json schema
+Made sdk Ticket serializable
+
 2021-03-22 2.3.6.0
 Extending MtsSdk with ReportManager for accessing CcfChange history reports
 Fix: removed logging of access token in logs (security)

@@ -4,12 +4,13 @@
 
 package com.sportradar.mts.sdk.api;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Ticket bet
  */
-public interface Bet {
+public interface Bet extends Serializable {
 
     /**
      * Gets the bet bonus

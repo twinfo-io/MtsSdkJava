@@ -6,10 +6,12 @@ package com.sportradar.mts.sdk.api;
 
 import com.sportradar.mts.sdk.api.enums.SenderChannel;
 
+import java.io.Serializable;
+
 /**
  * Ticket Sender
  */
-public interface Sender {
+public interface Sender extends Serializable {
 
     /**
      * Gets bookmaker id
