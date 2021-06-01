@@ -6,10 +6,12 @@ package com.sportradar.mts.sdk.api;
 
 import com.sportradar.mts.sdk.api.enums.StakeType;
 
+import java.io.Serializable;
+
 /**
  * Bet Stake
  */
-public interface Stake {
+public interface Stake extends Serializable {
 
     /**
      * Gets the value of the bet bonus
