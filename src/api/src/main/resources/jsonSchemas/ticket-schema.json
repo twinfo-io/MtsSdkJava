@@ -146,7 +146,6 @@
                 "items": {
                   "type": "integer"
                 },
-                "uniqueItems": true,
                 "minItems": 1,
                 "maxItems": 63
               },
@@ -175,7 +174,6 @@
                     }
                   }
                 },
-                "uniqueItems": true,
                 "minItems": 1,
                 "maxItems": 63
               },
