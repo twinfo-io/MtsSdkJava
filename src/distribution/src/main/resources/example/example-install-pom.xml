@@ -12,6 +12,9 @@
     <artifactId>mts-sdk-example</artifactId>
     <version>${project.version}</version>
 
+    <!-- Before building the example application, execute maven command : "mvn validate"
+    to install mts-sdk jar artifacts to local maven repository -->
+
     <build>
         <plugins>
             <plugin>
@@ -21,6 +24,67 @@
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.5.1</version>
+                <executions>
+                    <execution>
+                        <id>install-sdk</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <groupId>com.sportradar.mts.sdk</groupId>
+                            <artifactId>mts-sdk</artifactId>
+                            <version>${project.version}</version>
+                            <packaging>jar</packaging>
+                            <file>${sr.dollarSign}{project.basedir}/src/main/resources/mts-sdk-${project.version}-fatjar.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>install-sdk-doc</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <groupId>com.sportradar.mts.sdk</groupId>
+                            <artifactId>mts-sdk-doc</artifactId>
+                            <version>${project.version}</version>
+                            <packaging>jar</packaging>
+                            <file>${sr.dollarSign}{project.basedir}/src/main/resources/mts-sdk-${project.version}-javadoc.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.1.1</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.sportradar.example.MtsSdkExample</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
         <resources>
@@ -35,16 +99,11 @@
             <groupId>com.sportradar.mts.sdk</groupId>
             <artifactId>mts-sdk</artifactId>
             <version>${project.version}</version>
-            <scope>system</scope>
-            <systemPath>${sr.dollarSign}{project.basedir}/src/main/resources/mts-sdk-${project.version}-fatjar.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.sportradar.mts.sdk</groupId>
-            <artifactId>mts-sdk</artifactId>
+            <artifactId>mts-sdk-doc</artifactId>
             <version>${project.version}</version>
-            <classifier>javadoc</classifier>
-            <scope>system</scope>
-            <systemPath>${sr.dollarSign}{project.basedir}/src/main/resources/mts-sdk-${project.version}-javadoc.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
