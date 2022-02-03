@@ -34,6 +34,7 @@ public class SelectionBuilderImpl implements SelectionBuilder {
     private String eventId;
     private String selectionId;
     private Integer odds;
+    private Integer boostedOdds;
     private boolean isBanker;
     private final boolean isCustomBet;
 
@@ -156,16 +157,24 @@ public class SelectionBuilderImpl implements SelectionBuilder {
     }
 
     @Override
+    public SelectionBuilder setBoostedOdds(int boostedOdds) {
+        this.boostedOdds = boostedOdds;
+        validateData(false, false, !isCustomBet);
+        return this;
+    }
+
+    @Override
     public SelectionBuilder setBanker(boolean isBanker) {
         this.isBanker = isBanker;
         return this;
     }
 
     @Override
-    public SelectionBuilder set(String eventId, String selectionId, Integer odds, boolean isBanker) {
+    public SelectionBuilder set(String eventId, String selectionId, Integer odds, Integer boostedOdds, boolean isBanker) {
         this.eventId = eventId;
         this.selectionId = selectionId;
         this.odds = odds;
+        this.boostedOdds = boostedOdds;
         this.isBanker = isBanker;
         validateData(true, true, !isCustomBet);
         return this;
@@ -174,7 +183,7 @@ public class SelectionBuilderImpl implements SelectionBuilder {
     @Override
     public Selection build() {
         validateData(true, true, !isCustomBet);
-        return new SelectionImpl(eventId, selectionId, odds, isBanker);
+        return new SelectionImpl(eventId, selectionId, odds, boostedOdds, isBanker);
     }
 
     private void validateData(boolean id, boolean eventId, boolean odds)

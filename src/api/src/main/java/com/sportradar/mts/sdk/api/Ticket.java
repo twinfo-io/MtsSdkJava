@@ -71,4 +71,10 @@ public interface Ticket extends SdkTicket {
      * @return end time of last (non Sportradar) match on ticket
      */
     Date getLastMatchEndTime();
+
+    /**
+     * Get the maximum payment win for ticket (capped).
+     * @return maximum payment win for ticket (capped).
+     */
+    Long getPayCap();
 }

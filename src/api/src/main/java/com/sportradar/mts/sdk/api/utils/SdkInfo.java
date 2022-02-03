@@ -10,7 +10,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public final class SdkInfo {
-    public static final String MTS_TICKET_VERSION = "2.3";
+    public static final String MTS_TICKET_VERSION = "2.4";
     public static final int RABBIT_PREFETCH_COUNT = 10;
     public static final int TICKET_RESPONSE_TIMEOUT_LIVE_DEFAULT = 17000;
     public static final int TICKET_RESPONSE_TIMEOUT_PREMATCH_DEFAULT = 5000;

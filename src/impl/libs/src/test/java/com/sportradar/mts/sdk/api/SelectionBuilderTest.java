@@ -118,7 +118,7 @@ public class SelectionBuilderTest extends TimeLimitedTestBase {
     public void BuildSelectionSetWithNoOddsTest()
     {
         Selection selection = ticketBuilderHelper.builderFactory.createSelectionBuilder(true)
-                .set("TR:0192_234_934", "tree:2/0/*/1", null, true)
+                .set("TR:0192_234_934", "tree:2/0/*/1", null, null, true)
                 .build();
         Assert.assertNotNull(selection);
         Assert.assertEquals("TR:0192_234_934", selection.getEventId());
@@ -131,9 +131,39 @@ public class SelectionBuilderTest extends TimeLimitedTestBase {
     public void BuildSelectionSetWithNegativeOddsTest()
     {
         thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("selection odds too low");
+        thrown.expectMessage("odds too low");
         Selection selection = ticketBuilderHelper.builderFactory.createSelectionBuilder(true)
-                .set("TR:0192_234_934", "tree:2/0/*/1", -1, true)
+                .set("TR:0192_234_934", "tree:2/0/*/1", -1, null, true)
+                .build();
+    }
+
+    @Test
+    public void BuildSelectionSetWithToHighOddsTest()
+    {
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("odds too high");
+        Selection selection = ticketBuilderHelper.builderFactory.createSelectionBuilder(true)
+                .set("TR:0192_234_934", "tree:2/0/*/1", 1100000000, null, true)
+                .build();
+    }
+
+    @Test
+    public void BuildSelectionSetWithNegativeBoostedOddsTest()
+    {
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("boostedOdds too low");
+        Selection selection = ticketBuilderHelper.builderFactory.createSelectionBuilder(true)
+                .set("TR:0192_234_934", "tree:2/0/*/1", 10000, -1, true)
+                .build();
+    }
+
+    @Test
+    public void BuildSelectionSetWithToHighBoostedOddsTest()
+    {
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("boostedOdds too high");
+        Selection selection = ticketBuilderHelper.builderFactory.createSelectionBuilder(true)
+                .set("TR:0192_234_934", "tree:2/0/*/1", 10000, 1100000000, true)
                 .build();
     }
 
@@ -141,12 +171,26 @@ public class SelectionBuilderTest extends TimeLimitedTestBase {
     public void BuildSelectionCustomWithNegativeOddsTest()
     {
         thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("selection odds too low");
+        thrown.expectMessage("odds too low");
         Selection selection = ticketBuilderHelper.builderFactory.createSelectionBuilder(true)
                 .setEventId("TR:0192_234_934")
                 .setId("tree:2/0/*/1")
                 .setBanker(true)
                 .setOdds(-1)
+                .build();
+    }
+
+    @Test
+    public void BuildSelectionCustomWithNegativeBoostedOddsTest()
+    {
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("boostedOdds too low");
+        Selection selection = ticketBuilderHelper.builderFactory.createSelectionBuilder(true)
+                .setEventId("TR:0192_234_934")
+                .setId("tree:2/0/*/1")
+                .setBanker(true)
+                .setOdds(10000)
+                .setBoostedOdds(-1)
                 .build();
     }
 }

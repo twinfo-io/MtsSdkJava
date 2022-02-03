@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "additionalProperties": false,
-  "description": "Ticket version 2.3 schema",
+  "description": "Ticket version 2.4 schema",
   "title": "Ticket container",
   "required": [
     "ticket"
@@ -66,6 +66,25 @@
                     "default": "all",
                     "enum": [
                       "all"
+                    ]
+                  },
+                  "description": {
+                    "type": ["string", "null"],
+                    "description": "Description of the Bonus Type.",
+                    "default": "accaBonus",
+                    "enum": [
+                      "accaBonus",
+                      "oddsBooster",
+                      "other"
+                    ]
+                  },
+                  "paidAs": {
+                    "type": ["string", "null"],
+                    "description": "Description of the bonus payment type.",
+                    "default": "cash",
+                    "enum": [
+                      "cash",
+                      "freeBet"
                     ]
                   }
                 }
@@ -229,6 +248,12 @@
                 "description": "Odds multiplied by 10_000 and rounded to int value",
                 "maximum": 1000000000,
                 "minimum": 10000
+              },
+              "boostedOdds": {
+                "type": ["integer", "null"],
+                "description": "Boosted odds multiplied by 10_000 and rounded to int value",
+                "maximum": 1000000000,
+                "minimum": 10000
               }
             }
           },
@@ -347,8 +372,8 @@
         },
         "version": {
           "type": "string",
-          "description": "JSON format version (must be '2.3')",
-          "pattern": "^(2\\.3)$",
+          "description": "JSON format version (must be '2.4')",
+          "pattern": "^(2\\.4)$",
           "minLength": 3,
           "maxLength": 3
         },
@@ -374,6 +399,11 @@
           "type": ["number", "null"],
           "description": "End time of last (non Sportradar) match on ticket.",
           "minimum": 1
+        },
+        "payCap": {
+          "type": ["number", "null"],
+          "description": "Maximum payment win for ticket (capped).",
+          "minimum": 0
         }
       }
     }

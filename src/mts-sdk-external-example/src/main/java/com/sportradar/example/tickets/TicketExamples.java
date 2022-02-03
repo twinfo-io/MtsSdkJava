@@ -431,7 +431,7 @@ public class TicketExamples
                                 .setIdLcoo(20, 5, "", "1")
                                 .setOdds(10900)
                                 .build())
-                        .setBetBonus(8000, BetBonusMode.ALL, BetBonusType.TOTAL)
+                        .setBetBonus(8000, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ACCUMULATOR_BONUS, BetBonusPaidAs.CASH)
                         .build())
                 .build();
     }

@@ -102,6 +102,13 @@ public interface TicketBuilder {
     TicketBuilder setLastMatchEndTime(Date lastMatchEndTime);
 
     /**
+     * Set maximum payment win for ticket (capped).
+     * @param payCap maximum payment win for ticket (capped)
+     * @return current builder reference
+     */
+    TicketBuilder setPayCap(Long payCap);
+
+    /**
      * Creates a new {@link Ticket}  instance using builder parameters
      *
      * @return new {@link Ticket} instance

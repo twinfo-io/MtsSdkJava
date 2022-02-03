@@ -65,6 +65,7 @@ public class MtsDtoMapper {
         if (ticket.getLastMatchEndTime()!= null){
             dtoTicket.setLastMatchEndTime(ticket.getLastMatchEndTime().getTime());
         }
+        dtoTicket.setPayCap(ticket.getPayCap());
 
         boolean hasBanker = false;
         List<Selection> selections = Lists.newArrayList();
@@ -114,6 +115,8 @@ public class MtsDtoMapper {
             b.setValue(bet.getBetBonus().getValue());
             b.setMode(MtsTicketHelper.convert(bet.getBetBonus().getMode()));
             b.setType(MtsTicketHelper.convert(bet.getBetBonus().getType()));
+            b.setDescription(MtsTicketHelper.convert(bet.getBetBonus().getDescription()));
+            b.setPaidAs(MtsTicketHelper.convert(bet.getBetBonus().getPaidAs()));
             dtoBet.setBonus(b);
         }
         dtoBet.setSelectedSystems(null);

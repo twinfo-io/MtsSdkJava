@@ -83,8 +83,16 @@ public class TicketReofferBuilderImpl implements TicketReofferBuilder {
                 .setTestSource(ticket.getTestSource())
                 .setReofferId(ticket.getTicketId());
 
+        if (ticket.getTotalCombinations() != null) {
+            reofferTicketBuilder.setTotalCombinations(ticket.getTotalCombinations());
+        }
+
         if (ticket.getLastMatchEndTime() != null){
             reofferTicketBuilder.setLastMatchEndTime(ticket.getLastMatchEndTime());
+        }
+
+        if (ticket.getPayCap() != null) {
+            reofferTicketBuilder.setPayCap(ticket.getPayCap());
         }
 
         for (Bet ticketBet : ticket.getBets())
@@ -102,7 +110,7 @@ public class TicketReofferBuilderImpl implements TicketReofferBuilder {
 
             if (ticketBet.getBetBonus() != null)
             {
-                newBetBuilder.setBetBonus(ticketBet.getBetBonus().getValue(), ticketBet.getBetBonus().getMode(), ticketBet.getBetBonus().getType());
+                newBetBuilder.setBetBonus(ticketBet.getBetBonus().getValue(), ticketBet.getBetBonus().getMode(), ticketBet.getBetBonus().getType(), ticketBet.getBetBonus().getDescription(), ticketBet.getBetBonus().getPaidAs());
             }
             for (Selection ticketBetSelection : ticketBet.getSelections())
             {
@@ -162,8 +170,16 @@ public class TicketReofferBuilderImpl implements TicketReofferBuilder {
                 .setTestSource(ticket.getTestSource())
                 .setReofferId(ticket.getTicketId());
 
+        if (ticket.getTotalCombinations() != null) {
+            reofferTicketBuilder.setTotalCombinations(ticket.getTotalCombinations());
+        }
+
         if (ticket.getLastMatchEndTime() != null){
             reofferTicketBuilder.setLastMatchEndTime(ticket.getLastMatchEndTime());
+        }
+
+        if (ticket.getPayCap() != null) {
+            reofferTicketBuilder.setPayCap(ticket.getPayCap());
         }
 
         for (Bet ticketBet : ticket.getBets())
@@ -176,7 +192,7 @@ public class TicketReofferBuilderImpl implements TicketReofferBuilder {
 
             if (ticketBet.getBetBonus() != null)
             {
-                newBetBuilder.setBetBonus(ticketBet.getBetBonus().getValue(), ticketBet.getBetBonus().getMode(), ticketBet.getBetBonus().getType());
+                newBetBuilder.setBetBonus(ticketBet.getBetBonus().getValue(), ticketBet.getBetBonus().getMode(), ticketBet.getBetBonus().getType(), ticketBet.getBetBonus().getDescription(), ticketBet.getBetBonus().getPaidAs());
             }
             for (Selection ticketBetSelection : ticketBet.getSelections())
             {

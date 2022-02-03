@@ -10,14 +10,13 @@ import com.sportradar.mts.sdk.api.BetBonus;
 import com.sportradar.mts.sdk.api.Selection;
 import com.sportradar.mts.sdk.api.Stake;
 import com.sportradar.mts.sdk.api.builders.BetBuilder;
-import com.sportradar.mts.sdk.api.enums.BetBonusMode;
-import com.sportradar.mts.sdk.api.enums.BetBonusType;
-import com.sportradar.mts.sdk.api.enums.StakeType;
+import com.sportradar.mts.sdk.api.enums.*;
 import com.sportradar.mts.sdk.api.impl.BetBonusImpl;
 import com.sportradar.mts.sdk.api.impl.BetImpl;
 import com.sportradar.mts.sdk.api.impl.StakeImpl;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class BetBuilderImpl implements BetBuilder {
@@ -33,14 +32,14 @@ public class BetBuilderImpl implements BetBuilder {
     private Integer calculationOdds;
 
     @Override
-    public BetBuilder setBetBonus(long value, BetBonusMode betBonusMode, BetBonusType betBonusType) {
-        betBonus = new BetBonusImpl(value, betBonusMode, betBonusType);
+    public BetBuilder setBetBonus(long value, BetBonusMode betBonusMode, BetBonusType betBonusType, BetBonusDescription betBonusDescription, BetBonusPaidAs betBonusPaidAs) {
+        betBonus = new BetBonusImpl(value, betBonusMode, betBonusType, betBonusDescription, betBonusPaidAs);
         return this;
     }
 
     @Override
     public BetBuilder setBetBonus(long value) {
-        betBonus = new BetBonusImpl(value, BetBonusMode.ALL, BetBonusType.TOTAL);
+        betBonus = new BetBonusImpl(value, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ACCUMULATOR_BONUS, BetBonusPaidAs.CASH);
         return this;
     }
 
@@ -101,7 +100,9 @@ public class BetBuilderImpl implements BetBuilder {
                         .findFirst();
         if (similarSel.isPresent())
         {
-            if (similarSel.get().getOdds().equals(selection.getOdds()) && similarSel.get().getIsBanker() == selection.getIsBanker())
+            if (similarSel.get().getOdds().equals(selection.getOdds()) &&
+                    Objects.equals(similarSel.get().getBoostedOdds(), selection.getBoostedOdds()) &&
+                    similarSel.get().getIsBanker() == selection.getIsBanker())
             {
                 return this;
             }

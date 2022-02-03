@@ -31,6 +31,7 @@ public class TicketBuilderImpl implements TicketBuilder {
     private OddsChangeType oddsChangeType;
     private Integer totalCombinations;
     private Date lastMatchEndTime;
+    private Long payCap;
 
     @Override
     public TicketBuilder setTicketId(String ticketId) {
@@ -124,9 +125,18 @@ public class TicketBuilderImpl implements TicketBuilder {
         return this;
     }
 
+    @Override
+    public TicketBuilder setPayCap(Long payCap) {
+        if (payCap == null || payCap < 0) {
+            throw new IllegalArgumentException("PayCap value is not valid");
+        }
+
+        this.payCap = payCap;
+        return this;
+    }
 
     @Override
     public Ticket build() {
-        return new TicketImpl(ticketId, bets, sender, reofferId, altStakeRefId, isTest, oddsChangeType, totalCombinations, lastMatchEndTime, new Date(), SdkInfo.MTS_TICKET_VERSION);
+        return new TicketImpl(ticketId, bets, sender, reofferId, altStakeRefId, isTest, oddsChangeType, totalCombinations, lastMatchEndTime, payCap, new Date(), SdkInfo.MTS_TICKET_VERSION);
     }
 }

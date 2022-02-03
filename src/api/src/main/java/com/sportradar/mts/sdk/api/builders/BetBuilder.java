@@ -6,9 +6,7 @@ package com.sportradar.mts.sdk.api.builders;
 
 import com.sportradar.mts.sdk.api.Bet;
 import com.sportradar.mts.sdk.api.Selection;
-import com.sportradar.mts.sdk.api.enums.BetBonusMode;
-import com.sportradar.mts.sdk.api.enums.BetBonusType;
-import com.sportradar.mts.sdk.api.enums.StakeType;
+import com.sportradar.mts.sdk.api.enums.*;
 import com.sportradar.mts.sdk.api.impl.builders.BetBuilderImpl;
 
 import java.util.List;
@@ -42,9 +40,11 @@ public interface BetBuilder {
      * @param value The quantity multiplied by 10000 and rounded to a long value
      * @param betBonusMode bet bonus mode
      * @param betBonusType bet bonus type
+     * @param betBonusDescription bet bonus description
+     * @param betBonusPaidAs bet bonus payment type
      * @return current builder reference
      */
-    BetBuilder setBetBonus(long value, BetBonusMode betBonusMode, BetBonusType betBonusType);
+    BetBuilder setBetBonus(long value, BetBonusMode betBonusMode, BetBonusType betBonusType, BetBonusDescription betBonusDescription, BetBonusPaidAs betBonusPaidAs);
 
     /**
      * Sets the Stake

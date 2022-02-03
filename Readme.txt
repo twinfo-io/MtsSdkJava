@@ -1,6 +1,15 @@
 A MTS SDK Java library
 
 CHANGE LOG:
+2022-02-03 2.4.0.0
+Support for ticket version 2.4
+- ticket bonus: description and paidAs
+- ticket selection: boosted odds
+- ticket: payCap
+
+2021-06-27 2.3.6.2
+Made betDetail serializable
+
 2021-05-27 2.3.6.1
 Fixed dto Ticket json schema
 Made sdk Ticket serializable

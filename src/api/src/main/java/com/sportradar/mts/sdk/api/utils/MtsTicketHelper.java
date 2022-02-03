@@ -91,6 +91,40 @@ public final class MtsTicketHelper {
         throw new IllegalArgumentException(String.format("Invalid BetBonusType value: %s", type.toString())) ;
     }
 
+    @SuppressWarnings("SameReturnValue")
+    public static Bonus.Description convert(BetBonusDescription description)
+    {
+        if (description == null) {
+            return Bonus.Description.ACCA_BONUS;
+        }
+        switch (description) {
+            case ACCUMULATOR_BONUS:
+                return Bonus.Description.ACCA_BONUS;
+            case ODDS_BOOSTER:
+                return Bonus.Description.ODDS_BOOSTER;
+            case OTHER:
+                return Bonus.Description.OTHER;
+            default:
+                throw new IllegalArgumentException(String.format("Invalid BetBonusDescription value: %s", description.toString())) ;
+        }
+    }
+
+    @SuppressWarnings("SameReturnValue")
+    public static Bonus.PaidAs convert(BetBonusPaidAs paidAs)
+    {
+        if (paidAs == null) {
+            return Bonus.PaidAs.CASH;
+        }
+        switch (paidAs) {
+            case CASH:
+                return Bonus.PaidAs.CASH;
+            case FREE_BET:
+                return Bonus.PaidAs.FREE_BET;
+            default:
+                throw new IllegalArgumentException(String.format("Invalid BetBonusPaidAs value: %s", paidAs.toString())) ;
+        }
+    }
+
     public static Sender.Channel convert(SenderChannel channel)
     {
         switch (channel) {

@@ -64,7 +64,7 @@ public class TicketBuilderHelper {
             Bet bet = betBuilder
                     .addSelectedSystem(1)
                     .setBetId("bet-id-" + StaticRandom.I1000)
-                    .setBetBonus(StaticRandom.I1000, BetBonusMode.ALL, BetBonusType.TOTAL)
+                    .setBetBonus(StaticRandom.I1000, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ACCUMULATOR_BONUS, BetBonusPaidAs.CASH)
                     .setStake(92343, StakeType.TOTAL)
                     .build();
             tb.addBet(bet);

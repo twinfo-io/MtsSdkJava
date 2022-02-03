@@ -33,6 +33,12 @@ public interface Selection extends Serializable {
     Integer getOdds();
 
     /**
+     * Gets boosted odds multiplied by 10000 and rounded to long value
+     * @return boosted odds
+     */
+    Integer getBoostedOdds();
+
+    /**
      * Gets a value indicating whether this instance is banker
      * @return isBanker
      */

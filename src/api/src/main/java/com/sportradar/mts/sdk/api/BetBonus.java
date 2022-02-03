@@ -4,7 +4,9 @@
 
 package com.sportradar.mts.sdk.api;
 
+import com.sportradar.mts.sdk.api.enums.BetBonusDescription;
 import com.sportradar.mts.sdk.api.enums.BetBonusMode;
+import com.sportradar.mts.sdk.api.enums.BetBonusPaidAs;
 import com.sportradar.mts.sdk.api.enums.BetBonusType;
 
 import java.io.Serializable;
@@ -32,4 +34,18 @@ public interface BetBonus extends Serializable {
      * @return mode of bet bonus
      */
     BetBonusMode getMode();
+
+    /**
+     * Gets the description of the bet bonus
+     * @return description of bet bonus
+     */
+    BetBonusDescription getDescription();
+
+    /**
+     * Gets the description of the bet bonus payment type
+     * @return description of bet bonus payment type
+     */
+    BetBonusPaidAs getPaidAs();
+
+
 }

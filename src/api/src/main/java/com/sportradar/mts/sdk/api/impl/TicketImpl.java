@@ -43,6 +43,7 @@ public class TicketImpl implements Ticket {
     private final String correlationId;
     private final Integer totalCombinations;
     private final Date lastMatchEndTime;
+    private final Long payCap;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public TicketImpl(@JsonProperty("ticketId") String ticketId,
@@ -54,6 +55,7 @@ public class TicketImpl implements Ticket {
                       @JsonProperty("oddsChange") OddsChangeType oddsChangeType,
                       @JsonProperty("totalCombinations") Integer totalCombinations,
                       @JsonProperty("lastMatchEndTime") Date lastMatchEndTime,
+                      @JsonProperty("payCap") Long payCap,
                       @JsonProperty("timestampUtc") Date timestampUtc,
                       @JsonProperty("version") String version) {
         Preconditions.checkNotNull(ticketId, "ticketId cannot be null");
@@ -79,6 +81,7 @@ public class TicketImpl implements Ticket {
         this.timestampUtc = timestampUtc;
         this.version = version;
         this.lastMatchEndTime = lastMatchEndTime;
+        this.payCap = payCap;
 
         if (!StringUtils.isNullOrEmpty(reofferId) && !StringUtils.isNullOrEmpty(altStakeRefId))
         {
@@ -151,6 +154,11 @@ public class TicketImpl implements Ticket {
     @Override
     public Date getLastMatchEndTime() {
         return lastMatchEndTime;
+    }
+
+    @Override
+    public Long getPayCap() {
+        return payCap;
     }
 
     /**

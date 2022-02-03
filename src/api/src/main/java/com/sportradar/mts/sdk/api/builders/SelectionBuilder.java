@@ -91,6 +91,13 @@ public interface SelectionBuilder {
     SelectionBuilder setOdds(int odds);
 
     /**
+     * Sets the boosted odds multiplied by 10000 and rounded to int value
+     * @param boostedOdds boosted odds
+     * @return current builder reference
+     */
+    SelectionBuilder setBoostedOdds(int boostedOdds);
+
+    /**
      * Sets the banker property
      * @param isBanker banker
      * @return current builder reference
@@ -102,10 +109,11 @@ public interface SelectionBuilder {
      * @param eventId event id
      * @param id selection id should be composed according to MTS specification
      * @param odds odds value
+     * @param boostedOdds boosted odds value
      * @param isBanker is banker value
      * @return current builder reference
      */
-    SelectionBuilder set(String eventId, String id, Integer odds, boolean isBanker);
+    SelectionBuilder set(String eventId, String id, Integer odds, Integer boostedOdds, boolean isBanker);
 
     /**
      * Builds new {@link Selection} instance

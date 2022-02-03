@@ -4,14 +4,12 @@
 
 package com.sportradar.mts.sdk.api.utils;
 
-import com.sportradar.mts.sdk.api.BetCancel;
-import com.sportradar.mts.sdk.api.Sender;
-import com.sportradar.mts.sdk.api.Ticket;
-import com.sportradar.mts.sdk.api.TicketCancel;
+import com.sportradar.mts.sdk.api.*;
 import com.sportradar.mts.sdk.api.builders.BuilderFactory;
 import com.sportradar.mts.sdk.api.enums.*;
 import com.sportradar.mts.sdk.api.impl.BetCancelImpl;
 import com.sportradar.mts.sdk.api.impl.mtsdto.ticket.Bet;
+import com.sportradar.mts.sdk.api.impl.mtsdto.ticket.Bonus;
 import com.sportradar.mts.sdk.api.impl.mtsdto.ticket.TicketSchema;
 import com.sportradar.mts.sdk.api.impl.mtsdto.ticketcancel.TicketCancelSchema;
 import com.sportradar.mts.sdk.impl.libs.SdkHelper;
@@ -57,7 +55,7 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
                 .setOddsChange(OddsChangeType.ANY)
                 .setTestSource(false)
                 .setSender(getSender())
-                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
+                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ACCUMULATOR_BONUS, BetBonusPaidAs.CASH).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(18000).build())
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(20000).build())
                         .build())
@@ -75,7 +73,7 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
                 .setOddsChange(OddsChangeType.ANY)
                 .setTestSource(false)
                 .setSender(getSender())
-                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
+                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ACCUMULATOR_BONUS, BetBonusPaidAs.CASH).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(18000).build())
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(20000).build())
                         .build())
@@ -91,7 +89,7 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
                 .setOddsChange(OddsChangeType.ANY)
                 .setTestSource(false)
                 .setSender(getSender())
-                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
+                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ACCUMULATOR_BONUS, BetBonusPaidAs.CASH).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
                                 .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(18000).build())
                                 .build())
                 .setLastMatchEndTime(new Date(new Date().getTime() + 10000))
@@ -120,7 +118,7 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
                 .setOddsChange(OddsChangeType.ANY)
                 .setTestSource(false)
                 .setSender(getSender())
-                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
+                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ACCUMULATOR_BONUS, BetBonusPaidAs.CASH).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(18000).build())
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(20000).build())
                         .build())
@@ -138,7 +136,7 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
                 .setOddsChange(OddsChangeType.ANY)
                 .setTestSource(false)
                 .setSender(getSender())
-                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
+                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ACCUMULATOR_BONUS, BetBonusPaidAs.CASH).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
                                 .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(18000).build())
                                 .build())
                 .setLastMatchEndTime(date)
@@ -147,6 +145,80 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
         Assert.assertNotNull(ticket);
         Assert.assertNotNull(ticket.getLastMatchEndTime());
         Assert.assertEquals(date, ticket.getLastMatchEndTime());
+
+        com.sportradar.mts.sdk.api.impl.mtsdto.ticket.TicketSchema dto = MtsDtoMapper.map(ticket);
+        Assert.assertNotNull(dto);
+        com.sportradar.mts.sdk.api.impl.mtsdto.ticket.Ticket dtoTicket = dto.getTicket();
+        Assert.assertNotNull(dtoTicket);
+        Assert.assertNotNull(dtoTicket.getLastMatchEndTime());
+        Assert.assertEquals(new Long(ticket.getLastMatchEndTime().getTime()), dtoTicket.getLastMatchEndTime());
+    }
+
+    @Test
+    public void buildSelectionRefWithDifferentOddsSelectionsWithPayCapTest()
+    {
+        Long payCap = 10000L;
+
+        Ticket ticket = builderFactory.createTicketBuilder()
+                .setTicketId("ticket-" + StaticRandom.I1000P)
+                .setOddsChange(OddsChangeType.ANY)
+                .setTestSource(false)
+                .setSender(getSender())
+                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ACCUMULATOR_BONUS, BetBonusPaidAs.CASH).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
+                                .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(18000).build())
+                                .build())
+                .setPayCap(payCap)
+                .build();
+
+        Assert.assertNotNull(ticket);
+        Assert.assertNotNull(ticket.getPayCap());
+        Assert.assertEquals(payCap, ticket.getPayCap());
+
+        com.sportradar.mts.sdk.api.impl.mtsdto.ticket.TicketSchema dto = MtsDtoMapper.map(ticket);
+        Assert.assertNotNull(dto);
+        com.sportradar.mts.sdk.api.impl.mtsdto.ticket.Ticket dtoTicket = dto.getTicket();
+        Assert.assertNotNull(dtoTicket);
+        Assert.assertNotNull(dtoTicket.getPayCap());
+        Assert.assertEquals(ticket.getPayCap(), dtoTicket.getPayCap());
+    }
+
+    @Test
+    public void buildSelectionRefWithDifferentOddsSelectionsWithBonusTest()
+    {
+        Ticket ticket = builderFactory.createTicketBuilder()
+                .setTicketId("ticket-" + StaticRandom.I1000P)
+                .setOddsChange(OddsChangeType.ANY)
+                .setTestSource(false)
+                .setSender(getSender())
+                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ODDS_BOOSTER, BetBonusPaidAs.FREE_BET).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
+                                .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(18000).build())
+                                .build())
+                .build();
+
+        Assert.assertNotNull(ticket);
+        Assert.assertNotNull(ticket.getBets());
+        Assert.assertTrue(ticket.getBets().size() > 0);
+        BetBonus betBonus = ticket.getBets().get(0).getBetBonus();
+        Assert.assertNotNull(betBonus);
+        Assert.assertEquals(15000, betBonus.getValue());
+        Assert.assertEquals(BetBonusType.TOTAL, betBonus.getType());
+        Assert.assertEquals(BetBonusMode.ALL, betBonus.getMode());
+        Assert.assertEquals(BetBonusDescription.ODDS_BOOSTER, betBonus.getDescription());
+        Assert.assertEquals(BetBonusPaidAs.FREE_BET, betBonus.getPaidAs());
+
+        com.sportradar.mts.sdk.api.impl.mtsdto.ticket.TicketSchema dto = MtsDtoMapper.map(ticket);
+        Assert.assertNotNull(dto);
+        com.sportradar.mts.sdk.api.impl.mtsdto.ticket.Ticket dtoTicket = dto.getTicket();
+        Assert.assertNotNull(dtoTicket);
+        Assert.assertNotNull(dtoTicket.getBets());
+        Assert.assertTrue(dtoTicket.getBets().size() > 0);
+        Bonus dtoBetBonus = dtoTicket.getBets().get(0).getBonus();
+        Assert.assertNotNull(dtoBetBonus);
+        Assert.assertEquals(new Long(15000), dtoBetBonus.getValue());
+        Assert.assertEquals(Bonus.Type.TOTAL, dtoBetBonus.getType());
+        Assert.assertEquals(Bonus.Mode.ALL, dtoBetBonus.getMode());
+        Assert.assertEquals(Bonus.Description.ODDS_BOOSTER, dtoBetBonus.getDescription());
+        Assert.assertEquals(Bonus.PaidAs.FREE_BET, dtoBetBonus.getPaidAs());
     }
 
     @Test
@@ -160,7 +232,7 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
                 .setOddsChange(OddsChangeType.ANY)
                 .setTestSource(false)
                 .setSender(getSender())
-                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
+                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ACCUMULATOR_BONUS, BetBonusPaidAs.CASH).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(20000).setBanker(true).build())
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(20000).setBanker(false).build())
                         .build())
@@ -177,7 +249,7 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
                 .setSender(getSender())
                 .addBet(builderFactory.createBetBuilder()
                         .setBetId("bet-id-" + StaticRandom.I1000)
-                        .setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL)
+                        .setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ACCUMULATOR_BONUS, BetBonusPaidAs.CASH)
                         .setStake(92343, StakeType.TOTAL)
                         .addSelectedSystem(1)
                         .addSelectedSystem(2)
@@ -187,7 +259,7 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
                         .build())
                 .addBet(builderFactory.createBetBuilder()
                         .setBetId("bet-id-" + StaticRandom.I1000)
-                        .setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL)
+                        .setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ACCUMULATOR_BONUS, BetBonusPaidAs.CASH)
                         .setStake(12345, StakeType.TOTAL)
                         .addSelectedSystem(1)
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:3/sr:sport:1/400/1724?total=4.5").setOdds(10000).build())
@@ -224,16 +296,16 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
                 .setOddsChange(OddsChangeType.ANY)
                 .setTestSource(false)
                 .setSender(getSender())
-                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
+                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ACCUMULATOR_BONUS, BetBonusPaidAs.CASH).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162701").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(10000).setBanker(true).build())
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162702").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(10000).build())
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(10000).build())
                         .build())
-                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL).setStake(12345, StakeType.TOTAL).addSelectedSystem(1)
+                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ACCUMULATOR_BONUS, BetBonusPaidAs.CASH).setStake(12345, StakeType.TOTAL).addSelectedSystem(1)
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(10000).build())
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(10000).build())
                         .build())
-                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL).setStake(12345, StakeType.TOTAL).addSelectedSystem(1)
+                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ACCUMULATOR_BONUS, BetBonusPaidAs.CASH).setStake(12345, StakeType.TOTAL).addSelectedSystem(1)
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(10000).build())
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(10000).build())
                         .build())
@@ -280,7 +352,7 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
                 .setSender(getSender())
                 .addBet(builderFactory.createBetBuilder()
                         .setBetId("bet-id-" + StaticRandom.I1000)
-                        .setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL)
+                        .setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ACCUMULATOR_BONUS, BetBonusPaidAs.CASH)
                         .setStake(92343, StakeType.TOTAL)
                         .addSelectedSystem(1)
                         .addSelectedSystem(2)
@@ -317,7 +389,7 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
                 .setSender(getSender())
                 .addBet(builderFactory.createBetBuilder()
                         .setBetId("bet-id-" + StaticRandom.I1000)
-                        .setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL)
+                        .setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ACCUMULATOR_BONUS, BetBonusPaidAs.CASH)
                         .setStake(92343, StakeType.TOTAL)
                         .addSelectedSystem(1)
                         .addSelectedSystem(2)
@@ -360,7 +432,7 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
                 .setSender(getSender())
                 .addBet(builderFactory.createBetBuilder()
                         .setBetId("bet-id-" + StaticRandom.I1000)
-                        .setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL)
+                        .setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ACCUMULATOR_BONUS, BetBonusPaidAs.CASH)
                         .setStake(92343, StakeType.TOTAL)
                         .addSelectedSystem(1)
                         .addSelectedSystem(2)
@@ -382,7 +454,7 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
                 .setSender(getSender())
                 .addBet(builderFactory.createBetBuilder()
                         .setBetId("bet-id-" + StaticRandom.I1000)
-                        .setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL)
+                        .setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ACCUMULATOR_BONUS, BetBonusPaidAs.CASH)
                         .setStake(92343, StakeType.TOTAL)
                         .addSelectedSystem(1)
                         .addSelectedSystem(1)
@@ -404,7 +476,7 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
                 .setSender(getSender())
                 .addBet(builderFactory.createBetBuilder()
                         .setBetId("bet-id-" + StaticRandom.I1000)
-                        .setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL)
+                        .setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ACCUMULATOR_BONUS, BetBonusPaidAs.CASH)
                         .setStake(92343, StakeType.TOTAL)
                         .addSelectedSystem(1)
                         .addSelectedSystem(0)
@@ -487,7 +559,7 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
                 .setOddsChange(OddsChangeType.ANY)
                 .setTestSource(false)
                 .setSender(getSender())
-                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
+                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ACCUMULATOR_BONUS, BetBonusPaidAs.CASH).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(18000).build())
                         .build())
                 .build();
@@ -505,7 +577,7 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
                 .setOddsChange(OddsChangeType.ANY)
                 .setTestSource(false)
                 .setSender(getSender())
-                .addBet(builderFactory.createBetBuilder().setCustomBet(false).setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
+                .addBet(builderFactory.createBetBuilder().setCustomBet(false).setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ACCUMULATOR_BONUS, BetBonusPaidAs.CASH).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(18000).build())
                         .build())
                 .build();
@@ -526,7 +598,7 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
                 .setOddsChange(OddsChangeType.ANY)
                 .setTestSource(false)
                 .setSender(getSender())
-                .addBet(builderFactory.createBetBuilder().setCustomBet(false).setCalculationOdds(1000).setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
+                .addBet(builderFactory.createBetBuilder().setCustomBet(false).setCalculationOdds(1000).setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ACCUMULATOR_BONUS, BetBonusPaidAs.CASH).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(18000).build())
                         .build())
                 .build();
@@ -543,7 +615,7 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
                 .setOddsChange(OddsChangeType.ANY)
                 .setTestSource(false)
                 .setSender(getSender())
-                .addBet(builderFactory.createBetBuilder().setCustomBet(true).setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
+                .addBet(builderFactory.createBetBuilder().setCustomBet(true).setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ACCUMULATOR_BONUS, BetBonusPaidAs.CASH).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(18000).build())
                         .build())
                 .build();
@@ -557,7 +629,7 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
                 .setOddsChange(OddsChangeType.ANY)
                 .setTestSource(false)
                 .setSender(getSender())
-                .addBet(builderFactory.createBetBuilder().setCustomBet(true).setCalculationOdds(1000).setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
+                .addBet(builderFactory.createBetBuilder().setCustomBet(true).setCalculationOdds(1000).setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ACCUMULATOR_BONUS, BetBonusPaidAs.CASH).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(18000).build())
                         .build())
                 .build();
@@ -575,7 +647,7 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
                 .setOddsChange(OddsChangeType.ANY)
                 .setTestSource(false)
                 .setSender(getSender())
-                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
+                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ACCUMULATOR_BONUS, BetBonusPaidAs.CASH).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(18000).build())
                         .build())
                 .build();
@@ -592,7 +664,7 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
                 .setOddsChange(OddsChangeType.ANY)
                 .setTestSource(false)
                 .setSender(getSender())
-                .addBet(builderFactory.createBetBuilder().setEntireStake(12345, StakeType.TOTAL).setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
+                .addBet(builderFactory.createBetBuilder().setEntireStake(12345, StakeType.TOTAL).setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ACCUMULATOR_BONUS, BetBonusPaidAs.CASH).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
                         .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(18000).build())
                         .build())
                 .build();
