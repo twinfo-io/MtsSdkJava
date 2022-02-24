@@ -173,6 +173,7 @@ public class MtsDtoMapper {
         dtoSelection.setId(betSelection.getId());
         dtoSelection.setEventId(betSelection.getEventId());
         dtoSelection.setOdds(betSelection.getOdds());
+        dtoSelection.setBoostedOdds(betSelection.getBoostedOdds());
         return dtoSelection;
     }
 

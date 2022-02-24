@@ -10,6 +10,7 @@ import com.sportradar.mts.sdk.api.enums.*;
 import com.sportradar.mts.sdk.api.impl.BetCancelImpl;
 import com.sportradar.mts.sdk.api.impl.mtsdto.ticket.Bet;
 import com.sportradar.mts.sdk.api.impl.mtsdto.ticket.Bonus;
+import com.sportradar.mts.sdk.api.impl.mtsdto.ticket.SelectionRef;
 import com.sportradar.mts.sdk.api.impl.mtsdto.ticket.TicketSchema;
 import com.sportradar.mts.sdk.api.impl.mtsdto.ticketcancel.TicketCancelSchema;
 import com.sportradar.mts.sdk.impl.libs.SdkHelper;
@@ -19,6 +20,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Tests for dto to entities mapper
@@ -219,6 +221,55 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
         Assert.assertEquals(Bonus.Mode.ALL, dtoBetBonus.getMode());
         Assert.assertEquals(Bonus.Description.ODDS_BOOSTER, dtoBetBonus.getDescription());
         Assert.assertEquals(Bonus.PaidAs.FREE_BET, dtoBetBonus.getPaidAs());
+    }
+
+    @Test
+    public void buildSelectionTest()
+    {
+        String eventId = "11162703";
+        String selectionId = "uof:1/sr:sport:1/400/1724?total=4.5";
+        int odds = 18000;
+        int boostedOdds = -123;
+        Ticket ticket = builderFactory.createTicketBuilder()
+                .setTicketId("ticket-" + StaticRandom.I1000P)
+                .setOddsChange(OddsChangeType.ANY)
+                .setTestSource(false)
+                .setSender(getSender())
+                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ODDS_BOOSTER, BetBonusPaidAs.FREE_BET).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
+                        .addSelection(builderFactory.createSelectionBuilder().setEventId(eventId).setId(selectionId).setOdds(odds).setBoostedOdds(boostedOdds).setBanker(true).build())
+                        .build())
+                .build();
+
+        Assert.assertNotNull(ticket);
+        Assert.assertNotNull(ticket.getBets());
+        Assert.assertTrue(ticket.getBets().size() > 0);
+        com.sportradar.mts.sdk.api.Bet bet0 = ticket.getBets().get(0);
+        Assert.assertNotNull(bet0.getSelections());
+        Assert.assertEquals(1, bet0.getSelections().size() );
+        Selection selection0 = bet0.getSelections().get(0);
+        Assert.assertEquals(eventId, selection0.getEventId());
+        Assert.assertEquals(selectionId, selection0.getId());
+        Assert.assertEquals((Integer) odds, selection0.getOdds());
+        Assert.assertEquals((Integer) boostedOdds, selection0.getBoostedOdds());
+        Assert.assertTrue(selection0.getIsBanker());
+        // test Mapped values----
+        com.sportradar.mts.sdk.api.impl.mtsdto.ticket.TicketSchema dto = MtsDtoMapper.map(ticket);
+        Assert.assertNotNull(dto);
+        com.sportradar.mts.sdk.api.impl.mtsdto.ticket.Ticket dtoTicket = dto.getTicket();
+        Assert.assertNotNull(dtoTicket);
+        Assert.assertNotNull(dtoTicket.getBets());
+        Assert.assertTrue(dtoTicket.getBets().size() > 0);
+        Assert.assertNotNull(dtoTicket.getSelections());
+        Assert.assertEquals(1, dtoTicket.getSelections().size() );
+        com.sportradar.mts.sdk.api.impl.mtsdto.ticket.Selection dtoSelection0 = dtoTicket.getSelections().get(0);
+        Assert.assertEquals(eventId, dtoSelection0.getEventId());
+        Assert.assertEquals(selectionId, dtoSelection0.getId());
+        Assert.assertEquals((Integer) odds, dtoSelection0.getOdds());
+        Assert.assertEquals((Integer) boostedOdds, dtoSelection0.getBoostedOdds());
+        List<SelectionRef> selectionRefs = dtoTicket.getBets().get(0).getSelectionRefs();
+        Assert.assertNotNull(selectionRefs);
+        Assert.assertFalse(selectionRefs.isEmpty());
+        Assert.assertEquals(Boolean.TRUE, selectionRefs.get(0).getBanker());
     }
 
     @Test

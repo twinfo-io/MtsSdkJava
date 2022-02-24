@@ -1,6 +1,9 @@
 A MTS SDK Java library
 
 CHANGE LOG:
+2022-02-24 2.4.0.1
+Fixed boosted odds serialization and validation
+
 2022-02-03 2.4.0.0
 Support for ticket version 2.4
 - ticket bonus: description and paidAs

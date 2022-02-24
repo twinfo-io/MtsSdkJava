@@ -26,12 +26,14 @@ public class SelectionBuilderTest extends TimeLimitedTestBase {
                 .setEventId("sr:match:12345")
                 .setId("live:2/0/*/1")
                 .setOdds(10400)
+                .setBoostedOdds(10500)
                 .setBanker(false)
                 .build();
         Assert.assertNotNull(selection);
         Assert.assertEquals("sr:match:12345", selection.getEventId());
         Assert.assertEquals("live:2/0/*/1", selection.getId());
         Assert.assertEquals((Integer) 10400, selection.getOdds());
+        Assert.assertEquals((Integer) 10500, selection.getBoostedOdds());
         Assert.assertEquals(false, selection.getIsBanker());
     }
 
@@ -148,26 +150,6 @@ public class SelectionBuilderTest extends TimeLimitedTestBase {
     }
 
     @Test
-    public void BuildSelectionSetWithNegativeBoostedOddsTest()
-    {
-        thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("boostedOdds too low");
-        Selection selection = ticketBuilderHelper.builderFactory.createSelectionBuilder(true)
-                .set("TR:0192_234_934", "tree:2/0/*/1", 10000, -1, true)
-                .build();
-    }
-
-    @Test
-    public void BuildSelectionSetWithToHighBoostedOddsTest()
-    {
-        thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("boostedOdds too high");
-        Selection selection = ticketBuilderHelper.builderFactory.createSelectionBuilder(true)
-                .set("TR:0192_234_934", "tree:2/0/*/1", 10000, 1100000000, true)
-                .build();
-    }
-
-    @Test
     public void BuildSelectionCustomWithNegativeOddsTest()
     {
         thrown.expect(IllegalArgumentException.class);
@@ -177,20 +159,6 @@ public class SelectionBuilderTest extends TimeLimitedTestBase {
                 .setId("tree:2/0/*/1")
                 .setBanker(true)
                 .setOdds(-1)
-                .build();
-    }
-
-    @Test
-    public void BuildSelectionCustomWithNegativeBoostedOddsTest()
-    {
-        thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("boostedOdds too low");
-        Selection selection = ticketBuilderHelper.builderFactory.createSelectionBuilder(true)
-                .setEventId("TR:0192_234_934")
-                .setId("tree:2/0/*/1")
-                .setBanker(true)
-                .setOdds(10000)
-                .setBoostedOdds(-1)
                 .build();
     }
 }

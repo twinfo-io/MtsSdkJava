@@ -37,10 +37,6 @@ public class SelectionImpl implements Selection {
             Preconditions.checkArgument(odds >= 10000, "odds too low");
             Preconditions.checkArgument(odds <= 1000000000, "odds too high");
         }
-        if(boostedOdds != null) {
-            Preconditions.checkArgument(boostedOdds >= 10000, "boostedOdds too low");
-            Preconditions.checkArgument(boostedOdds <= 1000000000, "boostedOdds too high");
-        }
 
         this.eventId = eventId;
         this.id = id;
