@@ -119,6 +119,14 @@ public class MtsDtoMapper {
             b.setPaidAs(MtsTicketHelper.convert(bet.getBetBonus().getPaidAs()));
             dtoBet.setBonus(b);
         }
+        if(bet.getBetFreeStake() != null) {
+            FreeStake b = new FreeStake();
+            b.setValue(bet.getBetFreeStake().getValue());
+            b.setType(MtsTicketHelper.convert(bet.getBetFreeStake().getType()));
+            b.setDescription(MtsTicketHelper.convert(bet.getBetFreeStake().getDescription()));
+            b.setPaidAs(MtsTicketHelper.convert(bet.getBetFreeStake().getPaidAs()));
+            dtoBet.setFreeStake(b);
+        }
         dtoBet.setSelectedSystems(null);
         if(bet.getSelectedSystems() != null)
         {

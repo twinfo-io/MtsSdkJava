@@ -112,6 +112,10 @@ public class TicketReofferBuilderImpl implements TicketReofferBuilder {
             {
                 newBetBuilder.setBetBonus(ticketBet.getBetBonus().getValue(), ticketBet.getBetBonus().getMode(), ticketBet.getBetBonus().getType(), ticketBet.getBetBonus().getDescription(), ticketBet.getBetBonus().getPaidAs());
             }
+            if (ticketBet.getBetFreeStake() != null)
+            {
+                newBetBuilder.setBetFreeStake(ticketBet.getBetFreeStake().getValue(), ticketBet.getBetFreeStake().getType(), ticketBet.getBetFreeStake().getDescription(), ticketBet.getBetFreeStake().getPaidAs());
+            }
             for (Selection ticketBetSelection : ticketBet.getSelections())
             {
                 newBetBuilder.addSelection(ticketBetSelection);
@@ -193,6 +197,10 @@ public class TicketReofferBuilderImpl implements TicketReofferBuilder {
             if (ticketBet.getBetBonus() != null)
             {
                 newBetBuilder.setBetBonus(ticketBet.getBetBonus().getValue(), ticketBet.getBetBonus().getMode(), ticketBet.getBetBonus().getType(), ticketBet.getBetBonus().getDescription(), ticketBet.getBetBonus().getPaidAs());
+            }
+            if (ticketBet.getBetFreeStake() != null)
+            {
+                newBetBuilder.setBetFreeStake(ticketBet.getBetFreeStake().getValue(), ticketBet.getBetFreeStake().getType(), ticketBet.getBetFreeStake().getDescription(), ticketBet.getBetFreeStake().getPaidAs());
             }
             for (Selection ticketBetSelection : ticketBet.getSelections())
             {

@@ -46,6 +46,17 @@ public interface BetBuilder {
      */
     BetBuilder setBetBonus(long value, BetBonusMode betBonusMode, BetBonusType betBonusType, BetBonusDescription betBonusDescription, BetBonusPaidAs betBonusPaidAs);
 
+
+    /**
+     * Sets the BetFreeStake
+     * @param value The quantity multiplied by 10000 and rounded to a long value
+     * @param betFreeStakeType bet free stake type
+     * @param betFreeStakeDescription bet free stake description
+     * @param betFreeStakePaidAs bet free stake payment type
+     * @return current builder reference
+     */
+    BetBuilder setBetFreeStake(long value, BetFreeStakeType betFreeStakeType, BetFreeStakeDescription betFreeStakeDescription, BetFreeStakePaidAs betFreeStakePaidAs);
+
     /**
      * Sets the Stake
      * @param value The quantity multiplied by 10000 and rounded to a long value

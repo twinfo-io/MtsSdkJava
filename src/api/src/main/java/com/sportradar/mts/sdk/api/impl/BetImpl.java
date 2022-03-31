@@ -7,10 +7,7 @@ package com.sportradar.mts.sdk.api.impl;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Preconditions;
-import com.sportradar.mts.sdk.api.Bet;
-import com.sportradar.mts.sdk.api.BetBonus;
-import com.sportradar.mts.sdk.api.Selection;
-import com.sportradar.mts.sdk.api.Stake;
+import com.sportradar.mts.sdk.api.*;
 import com.sportradar.mts.sdk.api.utils.MtsTicketHelper;
 
 import java.util.List;
@@ -18,6 +15,7 @@ import java.util.List;
 public class BetImpl implements Bet {
 
     private final BetBonus bonus;
+    private final BetFreeStake freeStake;
     private final Stake stake;
     private final Stake entireStake;
     private final String id;
@@ -31,6 +29,7 @@ public class BetImpl implements Bet {
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public BetImpl(@JsonProperty("id") String id,
                    @JsonProperty("betBonus") BetBonus betBonus,
+                   @JsonProperty("betFreeStake") BetFreeStake betFreeStake,
                    @JsonProperty("stake") Stake stake,
                    @JsonProperty("entireStake") Stake entireStake,
                    @JsonProperty("selectedSystems") List<Integer> selectedSystems,
@@ -55,6 +54,7 @@ public class BetImpl implements Bet {
 
         this.id = id;
         this.bonus = betBonus;
+        this.freeStake = betFreeStake;
         this.stake = stake;
         this.entireStake = entireStake;
         this.selectedSystems = selectedSystems;
@@ -98,6 +98,11 @@ public class BetImpl implements Bet {
     public BetBonus getBetBonus() { return bonus; }
 
     @Override
+    public BetFreeStake getBetFreeStake() {
+        return freeStake;
+    }
+
+    @Override
     public Stake getStake() {
         return stake;
     }
@@ -115,6 +120,7 @@ public class BetImpl implements Bet {
         return "BetImpl{" +
                 "id='" + id + '\'' +
                 ", betBonus=" + bonus +
+                ", betFreeStake=" + freeStake +
                 ", selections=" + selections +
                 ", stake=" + stake +
                 ", entireStake=" + entireStake +

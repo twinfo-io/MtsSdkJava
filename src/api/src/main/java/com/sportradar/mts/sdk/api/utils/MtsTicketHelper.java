@@ -125,6 +125,63 @@ public final class MtsTicketHelper {
         }
     }
 
+    @SuppressWarnings("SameReturnValue")
+    public static FreeStake.Type convert(BetFreeStakeType type)
+    {
+        if(type == null)
+        {
+            return FreeStake.Type.TOTAL;
+        }
+        switch (type) {
+            case TOTAL:
+                return FreeStake.Type.TOTAL;
+            case UNIT:
+                return FreeStake.Type.UNIT;
+            default:
+                throw new IllegalArgumentException(String.format("Invalid BetFreeStakeType value: %s", type)) ;
+        }
+    }
+
+    @SuppressWarnings("SameReturnValue")
+    public static FreeStake.Description convert(BetFreeStakeDescription description)
+    {
+        if (description == null) {
+            return FreeStake.Description.FREE_BET;
+        }
+        switch (description) {
+            case FREE_BET:
+                return FreeStake.Description.FREE_BET;
+            case PARTIAL_FREE_BET:
+                return FreeStake.Description.PARTIAL_FREE_BET;
+            case ROLLOVER:
+                return FreeStake.Description.ROLLOVER;
+            case MONEY_BACK:
+                return FreeStake.Description.MONEY_BACK;
+            case ODDS_BOOSTER:
+                return FreeStake.Description.ODDS_BOOSTER;
+            case OTHER:
+                return FreeStake.Description.OTHER;
+            default:
+                throw new IllegalArgumentException(String.format("Invalid BetFreeStakeDescription value: %s", description)) ;
+        }
+    }
+
+    @SuppressWarnings("SameReturnValue")
+    public static FreeStake.PaidAs convert(BetFreeStakePaidAs paidAs)
+    {
+        if (paidAs == null) {
+            return FreeStake.PaidAs.CASH;
+        }
+        switch (paidAs) {
+            case CASH:
+                return FreeStake.PaidAs.CASH;
+            case FREE_BET:
+                return FreeStake.PaidAs.FREE_BET;
+            default:
+                throw new IllegalArgumentException(String.format("Invalid BetFreeStakePaidAs value: %s", paidAs)) ;
+        }
+    }
+
     public static Sender.Channel convert(SenderChannel channel)
     {
         switch (channel) {

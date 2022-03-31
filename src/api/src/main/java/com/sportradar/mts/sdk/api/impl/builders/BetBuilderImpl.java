@@ -5,13 +5,11 @@
 package com.sportradar.mts.sdk.api.impl.builders;
 
 import com.google.common.collect.Lists;
-import com.sportradar.mts.sdk.api.Bet;
-import com.sportradar.mts.sdk.api.BetBonus;
-import com.sportradar.mts.sdk.api.Selection;
-import com.sportradar.mts.sdk.api.Stake;
+import com.sportradar.mts.sdk.api.*;
 import com.sportradar.mts.sdk.api.builders.BetBuilder;
 import com.sportradar.mts.sdk.api.enums.*;
 import com.sportradar.mts.sdk.api.impl.BetBonusImpl;
+import com.sportradar.mts.sdk.api.impl.BetFreeStakeImpl;
 import com.sportradar.mts.sdk.api.impl.BetImpl;
 import com.sportradar.mts.sdk.api.impl.StakeImpl;
 
@@ -22,6 +20,7 @@ import java.util.Optional;
 public class BetBuilderImpl implements BetBuilder {
     private String betId;
     private BetBonus betBonus;
+    private BetFreeStake freeStake;
     private Stake stake;
     private Stake entireStake;
     private List<Integer> selectedSystems;
@@ -40,6 +39,12 @@ public class BetBuilderImpl implements BetBuilder {
     @Override
     public BetBuilder setBetBonus(long value) {
         betBonus = new BetBonusImpl(value, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ACCUMULATOR_BONUS, BetBonusPaidAs.CASH);
+        return this;
+    }
+
+    @Override
+    public BetBuilder setBetFreeStake(long value, BetFreeStakeType betFreeStakeType, BetFreeStakeDescription betFreeStakeDescription, BetFreeStakePaidAs betFreeStakePaidAs) {
+        freeStake = new BetFreeStakeImpl(value, betFreeStakeType, betFreeStakeDescription, betFreeStakePaidAs);
         return this;
     }
 
@@ -135,6 +140,6 @@ public class BetBuilderImpl implements BetBuilder {
      */
     @Override
     public Bet build() {
-        return new BetImpl(betId, betBonus, stake, entireStake, selectedSystems, selections, reofferId, sum, customBet, calculationOdds);
+        return new BetImpl(betId, betBonus, freeStake, stake, entireStake, selectedSystems, selections, reofferId, sum, customBet, calculationOdds);
     }
 }

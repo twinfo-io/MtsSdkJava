@@ -19,6 +19,12 @@ public interface Bet extends Serializable {
     BetBonus getBetBonus();
 
     /**
+     * Gets the bet free stake
+     * @return bet free stake
+     */
+    BetFreeStake getBetFreeStake();
+
+    /**
      * Gets the stake
      * Mandatory
      * @return stake

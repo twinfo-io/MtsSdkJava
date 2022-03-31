@@ -89,6 +89,53 @@
                   }
                 }
               },
+              "freeStake": {
+                "type": "object",
+                "additionalProperties": false,
+                "description": "FreeStake Bonus of the bet (optional, default null)",
+                "required": [
+                  "value"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "description": "Quantity multiplied by 10_000 and rounded to a long value",
+                    "maximum": 1000000000000000000,
+                    "minimum": 0
+                  },
+                  "type": {
+                    "type": ["string", "null"],
+                    "description": "Type (optional, default total)",
+                    "default": "total",
+                    "enum": [
+                      "total",
+                      "unit"
+                    ]
+                  },
+                  "description": {
+                    "type": ["string", "null"],
+                    "description": "Description of the FreeStake Type.",
+                    "default": "freeBet",
+                    "enum": [
+                      "freeBet",
+                      "partialFreeBet",
+                      "rollover",
+                      "moneyBack",
+                      "oddsBooster",
+                      "other"
+                    ]
+                  },
+                  "paidAs": {
+                    "type": ["string", "null"],
+                    "description": "Description of the FreeStake Payment Type.",
+                    "default": "cash",
+                    "enum": [
+                      "cash",
+                      "freeBet"
+                    ]
+                  }
+                }
+              },
               "customBet": {
                 "description": "Flag if bet is a custom bet (optional, default false)",
                 "type": ["boolean", "null"],

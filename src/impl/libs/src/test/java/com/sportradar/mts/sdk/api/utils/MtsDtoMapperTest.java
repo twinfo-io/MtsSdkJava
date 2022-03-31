@@ -8,17 +8,27 @@ import com.sportradar.mts.sdk.api.*;
 import com.sportradar.mts.sdk.api.builders.BuilderFactory;
 import com.sportradar.mts.sdk.api.enums.*;
 import com.sportradar.mts.sdk.api.impl.BetCancelImpl;
+import com.sportradar.mts.sdk.api.impl.ResponseReasonImpl;
+import com.sportradar.mts.sdk.api.impl.TicketResponseImpl;
 import com.sportradar.mts.sdk.api.impl.mtsdto.ticket.Bet;
 import com.sportradar.mts.sdk.api.impl.mtsdto.ticket.Bonus;
+import com.sportradar.mts.sdk.api.impl.mtsdto.ticket.FreeStake;
 import com.sportradar.mts.sdk.api.impl.mtsdto.ticket.SelectionRef;
 import com.sportradar.mts.sdk.api.impl.mtsdto.ticket.TicketSchema;
 import com.sportradar.mts.sdk.api.impl.mtsdto.ticketcancel.TicketCancelSchema;
+import com.sportradar.mts.sdk.api.impl.mtsdto.ticketresponse.BetDetail;
+import com.sportradar.mts.sdk.api.impl.mtsdto.ticketresponse.Reason;
+import com.sportradar.mts.sdk.api.impl.mtsdto.ticketresponse.RejectionInfo;
+import com.sportradar.mts.sdk.api.impl.mtsdto.ticketresponse.Reoffer;
+import com.sportradar.mts.sdk.api.impl.mtsdto.ticketresponse.SelectionDetail;
 import com.sportradar.mts.sdk.impl.libs.SdkHelper;
 import com.sportradar.mts.sdk.impl.libs.TimeLimitedTestBase;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -91,9 +101,12 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
                 .setOddsChange(OddsChangeType.ANY)
                 .setTestSource(false)
                 .setSender(getSender())
-                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000).setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ACCUMULATOR_BONUS, BetBonusPaidAs.CASH).setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
-                                .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(18000).build())
-                                .build())
+                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000)
+                        .setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ODDS_BOOSTER, BetBonusPaidAs.FREE_BET)
+                        .setBetFreeStake(16000, BetFreeStakeType.UNIT, BetFreeStakeDescription.PARTIAL_FREE_BET, BetFreeStakePaidAs.FREE_BET)
+                        .setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
+                        .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(18000).build())
+                        .build())
                 .setLastMatchEndTime(new Date(new Date().getTime() + 10000))
                 .build();
 
@@ -105,6 +118,83 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
 
         Assert.assertNotNull(ticketReOffer);
         Assert.assertEquals(ticket.getLastMatchEndTime(), ticketReOffer.getLastMatchEndTime());
+
+        Assert.assertNotNull(ticketReOffer.getBets());
+        Assert.assertTrue(ticketReOffer.getBets().size() > 0);
+        Assert.assertEquals(100L, ticketReOffer.getBets().get(0).getStake().getValue());
+
+        BetBonus betBonus = ticketReOffer.getBets().get(0).getBetBonus();
+        Assert.assertNotNull(betBonus);
+        Assert.assertEquals(15000, betBonus.getValue());
+        Assert.assertEquals(BetBonusType.TOTAL, betBonus.getType());
+        Assert.assertEquals(BetBonusMode.ALL, betBonus.getMode());
+        Assert.assertEquals(BetBonusDescription.ODDS_BOOSTER, betBonus.getDescription());
+        Assert.assertEquals(BetBonusPaidAs.FREE_BET, betBonus.getPaidAs());
+
+        BetFreeStake betFreeStake = ticketReOffer.getBets().get(0).getBetFreeStake();
+        Assert.assertNotNull(betFreeStake);
+        Assert.assertEquals(16000, betFreeStake.getValue());
+        Assert.assertEquals(BetFreeStakeType.UNIT, betFreeStake.getType());
+        Assert.assertEquals(BetFreeStakeDescription.PARTIAL_FREE_BET, betFreeStake.getDescription());
+        Assert.assertEquals(BetFreeStakePaidAs.FREE_BET, betFreeStake.getPaidAs());
+    }
+
+    @Test
+    public void buildReOfferWithResponseForTicketWithSelectionRefWithDifferentOddsSelectionsTest()
+    {
+        Ticket ticket = builderFactory.createTicketBuilder()
+                .setTicketId("ticket-" + StaticRandom.I1000P)
+                .setOddsChange(OddsChangeType.ANY)
+                .setTestSource(false)
+                .setSender(getSender())
+                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000)
+                        .setBetBonus(15000, BetBonusMode.ALL, BetBonusType.TOTAL, BetBonusDescription.ODDS_BOOSTER, BetBonusPaidAs.FREE_BET)
+                        .setBetFreeStake(16000, BetFreeStakeType.UNIT, BetFreeStakeDescription.PARTIAL_FREE_BET, BetFreeStakePaidAs.FREE_BET)
+                        .setStake(92343, StakeType.TOTAL).addSelectedSystem(1)
+                        .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(18000).build())
+                        .build())
+                .setLastMatchEndTime(new Date(new Date().getTime() + 10000))
+                .build();
+
+        Assert.assertNotNull(ticket);
+
+        List<SelectionDetail> selectionDetails = new ArrayList<>();
+        Reason reason_msg = new Reason(700, "Reason msg");
+        for (Selection selection : ticket.getSelections()) {
+            SelectionDetail selectionDetail = new SelectionDetail(selectionDetails.size(), reason_msg, new RejectionInfo(selection.getEventId(), selection.getId(), selection.getOdds()));
+            selectionDetails.add(selectionDetail);
+        }
+        List<BetDetail> betDetails = Collections.singletonList(new BetDetail(ticket.getBets().get(0).getId(), reason_msg, selectionDetails, new Reoffer(1337L, Reoffer.Type.AUTO), null));
+        TicketResponse response = new TicketResponseImpl(
+                ticket.getTicketId(), new ResponseReasonImpl(101, "Response message"),
+                TicketAcceptance.REJECTED, betDetails, "123", 123, new Date(),
+                SdkInfo.MTS_TICKET_VERSION, StaticRandom.S1000, null, null, "{response-payload}");
+
+        Ticket ticketReOffer = builderFactory.createTicketReofferBuilder()
+                .set(ticket, response, ticket.getTicketId() + "ReOffer")
+                .build();
+
+        Assert.assertNotNull(ticketReOffer);
+        Assert.assertEquals(ticket.getLastMatchEndTime(), ticketReOffer.getLastMatchEndTime());
+
+        Assert.assertNotNull(ticketReOffer.getBets());
+        Assert.assertTrue(ticketReOffer.getBets().size() > 0);
+        Assert.assertEquals(1337L, ticketReOffer.getBets().get(0).getStake().getValue());
+
+        BetBonus betBonus = ticketReOffer.getBets().get(0).getBetBonus();
+        Assert.assertNotNull(betBonus);
+        Assert.assertEquals(15000, betBonus.getValue());
+        Assert.assertEquals(BetBonusType.TOTAL, betBonus.getType());
+        Assert.assertEquals(BetBonusMode.ALL, betBonus.getMode());
+        Assert.assertEquals(BetBonusDescription.ODDS_BOOSTER, betBonus.getDescription());
+        Assert.assertEquals(BetBonusPaidAs.FREE_BET, betBonus.getPaidAs());
+
+        BetFreeStake betFreeStake = ticketReOffer.getBets().get(0).getBetFreeStake();
+        Assert.assertNotNull(betFreeStake);
+        Assert.assertEquals(16000, betFreeStake.getValue());
+        Assert.assertEquals(BetFreeStakeType.UNIT, betFreeStake.getType());
+        Assert.assertEquals(BetFreeStakeDescription.PARTIAL_FREE_BET, betFreeStake.getDescription());
+        Assert.assertEquals(BetFreeStakePaidAs.FREE_BET, betFreeStake.getPaidAs());
     }
 
 
@@ -221,6 +311,46 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
         Assert.assertEquals(Bonus.Mode.ALL, dtoBetBonus.getMode());
         Assert.assertEquals(Bonus.Description.ODDS_BOOSTER, dtoBetBonus.getDescription());
         Assert.assertEquals(Bonus.PaidAs.FREE_BET, dtoBetBonus.getPaidAs());
+    }
+
+    @Test
+    public void buildSelectionRefWithDifferentOddsSelectionsWithFreeBetTest()
+    {
+        Ticket ticket = builderFactory.createTicketBuilder()
+                .setTicketId("ticket-" + StaticRandom.I1000P)
+                .setOddsChange(OddsChangeType.ANY)
+                .setTestSource(false)
+                .setSender(getSender())
+                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000)
+                        .setBetFreeStake(16000, BetFreeStakeType.UNIT, BetFreeStakeDescription.MONEY_BACK, BetFreeStakePaidAs.FREE_BET)
+                        .setStake(92343, StakeType.TOTAL)
+                        .addSelectedSystem(1)
+                        .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(18000).build())
+                        .build())
+                .build();
+
+        Assert.assertNotNull(ticket);
+        Assert.assertNotNull(ticket.getBets());
+        Assert.assertTrue(ticket.getBets().size() > 0);
+        BetFreeStake betFreeStake = ticket.getBets().get(0).getBetFreeStake();
+        Assert.assertNotNull(betFreeStake);
+        Assert.assertEquals(16000, betFreeStake.getValue());
+        Assert.assertEquals(BetFreeStakeType.UNIT, betFreeStake.getType());
+        Assert.assertEquals(BetFreeStakeDescription.MONEY_BACK, betFreeStake.getDescription());
+        Assert.assertEquals(BetFreeStakePaidAs.FREE_BET, betFreeStake.getPaidAs());
+
+        com.sportradar.mts.sdk.api.impl.mtsdto.ticket.TicketSchema dto = MtsDtoMapper.map(ticket);
+        Assert.assertNotNull(dto);
+        com.sportradar.mts.sdk.api.impl.mtsdto.ticket.Ticket dtoTicket = dto.getTicket();
+        Assert.assertNotNull(dtoTicket);
+        Assert.assertNotNull(dtoTicket.getBets());
+        Assert.assertTrue(dtoTicket.getBets().size() > 0);
+        FreeStake freeStake = dtoTicket.getBets().get(0).getFreeStake();
+        Assert.assertNotNull(freeStake);
+        Assert.assertEquals(new Long(16000), freeStake.getValue());
+        Assert.assertEquals(FreeStake.Type.UNIT, freeStake.getType());
+        Assert.assertEquals(FreeStake.Description.MONEY_BACK, freeStake.getDescription());
+        Assert.assertEquals(FreeStake.PaidAs.FREE_BET, freeStake.getPaidAs());
     }
 
     @Test
