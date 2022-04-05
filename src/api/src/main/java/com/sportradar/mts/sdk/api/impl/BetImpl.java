@@ -47,6 +47,9 @@ public class BetImpl implements Bet {
         Preconditions.checkArgument(selectedSystems.stream().allMatch(a->a > 0), "selectedSystems - 0 is not valid value");
         Preconditions.checkArgument(selectedSystems.stream().allMatch(a->a <= selections.size()), "selectedSystems contains invalid value");
         Preconditions.checkNotNull(stake, "stake cannot be null");
+        if (stake.getValue() == 0) {
+            Preconditions.checkNotNull(betFreeStake, "betFreeStake cannot be null if stake value is 0");
+        }
         Preconditions.checkArgument(reofferRefId == null || (MtsTicketHelper.validateTicketId(reofferRefId) && reofferRefId.length() <= 50), "not valid reofferRefId");
         Preconditions.checkArgument(sumOfWins == null || sumOfWins >= 0, "sumOfWins not valid");
         boolean customBetBool = Boolean.TRUE.equals(customBet);

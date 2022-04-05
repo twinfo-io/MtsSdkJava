@@ -354,6 +354,45 @@ public class MtsDtoMapperTest extends TimeLimitedTestBase {
     }
 
     @Test
+    public void buildInvalidStakeInvalidWithFreeBetTest()
+    {
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("value is missing");
+
+        builderFactory.createTicketBuilder()
+                .setTicketId("ticket-" + StaticRandom.I1000P)
+                .setOddsChange(OddsChangeType.ANY)
+                .setTestSource(false)
+                .setSender(getSender())
+                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000)
+                        .setBetFreeStake(16000, BetFreeStakeType.UNIT, BetFreeStakeDescription.MONEY_BACK, BetFreeStakePaidAs.FREE_BET)
+                        .setStake(-1, StakeType.TOTAL)
+                        .addSelectedSystem(1)
+                        .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(18000).build())
+                        .build())
+                .build();
+    }
+
+    @Test
+    public void buildInvalidStakeZeroWithMissingFreeBetTest()
+    {
+        thrown.expect(NullPointerException.class);
+        thrown.expectMessage("betFreeStake cannot be null if stake value is 0");
+
+        builderFactory.createTicketBuilder()
+                .setTicketId("ticket-" + StaticRandom.I1000P)
+                .setOddsChange(OddsChangeType.ANY)
+                .setTestSource(false)
+                .setSender(getSender())
+                .addBet(builderFactory.createBetBuilder().setBetId("bet-id-" + StaticRandom.I1000)
+                        .setStake(0, StakeType.TOTAL)
+                        .addSelectedSystem(1)
+                        .addSelection(builderFactory.createSelectionBuilder().setEventId("11162703").setId("uof:1/sr:sport:1/400/1724?total=4.5").setOdds(18000).build())
+                        .build())
+                .build();
+    }
+
+    @Test
     public void buildSelectionTest()
     {
         String eventId = "11162703";

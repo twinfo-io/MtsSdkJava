@@ -23,7 +23,7 @@ public class StakeImpl implements Stake {
     public StakeImpl(@JsonProperty("value") long value,
                      @JsonProperty("type") StakeType type)
     {
-        checkArgument(value > 0, "value is missing");
+        checkArgument(value >= 0, "value is missing");
 
         this.value = value;
         this.type = type;

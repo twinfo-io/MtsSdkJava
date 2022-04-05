@@ -1,6 +1,9 @@
 A MTS SDK Java library
 
 CHANGE LOG:
+2022-02-24 2.4.0.3
+Fixed bet free stake validation when stake value is 0
+
 2022-02-24 2.4.0.2
 Support for ticket version 2.4
 - ticket free stake: value, type, description and paidAs
