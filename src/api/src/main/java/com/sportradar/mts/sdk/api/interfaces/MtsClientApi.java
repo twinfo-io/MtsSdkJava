@@ -49,7 +49,7 @@ public interface MtsClientApi {
      * @param username A username used for authentication
      * @param password A password used for authentication
      * @return A {@link Ccf} values for sport and prematch/live (if set for customer)
-     * @throws Exception throws API exception
+     * @throws MtsApiException throws API exception
      */
     Ccf getCcf(String sourceId, String username, String password) throws MtsApiException;
 }

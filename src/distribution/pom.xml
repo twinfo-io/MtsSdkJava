@@ -9,7 +9,7 @@
     <parent>
         <artifactId>mts-sdk</artifactId>
         <groupId>com.sportradar.mts.sdk</groupId>
-        <version>2.4.0.3</version>
+        <version>2.4.1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -259,10 +259,10 @@
                                     <sourceFile>${project.build.directory}/build-prepare/mts-sdk-app-${project.version}-fatjar-shaded.jar</sourceFile>
                                     <destinationFile>${project.build.directory}/build-prepare/mts-sdk-${project.version}-fatjar-shaded.jar</destinationFile>
                                 </fileSet>
-                                <fileSet>
-                                    <sourceFile>${project.build.directory}/distribution-${project.version}-javadoc.jar</sourceFile>
-                                    <destinationFile>${project.build.directory}/build-prepare/mts-sdk-${project.version}-javadoc.jar</destinationFile>
-                                </fileSet>
+<!--                                <fileSet>-->
+<!--                                    <sourceFile>${project.build.directory}/distribution-${project.version}-javadoc.jar</sourceFile>-->
+<!--                                    <destinationFile>${project.build.directory}/build-prepare/mts-sdk-${project.version}-javadoc.jar</destinationFile>-->
+<!--                                </fileSet>-->
                             </fileSets>
                         </configuration>
                     </execution>
@@ -275,8 +275,16 @@
                             <goal>copy</goal>
                         </goals>
                         <configuration>
-                            <sourceFile>target/classes/mts-sdk-install-pom.xml</sourceFile>
-                            <destinationFile>${project.build.directory}/build-prepare/pom.xml</destinationFile>
+                                <fileSets>
+                                    <fileSet>
+                                        <sourceFile>target/classes/mts-sdk-install-pom.xml</sourceFile>
+                                        <destinationFile>${project.build.directory}/build-prepare/pom.xml</destinationFile>
+                                    </fileSet>
+                                    <fileSet>
+                                        <sourceFile>${project.build.directory}/distribution-${project.version}-javadoc.jar</sourceFile>
+                                        <destinationFile>${project.build.directory}/build-prepare/mts-sdk-${project.version}-javadoc.jar</destinationFile>
+                                    </fileSet>
+                                </fileSets>
                         </configuration>
                     </execution>
 
