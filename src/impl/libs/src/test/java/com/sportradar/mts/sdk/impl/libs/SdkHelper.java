@@ -96,7 +96,7 @@ public class SdkHelper {
         {
             return;
         }
-        String uriFormat = "https://api.betradar.com/v1/descriptions/%s/markets.xml?include_mappings=true";
+        String uriFormat = "https://global.api.betradar.com/v1/descriptions/%s/markets.xml?include_mappings=true";
         JAXBContext apiJaxbContext;
         List<Locale> locales = new ArrayList<>();
         locales.add(Locale.ENGLISH);

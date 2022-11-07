@@ -27,8 +27,8 @@ public final class SdkInfo {
     public static final int TICKET_CANCELLATION_RESPONSE_TIMEOUT_MAX = 3600000;
     public static final int TICKET_CASHOUT_RESPONSE_TIMEOUT_MAX = 3600000;
     public static final int TICKET_NON_SR_RESPONSE_TIMEOUT_MAX = 3600000;
-    public static final String API_HOST_INTEGRATION = "https://stgapi.betradar.com";
-    public static final String API_HOST_PRODUCTION = "https://api.betradar.com";
+    public static final String API_HOST_INTEGRATION = "https://global.stgapi.betradar.com";
+    public static final String API_HOST_PRODUCTION = "https://global.api.betradar.com";
 
     public static class Literals{
         public static final String CONFIG_BUILDER_PARAM_EMPTY = "Value cannot be a null reference or an empty string";

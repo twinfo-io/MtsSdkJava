@@ -1,6 +1,9 @@
 A MTS SDK Java library
 
 CHANGE LOG:
+2022-11-07 2.4.1.1
+Changed url stgapi.betradar.com and api.betradar.com to global
+
 2022-09-22 2.4.1.0
 Full support for mts ticket version 2.4
 

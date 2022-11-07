@@ -58,7 +58,7 @@ public interface SelectionBuilder {
 
     /**
      * Sets the selection id for UOF
-     * Note: method requires accessToken in configuration and access to https://api.betradar.com
+     * Note: method requires accessToken in configuration and access to https://global.api.betradar.com
      * @param product product
      * @param sportId sport id
      * @param marketId market id
@@ -71,7 +71,7 @@ public interface SelectionBuilder {
 
     /**
      * Sets the selection id for UOF
-     * Note: method requires accessToken in configuration and access to https://api.betradar.com
+     * Note: method requires accessToken in configuration and access to https://global.api.betradar.com
      * @param product product
      * @param sportId sport id
      * @param marketId market id

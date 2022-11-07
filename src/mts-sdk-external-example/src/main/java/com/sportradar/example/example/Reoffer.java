@@ -65,7 +65,7 @@ public final class Reoffer {
             }
             else {
                 logger.info("ticket {} was {}. Reason: {}.", ticketResponse.getTicketId(), ticketResponse.getStatus(), ticketResponse.getReason().getMessage());
-                if(ticketResponse.getBetDetails().stream().anyMatch(f->f.getReoffer() != null))
+                if(ticketResponse.getBetDetails() != null && ticketResponse.getBetDetails().stream().anyMatch(f->f.getReoffer() != null))
                 {
                     Ticket ticketReoffer = mtsSdk.getBuilderFactory().createTicketReofferBuilder().set(ticket, ticketResponse, null).build();
                     TicketResponse reofferResponse = ticketSender.sendBlocking(ticketReoffer);
