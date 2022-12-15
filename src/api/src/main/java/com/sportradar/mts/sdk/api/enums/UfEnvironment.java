@@ -8,12 +8,12 @@ public enum UfEnvironment {
     /**
      * Integration
      */
-    INTEGRATION("https://stgapi.betradar.com"),
+    INTEGRATION("https://global.stgapi.betradar.com"),
 
     /**
      * Production
      */
-    PRODUCTION("https://api.betradar.com");
+    PRODUCTION("https://global.api.betradar.com");
 
     private final String host;
 
