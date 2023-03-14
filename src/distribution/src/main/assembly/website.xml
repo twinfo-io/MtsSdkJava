@@ -25,10 +25,10 @@
         </file>
 
         <!-- copy the sdk javadoc jar -->
-        <file>
+        <!-- <file>
             <source>${project.build.directory}/build-prepare/mts-sdk-${project.version}-javadoc.jar</source>
             <destName>mts-sdk-javadoc.jar</destName>
-        </file>
+        </file> -->
 
         <!-- copy the sdk changelog -->
         <file>
